@@ -10,7 +10,7 @@ type AuthButtonProps = {
 
 export function AuthButton({ children, onPress, disabled = false }: AuthButtonProps) {
   return (
-    <Pressable className={`items-center rounded-xl shadow-[#561F00] py-4 ${disabled ? "bg-[#FFB580]" : "bg-[#FF6B00]"}`} onPress={onPress} disabled={disabled}>
+    <Pressable className={`items-center rounded-xl shadow-[#561F00] py-4 ${disabled ? "bg-[#FFB580]" : "bg-primary"}`} onPress={onPress} disabled={disabled}>
       <Text className="text-base font-bold text-[#561F00]">{children}</Text>
       <AntDesign name="arrow-right" size={20} color="#561F00" />
     </Pressable>
