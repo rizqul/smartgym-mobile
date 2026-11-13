@@ -120,7 +120,9 @@ export default function ForgotPassword() {
           </View>
         </View>
         <View>
-          <AuthButton label="Kirim Tautan & Kode Verifikasi" />
+          <Link href={"/(auth)/otp"}>
+            <AuthButton label="Kirim Tautan & Kode Verifikasi" />
+          </Link>
         </View>
         <View>
           <Text className="text-sm text-[#E2BFB0]">
