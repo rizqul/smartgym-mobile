@@ -1,10 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
+import { useRouter } from "expo-router"
 import React from "react"
 import { Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function Profile() {
+  const router = useRouter()
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -89,7 +91,10 @@ export default function Profile() {
 
             {/* Action Buttons */}
             <View className="flex-row gap-3">
-              <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 rounded-xl border border-border bg-card py-3">
+              <TouchableOpacity
+                className="flex-1 flex-row items-center justify-center gap-2 rounded-xl border border-border bg-card py-3"
+                onPress={() => router.push("/(gym)/profile/editProfile")}
+              >
                 <Ionicons
                   name="options-outline"
                   size={16}
