@@ -42,7 +42,7 @@ export default function RootLayout() {
 
       <Stack.Protected guard={true}>
         <Stack.Screen
-          name="(gym)"
+          name="(gym)/dashboard"
           options={{ headerShown: false }}
         />
       </Stack.Protected>

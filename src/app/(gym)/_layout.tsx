@@ -42,7 +42,7 @@ export default function GymLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="dashboard"
         options={{
           title: "Home",
           tabBarIcon: ({ focused, color }) => (
