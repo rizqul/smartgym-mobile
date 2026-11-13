@@ -114,7 +114,7 @@ export default function Login() {
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                placeholder="you@example.com"
+                placeholder="anda@email.com"
                 error={errors.email?.message}
                 keyboardType="email-address"
                 autoCapitalize="none"
