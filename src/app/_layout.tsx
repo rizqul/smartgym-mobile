@@ -7,7 +7,7 @@ import * as SplashScreen from "expo-splash-screen"
 
 import "../../global.css"
 
-SplashScreen.preventAutoHideAsync()
+void SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
   const [loaded, error] = useFonts([
@@ -22,7 +22,7 @@ export default function RootLayout() {
   ])
 
   useEffect(() => {
-    if (loaded || error) SplashScreen.hideAsync()
+    if (loaded || error) void SplashScreen.hideAsync()
   }, [loaded, error])
 
   if (!loaded && !error) return <Text>Loading</Text>
@@ -40,7 +40,7 @@ export default function RootLayout() {
         options={{ headerShown: false }}
       />
 
-      <Stack.Protected guard={false}>
+      <Stack.Protected guard={true}>
         <Stack.Screen
           name="(gym)"
           options={{ headerShown: false }}
