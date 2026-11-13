@@ -4,7 +4,7 @@ import { AuthTextField } from "@/components/auth/authTextField"
 import { Fontisto } from "@expo/vector-icons"
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Link } from "expo-router"
+import { Link, router } from "expo-router"
 import { Controller, useForm } from "react-hook-form"
 import { Text, View } from "react-native"
 import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg"
@@ -25,6 +25,10 @@ export default function ForgotPassword() {
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { email: "" }
   })
+
+  const onSubmit = async (data: FormValues) => {
+    router.push("/(auth)/otp")
+  }
 
   return (
     <AuthScreenLayout>
@@ -120,9 +124,10 @@ export default function ForgotPassword() {
           </View>
         </View>
         <View>
-          <Link href={"/(auth)/otp"}>
-            <AuthButton label="Kirim Tautan & Kode Verifikasi" />
-          </Link>
+          <AuthButton
+            onPress={handleSubmit(onSubmit)}
+            label="Kirim Tautan & Kode Verifikasi"
+          />
         </View>
         <View>
           <Text className="text-sm text-[#E2BFB0]">
