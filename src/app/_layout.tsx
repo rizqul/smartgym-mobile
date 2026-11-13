@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { Text } from "react-native"
 
 import { useFonts } from "expo-font"
@@ -27,7 +27,7 @@ export default function RootLayout() {
 
   if (!loaded && !error) return <Text>Loading</Text>
 
-  // const isLogin = false
+  const isLogin = useMemo(() => true, [])
 
   return (
     <Stack
@@ -35,14 +35,16 @@ export default function RootLayout() {
         headerShown: false
       }}
     >
-      <Stack.Screen
-        name="(auth)/login"
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Protected guard={true}>
+      <Stack.Protected guard={!isLogin}>
         <Stack.Screen
-          name="(gym)/dashboard"
+          name="(auth)/login"
+          options={{ headerShown: false }}
+        />
+      </Stack.Protected>
+
+      <Stack.Protected guard={isLogin}>
+        <Stack.Screen
+          name="(gym)"
           options={{ headerShown: false }}
         />
       </Stack.Protected>

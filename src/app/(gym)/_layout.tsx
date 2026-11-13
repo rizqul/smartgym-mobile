@@ -126,9 +126,10 @@ export default function GymLayout() {
       />
 
       <Tabs.Screen
-        name="(profile)/index"
+        name="profile"
         options={{
           title: "Profile",
+          headerShown: false,
           tabBarIcon: ({ focused, color }) => (
             <Ionicons
               name={focused ? "person" : "person-outline"}
