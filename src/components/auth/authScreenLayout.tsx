@@ -32,7 +32,7 @@ export function AuthScreenLayout({ children }: AuthScreenLayoutProps) {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View className="flex-1 items-center justify-center gap-8 bg-background">{children}</View>
+          <View className="flex-1 items-center justify-center gap-12 bg-background">{children}</View>
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>

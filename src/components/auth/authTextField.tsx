@@ -1,3 +1,4 @@
+import { Link } from "expo-router"
 import React, { ReactNode } from "react"
 import { KeyboardTypeOptions, Text, TextInput, TextInputProps, View } from "react-native"
 
@@ -38,7 +39,9 @@ export function AuthTextField({
           <Text className="mb-2 text-sm font-semibold text-text-body">{label}</Text>
         </View>
         <View>
-          <Text className="mb-2 text-sm font-semibold text-primary">{label2}</Text>
+          <Link href={"/(auth)/forgot-password"}>
+            <Text className="mb-2 text-sm font-semibold text-primary">{label2}</Text>
+          </Link>
         </View>
       </View>
       <View className={` w-[340] flex-row items-center rounded-xl border bg-field-primary px-4 ${error ? "border-danger" : ""}`}>
