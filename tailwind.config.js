@@ -13,7 +13,6 @@ module.exports = {
         inactive: "#D6B8A6",
         highlight: "#FDE047",
         info: "#60A5FA",
-
         field: {
           primary: "#1A1C20",
           placeholder: "#A98A7D"
