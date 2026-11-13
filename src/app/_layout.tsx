@@ -40,7 +40,7 @@ export default function RootLayout() {
         options={{ headerShown: false }}
       />
 
-      <Stack.Protected guard={true}>
+      <Stack.Protected guard={false}>
         <Stack.Screen
           name="(gym)/dashboard"
           options={{ headerShown: false }}

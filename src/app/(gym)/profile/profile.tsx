@@ -11,42 +11,12 @@ export default function Profile() {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="flex gap-5 px-5 pb-10 pt-3">
-          {/* ================= HEADER SECTION ================= */}
-          {/* <View className="flex-row items-center justify-between">
-            <View className="flex-row items-center gap-3">
-              <View className="relative">
-                <Image
-                  source={{ uri: "https://i.pravatar.cc/150?img=11" }}
-                  className="border-border h-12 w-12 rounded-full border"
-                />
-                <View className="absolute bottom-0 right-0 rounded-full border-2 border-background bg-primary p-1">
-                  <MaterialCommunityIcons
-                    name="crown"
-                    size={10}
-                    color="white"
-                  />
-                </View>
-              </View>
-              <View>
-                <Text className="text-lg font-bold text-text-primary">Profile & Settings</Text>
-                <Text className="text-xs text-text-secondary">Pro Member • Level 14</Text>
-              </View>
-            </View>
-            <TouchableOpacity className="h-10 w-10 items-center justify-center rounded-xl bg-surface">
-              <Ionicons
-                name="notifications-outline"
-                size={22}
-                color="#FF8A33"
-              />
-            </TouchableOpacity>
-          </View> */}
-
           {/* ================= USER CARD (GRADIENT) ================= */}
           <LinearGradient
             colors={["#2E1A14", "#1A1D24", "#1A1D24"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            className="border-border border"
+            className="border border-border"
             style={{ padding: 16, borderRadius: 16 }}
           >
             {/* Top Row: Avatar & Info */}
@@ -54,9 +24,9 @@ export default function Profile() {
               <View className="relative">
                 <Image
                   source={{ uri: "https://i.pravatar.cc/150?img=11" }}
-                  className="border-border/50 h-16 w-16 rounded-xl border-2"
+                  className="h-16 w-16 rounded-xl border-2 border-border/50"
                 />
-                <TouchableOpacity className="border-border absolute -bottom-1 -right-1 rounded-md border bg-card p-1">
+                <TouchableOpacity className="absolute -bottom-1 -right-1 rounded-md border border-border bg-card p-1">
                   <Ionicons
                     name="pencil"
                     size={12}
@@ -82,19 +52,19 @@ export default function Profile() {
 
             {/* Stats Row (Tinggi, Berat, Body Fat) */}
             <View className="mb-4 flex-row justify-between">
-              <View className="border-border/50 mr-2 flex-1 items-center rounded-xl border bg-background/50 p-3">
+              <View className="mr-2 flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
                 <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Tinggi</Text>
                 <Text className="text-lg font-bold text-text-primary">
                   178 <Text className="text-xs font-normal">cm</Text>
                 </Text>
               </View>
-              <View className="border-border/50 mr-2 flex-1 items-center rounded-xl border bg-background/50 p-3">
+              <View className="mr-2 flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
                 <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Berat</Text>
                 <Text className="text-lg font-bold text-text-primary">
                   74.5 <Text className="text-xs font-normal">kg</Text>
                 </Text>
               </View>
-              <View className="border-border/50 flex-1 items-center rounded-xl border bg-background/50 p-3">
+              <View className="flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
                 <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Body Fat</Text>
                 <Text className="text-lg font-bold text-primary">
                   13.8<Text className="text-xs font-normal">%</Text>
@@ -119,7 +89,7 @@ export default function Profile() {
 
             {/* Action Buttons */}
             <View className="flex-row gap-3">
-              <TouchableOpacity className="border-border flex-1 flex-row items-center justify-center gap-2 rounded-xl border bg-card py-3">
+              <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 rounded-xl border border-border bg-card py-3">
                 <Ionicons
                   name="options-outline"
                   size={16}
@@ -139,7 +109,7 @@ export default function Profile() {
           </LinearGradient>
 
           {/* ================= ACTIVE PLAN CARD ================= */}
-          <View className="border-border rounded-2xl border bg-card p-5">
+          <View className="rounded-2xl border border-border bg-card p-5">
             <View className="mb-4 flex-row items-start justify-between">
               <Text className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">Active Plan</Text>
               <View className="flex-row items-center gap-1 rounded-md bg-primary/20 px-2 py-1">
@@ -150,7 +120,7 @@ export default function Profile() {
 
             <Text className="mb-4 text-xl font-bold text-text-primary">SmartGym{"\n"}Pro Athlete</Text>
 
-            <View className="border-border/50 mb-5 flex-row items-center justify-between rounded-xl border bg-surface p-3">
+            <View className="mb-5 flex-row items-center justify-between rounded-xl border border-border/50 bg-surface p-3">
               <Text className="text-xs text-text-secondary">
                 Masa Berlaku: <Text className="font-semibold text-text-primary">24 Mei 2025</Text>
               </Text>
@@ -195,7 +165,7 @@ export default function Profile() {
               </View>
             </View>
 
-            <TouchableOpacity className="bg-border mb-3 flex-row items-center justify-between rounded-xl px-4 py-3">
+            <TouchableOpacity className="mb-3 flex-row items-center justify-between rounded-xl bg-border px-4 py-3">
               <View className="flex-row items-center gap-2">
                 <Ionicons
                   name="swap-vertical"
@@ -232,9 +202,9 @@ export default function Profile() {
               <Text className="text-lg font-bold text-text-primary">Keamanan & Dukungan</Text>
             </View>
 
-            <View className="border-border overflow-hidden rounded-2xl border bg-card">
+            <View className="overflow-hidden rounded-2xl border border-border bg-card">
               {/* Item 1 */}
-              <TouchableOpacity className="border-border/50 flex-row items-center border-b p-4">
+              <TouchableOpacity className="flex-row items-center border-b border-border/50 p-4">
                 <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-surface">
                   <Ionicons
                     name="key-outline"
@@ -276,7 +246,7 @@ export default function Profile() {
           </View>
 
           {/* ================= LOGOUT & FOOTER ================= */}
-          <TouchableOpacity className="border-border flex-row items-center justify-center gap-2 rounded-2xl border bg-card py-4">
+          <TouchableOpacity className="flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card py-4">
             <Ionicons
               name="log-out-outline"
               size={20}

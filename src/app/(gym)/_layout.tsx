@@ -102,7 +102,7 @@ export default function GymLayout() {
       />
 
       <Tabs.Screen
-        name="(profile)/profile"
+        name="profile/profile"
         options={{
           title: "Profile",
           tabBarIcon: ({ focused, color }) => (
