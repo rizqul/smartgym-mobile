@@ -267,7 +267,12 @@ export default function Profile() {
 
             <View className="overflow-hidden rounded-2xl border border-border bg-card">
               {/* Item 1 */}
-              <TouchableOpacity className="flex-row items-center border-b border-border/50 p-4">
+              <TouchableOpacity
+                onPress={() => {
+                  router.push("/(auth)/change-password")
+                }}
+                className="flex-row items-center border-b border-border/50 p-4"
+              >
                 <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-surface">
                   <Ionicons
                     name="key-outline"

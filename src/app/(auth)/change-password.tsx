@@ -1,12 +1,12 @@
 import { AuthButton } from "@/components/auth/authButton"
-import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
-import { Entypo, MaterialIcons } from "@expo/vector-icons"
+import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "expo-router"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Pressable, Text, View } from "react-native"
+import { Pressable, Text, TouchableOpacity, View } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { z } from "zod"
 
 const changePasswordSchema = z
@@ -66,72 +66,89 @@ export default function ChangePassword() {
   }
 
   return (
-    <AuthScreenLayout>
-      <View className="flex items-center justify-start gap-8">
-        {/* Header */}
-        <View className="flex w-[358] items-center justify-center gap-5">
-          <View className="flex h-[96] w-[96] items-center justify-center rounded-2xl bg-white/10 shadow-xl">
-            <View className="flex h-[76] w-[76] items-center justify-center rounded-full border border-dashed border-[#FF6B00]">
-              <MaterialIcons
-                name="lock"
-                size={40}
-                color="#FF6B00"
+    <>
+      <SafeAreaView className="flex-1 bg-background">
+        <View className="flex-1 bg-background">
+          <View className="w-full flex-row items-center gap-4 border-b border-border/40  px-3 py-2 pb-4">
+            <TouchableOpacity
+              onPress={() => router.back()}
+              className="h-10 w-10 items-center justify-center rounded-xl border border-border/50 bg-surface"
+            >
+              <Ionicons
+                name="chevron-back"
+                size={20}
+                color="white"
               />
-            </View>
+            </TouchableOpacity>
+            <Text className="text-xl font-bold text-text-primary">Ubah Kata Sandi</Text>
           </View>
-          <View className="flex w-[340] items-center justify-center gap-3">
-            <Text className="text-3xl font-bold text-text-body">Ubah Password</Text>
-            <Text className="w-full text-center text-sm leading-6 text-[#E2BFB0]">
-              Masukkan password lama kamu, lalu buat password baru yang lebih aman.
-            </Text>
-          </View>
-        </View>
-
-        {/* Input Part */}
-        <View className="flex">
-          {fields.map(({ name, label, placeholder }) => (
-            <View key={name}>
-              <Controller
-                control={control}
-                name={name}
-                render={({ field: { value, onChange, onBlur } }) => (
-                  <AuthTextField
-                    label={label}
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder={placeholder}
-                    error={errors[name]?.message}
-                    secureTextEntry={!visible[name]}
-                    autoCapitalize="none"
-                    accessory={
-                      <Pressable
-                        className="p-2"
-                        onPress={() => toggleVisible(name)}
-                        accessibilityLabel={visible[name] ? "Hide password" : "Show password"}
-                      >
-                        <Entypo
-                          name={visible[name] ? "eye-with-line" : "eye"}
-                          size={20}
-                          color="#E2BFB0"
-                        />
-                      </Pressable>
-                    }
+          <View className="flex items-center justify-start gap-8">
+            {/* Header */}
+            <View className="w-[345] flex-row items-center gap-6">
+              <View className="flex h-[76] w-[76] items-center justify-center rounded-2xl bg-white/10 shadow-xl">
+                <View className="flex h-[56] w-[56] items-center justify-center rounded-full border border-dashed border-[#FF6B00]">
+                  <MaterialIcons
+                    name="lock"
+                    size={40}
+                    color="#FF6B00"
                   />
-                )}
+                </View>
+              </View>
+              <View className="flex w-[340]  gap-1">
+                <Text className="text-3xl font-bold text-text-body">Lindungi akunmu</Text>
+                <Text className="w-[280] text-sm leading-6 text-[#E2BFB0]">
+                  Masukkan password lama kamu, lalu buat password baru yang lebih aman.
+                </Text>
+              </View>
+            </View>
+
+            {/* Input Part */}
+            <View className="flex">
+              {fields.map(({ name, label, placeholder }) => (
+                <View key={name}>
+                  <Controller
+                    control={control}
+                    name={name}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <AuthTextField
+                        label={label}
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        placeholder={placeholder}
+                        error={errors[name]?.message}
+                        secureTextEntry={!visible[name]}
+                        autoCapitalize="none"
+                        accessory={
+                          <Pressable
+                            className="p-2"
+                            onPress={() => toggleVisible(name)}
+                            accessibilityLabel={visible[name] ? "Hide password" : "Show password"}
+                          >
+                            <Entypo
+                              name={visible[name] ? "eye-with-line" : "eye"}
+                              size={20}
+                              color="#E2BFB0"
+                            />
+                          </Pressable>
+                        }
+                      />
+                    )}
+                  />
+                </View>
+              ))}
+            </View>
+
+            {/* Submit */}
+            <View>
+              <AuthButton
+                label="Simpan Password Baru"
+                onPress={handleSubmit(onSubmit)}
               />
             </View>
-          ))}
+          </View>
         </View>
-
-        {/* Submit */}
-        <View>
-          <AuthButton
-            label="Simpan Password Baru"
-            onPress={handleSubmit(onSubmit)}
-          />
-        </View>
-      </View>
-    </AuthScreenLayout>
+      </SafeAreaView>
+    </>
   )
 }
