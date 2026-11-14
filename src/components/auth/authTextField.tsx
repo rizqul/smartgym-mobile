@@ -13,7 +13,7 @@ type AuthTextFieldProps = {
   autoCapitalize?: TextInputProps["autoCapitalize"]
   secureTextEntry?: boolean
   accessory?: ReactNode
-  icon: React.ReactElement
+  icon?: React.ReactElement
   label2?: string
 }
 
