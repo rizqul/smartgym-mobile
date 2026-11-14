@@ -21,31 +21,38 @@ export type PlanCardProps = {
 
 const variantStyles: Record<
   PlanVariant,
-  { card: string; badge: string; badgeText: string; button: string; buttonText: string; check: string }
+  {
+    card: string
+    badge: string
+    badgeText: string
+    button: string
+    buttonText: string
+    check: string
+  }
 > = {
   default: {
-    card: "border-white/10",
-    badge: "bg-white/10",
-    badgeText: "text-[#E2BFB0]",
-    button: "border border-white/20 bg-white/5",
-    buttonText: "text-white",
-    check: "#E2BFB0"
+    card: "border-border",
+    badge: "bg-card",
+    badgeText: "text-text-warm",
+    button: "border border-border bg-card",
+    buttonText: "text-text-primary",
+    check: "#E2BFB0" // text.warm
   },
   popular: {
-    card: "border-[#FF6B00]",
-    badge: "bg-[#FF6B00]",
-    badgeText: "text-white",
-    button: "bg-[#FF6B00]",
-    buttonText: "text-white",
-    check: "#FF6B00"
+    card: "border-primary shadow-lg shadow-primary/25",
+    badge: "bg-primary",
+    badgeText: "text-text-primary",
+    button: "bg-primary",
+    buttonText: "text-text-primary",
+    check: "#FF6B00" // primary
   },
   best: {
-    card: "border-[#FFB693]/50",
-    badge: "bg-[#FFB693]",
-    badgeText: "text-[#121215]",
-    button: "border border-[#FFB693]/60 bg-[#FFB693]/10",
-    buttonText: "text-[#FFB693]",
-    check: "#FFB693"
+    card: "border-accent/50",
+    badge: "bg-accent",
+    badgeText: "text-background",
+    button: "border border-accent/60 bg-accent/10",
+    buttonText: "text-accent",
+    check: "#FFB693" // accent
   }
 }
 
@@ -66,17 +73,10 @@ export default function PlanCard({
   const style = variantStyles[variant]
 
   return (
-    <View
-      className={`w-full gap-4 rounded-2xl border bg-white/5 p-5 ${style.card}`}
-      style={
-        variant === "popular"
-          ? { shadowColor: "#FF6B00", shadowOpacity: 0.25, shadowRadius: 16, shadowOffset: { width: 0, height: 4 }, elevation: 6 }
-          : undefined
-      }
-    >
+    <View className={`w-full gap-4 rounded-2xl border bg-surface p-5 ${style.card}`}>
       {/* Top row: tier + badge */}
       <View className="flex-row items-center justify-between">
-        <Text className="text-[10px] font-bold tracking-widest text-[#E2BFB0]">{tier}</Text>
+        <Text className="text-text-warm text-[10px] font-bold tracking-widest">{tier}</Text>
         {badge ? (
           <View className={`rounded-full px-2.5 py-1 ${style.badge}`}>
             <Text className={`text-[10px] font-bold ${style.badgeText}`}>{badge}</Text>
@@ -87,24 +87,24 @@ export default function PlanCard({
       {/* Name + description */}
       <View className="gap-1">
         <Text className="text-xl font-bold text-text-body">{name}</Text>
-        <Text className="text-xs leading-5 text-[#E2BFB0]">{description}</Text>
+        <Text className="text-text-warm text-xs leading-5">{description}</Text>
       </View>
 
       {/* Price */}
       <View className="gap-1">
         {originalPrice || discountLabel ? (
           <View className="flex-row items-center gap-2">
-            {originalPrice ? <Text className="text-xs text-[#8A8A90] line-through">{originalPrice}</Text> : null}
+            {originalPrice ? <Text className="text-xs text-text-subdued line-through">{originalPrice}</Text> : null}
             {discountLabel ? (
-              <View className="rounded-md bg-[#FF6B00]/20 px-1.5 py-0.5">
-                <Text className="text-[10px] font-bold text-[#FFB693]">{discountLabel}</Text>
+              <View className="rounded-md bg-primary/20 px-1.5 py-0.5">
+                <Text className="text-accent text-[10px] font-bold">{discountLabel}</Text>
               </View>
             ) : null}
           </View>
         ) : null}
         <View className="flex-row items-end gap-1">
           <Text className="text-3xl font-bold text-text-body">{price}</Text>
-          <Text className="pb-1 text-xs text-[#E2BFB0]">{period}</Text>
+          <Text className="text-text-warm pb-1 text-xs">{period}</Text>
         </View>
       </View>
 
@@ -120,7 +120,7 @@ export default function PlanCard({
               size={16}
               color={style.check}
             />
-            <Text className="flex-1 text-xs leading-5 text-[#E2BFB0]">{feature}</Text>
+            <Text className="text-text-warm flex-1 text-xs leading-5">{feature}</Text>
           </View>
         ))}
       </View>

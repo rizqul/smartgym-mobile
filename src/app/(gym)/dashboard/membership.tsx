@@ -1,3 +1,5 @@
+import MembershipActiveCard from "@/components/membership/membershipActiveCard"
+import MembershipHeader from "@/components/membership/membershipHeader"
 import PlanCard from "@/components/membership/membershipPlanCard"
 
 import React from "react"
@@ -5,6 +7,32 @@ import React from "react"
 const membership = () => {
   return (
     <>
+      <MembershipHeader />
+      <MembershipActiveCard
+        planName="SmartGym Elite Gold"
+        billingLabel="TAHUNAN"
+        memberTier="Gold Member"
+        validUntil="18 Des 2025"
+        startDate="18 Des 2024"
+        daysUsed={157}
+        totalDays={365}
+        autoRenew={false}
+        benefits={[
+          {
+            icon: "meeting-room",
+            title: "Akses 24/7 Seluruh Cabang (All Clubs)",
+            description: "Fast-pass turnstile QR gate siap pakai",
+            tone: "primary"
+          },
+          {
+            icon: "smart-toy",
+            title: "AI Neural Trainer & Plan",
+            description: "Penyesuaian repetisi & target harian",
+            tone: "info"
+          }
+        ]}
+        onRenewPress={() => {}}
+      />
       <PlanCard
         tier="ENTRY TIER"
         name="Basic Starter"
