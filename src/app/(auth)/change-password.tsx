@@ -89,7 +89,7 @@ export default function ChangePassword() {
                 <View className="flex h-[56] w-[56] items-center justify-center rounded-full border border-dashed border-[#FF6B00]">
                   <MaterialIcons
                     name="lock"
-                    size={40}
+                    size={25}
                     color="#FF6B00"
                   />
                 </View>
