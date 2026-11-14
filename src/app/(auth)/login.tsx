@@ -4,6 +4,7 @@ import { AuthTextField } from "@/components/auth/authTextField"
 import { Entypo, Ionicons } from "@expo/vector-icons"
 import Fontisto from "@expo/vector-icons/Fontisto"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { router } from "expo-router"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Image, Pressable, Text, View } from "react-native"
@@ -27,6 +28,10 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" }
   })
+
+  const onSubmit = (data: FormValues) => {
+    router.push("/(gym)/dashboard")
+  }
 
   return (
     <AuthScreenLayout>
@@ -160,7 +165,10 @@ export default function Login() {
         </View>
       </View>
       <View>
-        <AuthButton label="Masukkan Sekarang" />
+        <AuthButton
+          onPress={handleSubmit(onSubmit)}
+          label="Masuk Sekarang"
+        />
       </View>
     </AuthScreenLayout>
   )

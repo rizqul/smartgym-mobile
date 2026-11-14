@@ -6,6 +6,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        accent: "#FFB693",
         background: "#111317",
         surface: "#1A1D24",
         card: "#242833",
@@ -27,7 +28,8 @@ module.exports = {
           body: "#E2E2E8",
           secondary: "#B8BDC7",
           subdued: "#9CA3AF",
-          muted: "#6B7280"
+          muted: "#6B7280",
+          warm: "#E2BFB0"
         },
         success: "#22C55E",
         warning: "#F59E0B",
