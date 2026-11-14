@@ -49,16 +49,10 @@ export default function GymLayout() {
             <Ionicons
               name={focused ? "home" : "home-outline"}
               size={24}
-              color={color}
+              color={color as string}
             />
           ),
-          tabBarLabel: ({ focused, color }) => (
-            <TabLabel
-              focused={focused}
-              color={color}
-              title="Home"
-            />
-          )
+          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Home" })
         }}
       />
 
@@ -70,16 +64,10 @@ export default function GymLayout() {
             <MaterialCommunityIcons
               name="dumbbell"
               size={24}
-              color={color}
+              color={color as string}
             />
           ),
-          tabBarLabel: ({ focused, color }) => (
-            <TabLabel
-              focused={focused}
-              color={color}
-              title="Workout"
-            />
-          )
+          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Workout" })
         }}
       />
 
@@ -91,16 +79,10 @@ export default function GymLayout() {
             <MaterialCommunityIcons
               name="chart-timeline-variant-shimmer"
               size={24}
-              color={color}
+              color={color as string}
             />
           ),
-          tabBarLabel: ({ focused, color }) => (
-            <TabLabel
-              focused={focused}
-              color={color}
-              title="History"
-            />
-          )
+          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "History" })
         }}
       />
 
@@ -112,37 +94,25 @@ export default function GymLayout() {
             <MaterialCommunityIcons
               name="card-account-details-outline"
               size={24}
-              color={color}
+              color={color as string}
             />
           ),
-          tabBarLabel: ({ focused, color }) => (
-            <TabLabel
-              focused={focused}
-              color={color}
-              title="Pass"
-            />
-          )
+          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Pass" })
         }}
       />
 
       <Tabs.Screen
-        name="(profile)/index"
+        name="profile/profile"
         options={{
           title: "Profile",
           tabBarIcon: ({ focused, color }) => (
             <Ionicons
               name={focused ? "person" : "person-outline"}
               size={24}
-              color={color}
+              color={color as string}
             />
           ),
-          tabBarLabel: ({ focused, color }) => (
-            <TabLabel
-              focused={focused}
-              color={color}
-              title="Profile"
-            />
-          )
+          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Profile" })
         }}
       />
     </Tabs>
