@@ -39,7 +39,10 @@ export default function Dashboard() {
 
           {/* ACTION BUTTONS */}
           <View className="flex-row gap-4">
-            <TouchableOpacity className="flex-1 items-center justify-center gap-2 rounded-2xl border border-border bg-surface py-4">
+            <TouchableOpacity
+              className="flex-1 items-center justify-center gap-2 rounded-2xl border border-border bg-surface py-4"
+              onPress={() => router.push("/(gym)/dashboard/scanQR")}
+            >
               <MaterialCommunityIcons
                 name="qrcode-scan"
                 size={24}
