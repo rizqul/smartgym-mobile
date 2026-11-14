@@ -13,7 +13,7 @@ export default function MembershipHeader({
   subtitle = "Kelola status langganan dan pilih paket terbaik untuk capai fitness goal-mu."
 }: MembershipHeaderProps) {
   return (
-    <View className="gap-3">
+    <View className="w-[370] gap-3">
       {/* Badge */}
       <View className="flex-row items-center gap-2 self-start rounded-full border border-primary/30 bg-primary/15 px-3 py-1.5">
         <View className="h-1.5 w-1.5 rounded-full bg-primary" />
