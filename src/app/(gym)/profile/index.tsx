@@ -196,6 +196,64 @@ export default function Profile() {
             </TouchableOpacity>
           </View>
 
+          {/* ================= HISTORY ================= */}
+          <View className="">
+            <View className="mb-4 flex-row items-center gap-2">
+              <Ionicons
+                name="shield-checkmark"
+                size={20}
+                color="#FF8A33"
+              />
+              <Text className="text-lg font-bold text-text-primary">Riwayat</Text>
+            </View>
+
+            <View className="overflow-hidden rounded-2xl border border-border bg-card">
+              {/* Item 1 */}
+              <TouchableOpacity
+                className="flex-row items-center border-b border-border/50 p-4"
+                onPress={() => {
+                  router.push("/(gym)/profile/historyCheckIn")
+                }}
+              >
+                <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-surface">
+                  <MaterialCommunityIcons
+                    name="calendar-check-outline"
+                    size={20}
+                    color="#B8BDC7"
+                  />
+                </View>
+                <View className="flex-1">
+                  <Text className="mb-1 text-sm font-semibold text-text-primary">Riwayat Check In</Text>
+                  <Text className="text-[11px] text-text-secondary">Lihat daftar kunjungan gym Anda</Text>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={16}
+                  color="#B8BDC7"
+                />
+              </TouchableOpacity>
+
+              {/* Item 2 */}
+              <TouchableOpacity className="flex-row items-center p-4">
+                <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-surface">
+                  <MaterialCommunityIcons
+                    name="receipt"
+                    size={20}
+                    color="#B8BDC7"
+                  />
+                </View>
+                <View className="flex-1">
+                  <Text className="mb-1 text-sm font-semibold text-text-primary">Riwayat Transaksi</Text>
+                  <Text className="text-[11px] text-text-secondary">Lihat riwayat pembayaran dan paket</Text>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={16}
+                  color="#B8BDC7"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
           {/* ================= SECURITY & SUPPORT ================= */}
           <View className="">
             <View className="mb-4 flex-row items-center gap-2">
