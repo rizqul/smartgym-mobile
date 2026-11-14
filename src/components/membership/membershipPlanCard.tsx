@@ -73,7 +73,7 @@ export default function PlanCard({
   const style = variantStyles[variant]
 
   return (
-    <View className={`w-full gap-4 rounded-2xl border bg-surface p-5 ${style.card}`}>
+    <View className={`w-[370] gap-4 rounded-2xl border bg-surface p-5 ${style.card}`}>
       {/* Top row: tier + badge */}
       <View className="flex-row items-center justify-between">
         <Text className="text-text-warm text-[10px] font-bold tracking-widest">{tier}</Text>
