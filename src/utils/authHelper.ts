@@ -3,23 +3,13 @@ import * as SecureStore from "expo-secure-store"
 export const extractAndSaveTokens = async (setCookieHeaders: string | string[]) => {
   if (!setCookieHeaders) return false
 
-  const cookieArray = Array.isArray(setCookieHeaders) ? setCookieHeaders : [setCookieHeaders]
+  const cookieArray = Array.isArray(setCookieHeaders) ? setCookieHeaders.join(", ") : setCookieHeaders
 
-  let accessToken = ""
-  let refreshToken = ""
+  const accessToken = cookieArray.match(/(?:^|[\s,;])access-token=([^;,\s]+)/)?.[1]
+  const refreshToken = cookieArray.match(/(?:^|[\s,;])refresh-token=([^;,\s]+)/)?.[1]
 
-  cookieArray.forEach((cookieString) => {
-    const tokenPair = cookieString.split(";")[0].trim()
-    const [key, value] = tokenPair.split("=")
+  if (accessToken) await SecureStore.setItemAsync("access-token", accessToken)
+  if (refreshToken) await SecureStore.setItemAsync("refresh-token", refreshToken)
 
-    if (key === "access-token") accessToken = value
-    if (key === "refresh-token") refreshToken = value
-  })
-
-  if (accessToken && refreshToken) {
-    await SecureStore.setItemAsync("access-token", accessToken)
-    await SecureStore.setItemAsync("refresh-token", refreshToken)
-    return true
-  }
-  return false
+  return !!accessToken
 }

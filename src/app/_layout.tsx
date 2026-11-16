@@ -30,12 +30,14 @@ function RootLayoutNav() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+
       <Stack.Protected guard={!isLoggedIn}>
-        <Stack.Screen name="(auth)/login" />
+        <Stack.Screen name="(auth)" />
       </Stack.Protected>
 
       <Stack.Protected guard={isLoggedIn}>
-        <Stack.Screen name="(gym)/dashboard" />
+        <Stack.Screen name="(gym)" />
       </Stack.Protected>
     </Stack>
   )

@@ -6,7 +6,6 @@ import { login } from "@/service/auth.service"
 import { Entypo, Ionicons } from "@expo/vector-icons"
 import Fontisto from "@expo/vector-icons/Fontisto"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { router } from "expo-router"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Alert, Image, Pressable, Text, View } from "react-native"
@@ -34,14 +33,9 @@ export default function Login() {
 
   const onSubmit = async (formValue: FormValues) => {
     try {
-      console.log(1)
       await login(formValue.email, formValue.password)
-      console.log(2)
 
       await refreshAuth()
-      console.log(3)
-
-      router.push("/(gym)/dashboard")
     } catch (error: any) {
       console.log("=== LOGIN GAGAL ===")
 

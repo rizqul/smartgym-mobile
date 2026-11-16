@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/AuthContext"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { useRouter } from "expo-router"
@@ -7,6 +8,15 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function Profile() {
   const router = useRouter()
+  const { logout } = useAuth()
+
+  const onSubmit = async () => {
+    try {
+      await logout()
+    } catch (error) {
+      console.log("Error :" + error)
+    }
+  }
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -315,7 +325,7 @@ export default function Profile() {
 
           {/* ================= LOGOUT & FOOTER ================= */}
           <TouchableOpacity
-            // onPress={}
+            onPress={() => onSubmit()}
             className="flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card py-4"
           >
             <Ionicons

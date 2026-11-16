@@ -2,7 +2,7 @@ import { extractAndSaveTokens } from "@/utils/authHelper"
 import * as SecureStore from "expo-secure-store"
 import api from "./api"
 
-const USER_DATA_KEY = "user_profile"
+export const USER_DATA_KEY = "user_profile"
 
 export async function login(email: string, password: string) {
   const response = await api.post("auth/login", { email, password })
@@ -38,9 +38,8 @@ export async function ResetPassword(email: string, code: string, password: strin
   return response.data
 }
 
-export async function logout() {
+export async function LogoutAPI() {
   await api.post("/auth/logout")
-  await SecureStore.deleteItemAsync(USER_DATA_KEY)
 }
 
 export async function Profile() {
