@@ -1,3 +1,4 @@
+import { extractAndSaveTokens } from "@/utils/authHelper"
 import * as SecureStore from "expo-secure-store"
 import api from "./api"
 
@@ -10,11 +11,21 @@ export async function login(email: string, password: string) {
   const setCookieHeader = response.headers["set-cookie"]
 
   if (setCookieHeader) {
-    // await extractAndSaveTokens(setCookieHeader)
+    await extractAndSaveTokens(setCookieHeader)
     const jsonValue = JSON.stringify(data)
     await SecureStore.setItemAsync(USER_DATA_KEY, jsonValue)
   }
   return data
+}
+
+export async function Refresh() {
+  const response = await api.post("auth/refresh")
+
+  const setCookieHeader = response.headers["set-cookie"]
+
+  if (setCookieHeader) {
+    await extractAndSaveTokens(setCookieHeader)
+  }
 }
 
 export async function ForgotPassword(email: string) {
