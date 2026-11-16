@@ -14,7 +14,7 @@ export function AuthButton({ label, onPress, disabled = false }: AuthButtonProps
       onPress={onPress}
       disabled={disabled}
     >
-      <Text className="text-base font-bold text-[#561F00]">{label}</Text>
+      <Text className="font-inter text-base font-bold text-[#561F00]">{label}</Text>
       <AntDesign
         name="arrow-right"
         size={15}

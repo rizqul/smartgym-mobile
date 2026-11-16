@@ -76,99 +76,104 @@ export default function Login() {
         />
       </Svg>
       {/* Header */}
-      <View className="flex w-[358] items-center justify-center gap-5">
-        {/* logo part */}
-        <View className="flex h-[70] w-[70] items-center justify-center rounded-xl bg-[#231105]">
-          <Image
-            source={require("../../../assets/images/logo.png")}
-            className="h-[60] w-[60] rounded-xl"
-          />
-        </View>
+      <View
+        className="flex items-center gap-14
+      "
+      >
+        <View className="flex w-[358] items-center justify-center gap-5">
+          {/* logo part */}
+          <View className="flex h-[70] w-[70] items-center justify-center rounded-xl bg-[#231105]">
+            <Image
+              source={require("../../../assets/images/logo.png")}
+              className="h-[60] w-[60] rounded-xl"
+            />
+          </View>
 
-        {/* Title and Description part */}
-        <View className="flex items-center justify-center ">
-          <Text className="font-inter text-xl font-extrabold text-text-body">
-            SMART<Text className="text-xl font-extrabold text-primary">GYM</Text>
+          {/* Title and Description part */}
+          <View className="flex items-center justify-center ">
+            <Text className="font-inter text-2xl font-extrabold text-text-body">
+              SMART<Text className=" font-extrabold text-primary">GYM</Text>
+            </Text>
+            <Text className="text-sm text-[#E2BFB0]">Smart Fitness & IoT Connected Gym</Text>
+          </View>
+        </View>
+        {/* Welcome Part */}
+        <View className="flex w-[340] items-center justify-center gap-3 font-inter">
+          <Text className="font-inter text-3xl font-bold text-text-body">Selamat Datang</Text>
+          <Text className="text-md w-full text-center font-inter leading-6 text-[#E2BFB0]">
+            Masuk ke akun SmartGym kamu untuk melanjutkan sesi latihan dan akses fasilitas gym pintar.
           </Text>
-          <Text className="text-xs text-[#E2BFB0]">Smart Fitness & IoT Connected Gym</Text>
         </View>
-      </View>
-      {/* Welcome Part */}
-      <View className="flex w-[340] items-center justify-center gap-3">
-        <Text className="text-3xl font-bold text-text-body">Selamat Datang</Text>
-        <Text className="text-md w-full text-center leading-6 text-[#E2BFB0]">
-          Masuk ke akun SmartGym kamu untuk melanjutkan sesi latihan dan akses fasilitas gym pintar.
-        </Text>
-      </View>
-      {/* Input Part */}
-      <View className="flex">
-        <View>
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <AuthTextField
-                icon={
-                  <Fontisto
-                    name="email"
-                    size={15}
-                    color="#FF6B00"
-                  />
-                }
-                label="Email"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                placeholder="anda@email.com"
-                error={errors.email?.message}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { value, onChange, onBlur } }) => (
-              <AuthTextField
-                icon={
-                  <Ionicons
-                    name="lock-closed-outline"
-                    size={15}
-                    color="#FF6B00"
-                  />
-                }
-                label2="Lupa Password?"
-                label="Kata Sandi"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                placeholder="Masukkan Sandi Anda"
-                error={errors.password?.message}
-                secureTextEntry={!showPassword}
-                accessory={
-                  <Pressable
-                    className="p-2"
-                    onPress={() => setShowPassword((visible) => !visible)}
-                    accessibilityLabel={showPassword ? "Hide password" : "Show password"}
-                  >
-                    <Entypo
-                      name={showPassword ? "eye-with-line" : "eye"}
-                      size={20}
-                      color="#E2BFB0"
+        {/* Input Part */}
+        <View className="flex">
+          <View>
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { value, onChange, onBlur } }) => (
+                <AuthTextField
+                  icon={
+                    <Fontisto
+                      name="email"
+                      size={15}
+                      color="#FF6B00"
                     />
-                  </Pressable>
-                }
-              />
-            )}
+                  }
+                  label="Email"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder="Masukkan Email Anda"
+                  error={errors.email?.message}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { value, onChange, onBlur } }) => (
+                <AuthTextField
+                  icon={
+                    <Ionicons
+                      name="lock-closed-outline"
+                      size={15}
+                      color="#FF6B00"
+                    />
+                  }
+                  label2="Lupa Password?"
+                  label="Kata Sandi"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder="Masukkan Sandi Anda"
+                  error={errors.password?.message}
+                  secureTextEntry={!showPassword}
+                  accessory={
+                    <Pressable
+                      className="p-2"
+                      onPress={() => setShowPassword((visible) => !visible)}
+                      accessibilityLabel={showPassword ? "Hide password" : "Show password"}
+                    >
+                      <Entypo
+                        name={showPassword ? "eye-with-line" : "eye"}
+                        size={20}
+                        color="#E2BFB0"
+                      />
+                    </Pressable>
+                  }
+                />
+              )}
+            />
+          </View>
+        </View>
+        <View>
+          <AuthButton
+            onPress={handleSubmit(onSubmit)}
+            label="Masuk Sekarang"
           />
         </View>
-      </View>
-      <View>
-        <AuthButton
-          onPress={handleSubmit(onSubmit)}
-          label="Masuk Sekarang"
-        />
       </View>
     </AuthScreenLayout>
   )
