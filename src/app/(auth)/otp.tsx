@@ -13,6 +13,10 @@ import { z } from "zod"
 
 const forgotPasswordSchema = z
   .object({
+    otp: z
+      .string()
+      .min(6, "Panjang otp minimal 6 angka")
+      .regex(/[^[0-9]$/, "Input harus berupa angka"),
     password: z
       .string()
       .min(8, "Panjang minimal 8 karakter")
@@ -22,8 +26,8 @@ const forgotPasswordSchema = z
       .regex(/[!@#$%^&*()_+]/, "Minimal memiliki 1 karakter dari !@#$%^&*()_+"),
     confirmPassword: z.string()
   })
-  .refine((data) => data.confirmPassword !== data.password, {
-    message: "Password Tidak Sama"
+  .refine((data) => data.confirmPassword === data.password, {
+    message: "Kata Sandi Tidak Sama"
   })
 
 type FormValues = z.infer<typeof forgotPasswordSchema>
@@ -121,9 +125,6 @@ const otpAndResetPassword = () => {
           <View className="flex w-[340] items-center justify-center gap-3">
             <View className="flex w-[340] items-center justify-center gap-3">
               <Text className="text-3xl font-bold text-text-body">Reset Password</Text>
-              {/* <Text className="w-full text-center text-sm leading-6 text-[#E2BFB0]">
-                Kami telah mengirimkan 6 digit kode keamanan ke email :
-              </Text> */}
             </View>
           </View>
         </View>
@@ -179,41 +180,48 @@ const otpAndResetPassword = () => {
         </View>
         {/* Input Part */}
         <View className="flex items-center gap-5">
-          <OtpInput
-            numberOfDigits={6}
-            type="numeric"
-            focusColor="#FF6B00"
-            onTextChange={setOtp}
-            theme={{
-              containerStyle: { width: 340 },
-              pinCodeContainerStyle: {
-                width: 48,
-                height: 56,
-                borderRadius: 12,
-                borderWidth: 1,
-                borderColor: "transparent",
-                backgroundColor: "rgba(255,255,255,0.08)"
-              },
-              pinCodeTextStyle: {
-                fontSize: 24,
-                fontWeight: "700",
-                color: "#FFFFFF"
-              },
-              focusedPinCodeContainerStyle: {
-                borderColor: "#FF6B00",
-                backgroundColor: "rgba(255,107,0,0.12)"
-              },
-              filledPinCodeContainerStyle: {
-                backgroundColor: "rgba(255,255,255,0.12)"
-              },
-              focusStickStyle: {
-                backgroundColor: "#FF6B00",
-                width: 3,
-                height: 22,
-                borderRadius: 2
-              }
-            }}
+          <Controller
+            control={control}
+            name="otp"
+            render={({ field: { onChange } }) => (
+              <OtpInput
+                numberOfDigits={6}
+                type="numeric"
+                focusColor="#FF6B00"
+                onTextChange={onChange}
+                theme={{
+                  containerStyle: { width: 340 },
+                  pinCodeContainerStyle: {
+                    width: 48,
+                    height: 56,
+                    borderRadius: 12,
+                    borderWidth: 1,
+                    borderColor: "transparent",
+                    backgroundColor: "rgba(255,255,255,0.08)"
+                  },
+                  pinCodeTextStyle: {
+                    fontSize: 24,
+                    fontWeight: "700",
+                    color: "#FFFFFF"
+                  },
+                  focusedPinCodeContainerStyle: {
+                    borderColor: "#FF6B00",
+                    backgroundColor: "rgba(255,107,0,0.12)"
+                  },
+                  filledPinCodeContainerStyle: {
+                    backgroundColor: "rgba(255,255,255,0.12)"
+                  },
+                  focusStickStyle: {
+                    backgroundColor: "#FF6B00",
+                    width: 3,
+                    height: 22,
+                    borderRadius: 2
+                  }
+                }}
+              />
+            )}
           />
+          <Text className="font-inter text-sm text-danger">{errors.otp?.message}</Text>
           <View>
             <Controller
               control={control}
@@ -260,11 +268,11 @@ const otpAndResetPassword = () => {
                   accessory={
                     <Pressable
                       className="p-2"
-                      onPress={() => setShowPassword((visible) => !visible)}
-                      accessibilityLabel={showPassword ? "Hide password" : "Show password"}
+                      onPress={() => setShowConfirmPassword((visible) => !visible)}
+                      accessibilityLabel={showConfirmPassword ? "Hide password" : "Show password"}
                     >
                       <Entypo
-                        name={showPassword ? "eye-with-line" : "eye"}
+                        name={showConfirmPassword ? "eye-with-line" : "eye"}
                         size={20}
                         color="#E2BFB0"
                       />
