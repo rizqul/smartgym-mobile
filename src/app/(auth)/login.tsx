@@ -1,13 +1,15 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
+import { useAuth } from "@/context/AuthContext"
+import { login } from "@/service/auth.service"
 import { Entypo, Ionicons } from "@expo/vector-icons"
 import Fontisto from "@expo/vector-icons/Fontisto"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { router } from "expo-router"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Image, Pressable, Text, View } from "react-native"
+import { Alert, Image, Pressable, Text, View } from "react-native"
 import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg"
 import { z } from "zod"
 
@@ -28,9 +30,37 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" }
   })
+  const { refreshAuth } = useAuth()
 
-  const onSubmit = (data: FormValues) => {
-    router.push("/(gym)/dashboard")
+  const onSubmit = async (formValue: FormValues) => {
+    try {
+      console.log(1)
+      await login(formValue.email, formValue.password)
+      console.log(2)
+
+      await refreshAuth()
+      console.log(3)
+
+      router.push("/(gym)/dashboard")
+    } catch (error: any) {
+      console.log("=== LOGIN GAGAL ===")
+
+      if (error.request && !error.response) {
+        console.log("Network Error:", error.request._response)
+        Alert.alert("Koneksi Bermasalah", "Tidak dapat terhubung ke server. Pastikan internet Anda menyala dan server dapat diakses.")
+        return
+      }
+
+      if (error.response) {
+        console.log("Status Code:", error.response.status)
+        console.log("Pesan dari Backend:", error.response.data)
+
+        const errorMessage = error.response.data?.message || "Terjadi kesalahan pada server"
+        Alert.alert("Login Gagal", errorMessage)
+      } else {
+        Alert.alert("Login Gagal", error.message)
+      }
+    }
   }
 
   return (

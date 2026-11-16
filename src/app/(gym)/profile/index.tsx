@@ -314,7 +314,10 @@ export default function Profile() {
           </View>
 
           {/* ================= LOGOUT & FOOTER ================= */}
-          <TouchableOpacity className="flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card py-4">
+          <TouchableOpacity
+            // onPress={}
+            className="flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card py-4"
+          >
             <Ionicons
               name="log-out-outline"
               size={20}
