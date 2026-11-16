@@ -1,5 +1,6 @@
-import CookieManager from "@react-native-cookies/cookies"
+// service/api.ts
 import axios from "axios"
+import * as SecureStore from "expo-secure-store"
 
 const API_BASE_URL = "https://gymmick.my.id"
 
@@ -10,19 +11,21 @@ const api = axios.create({
   }
 })
 
-// Interceptor Request: Ambil cookie dari native store dan masukkan ke header
+// Interceptor Request: Kirim token sebagai cookie
 api.interceptors.request.use(async (config) => {
   try {
-    const cookies = await CookieManager.get(API_BASE_URL)
-    const cookieString = Object.entries(cookies)
-      .map(([name, cookie]) => `${name} = ${cookie.value}`)
-      .join("; ")
+    const accessToken = await SecureStore.getItemAsync("access-token")
+    const refreshToken = await SecureStore.getItemAsync("refresh-token")
+
+    let cookieString = ""
+    if (accessToken) cookieString += `access-token=${accessToken}; `
+    if (refreshToken) cookieString += `refresh-token=${refreshToken}; `
 
     if (cookieString) {
-      config.headers.Cookie = cookieString
+      config.headers.Cookie = cookieString.trim()
     }
   } catch (error) {
-    console.error("Gagal mengambil cookies:", error)
+    console.error("Gagal mengambil token:", error)
   }
   return config
 })

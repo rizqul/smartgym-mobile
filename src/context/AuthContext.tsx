@@ -1,7 +1,6 @@
-import CookieManager from "@react-native-cookies/cookies"
+// context/AuthContext.tsx
+import * as SecureStore from "expo-secure-store"
 import React, { createContext, useContext, useEffect, useState } from "react"
-
-const API_URL = "https://gymmick.my.id"
 
 type AuthContextType = {
   isLoggedIn: boolean
@@ -24,12 +23,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      const cookies = await CookieManager.get(API_URL)
-
-      const hasSession = !!(cookies["access-token"] || cookies["refresh-token"])
-      setIsLoggedIn(hasSession)
+      const token = await SecureStore.getItemAsync("access-token")
+      setIsLoggedIn(!!token)
     } catch (error) {
-      console.error("Gagal mengecek cookie:", error)
       setIsLoggedIn(false)
     } finally {
       setIsLoading(false)
@@ -37,7 +33,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logout = async () => {
-    await CookieManager.clearAll()
+    await SecureStore.deleteItemAsync("access-token")
+    await SecureStore.deleteItemAsync("refresh-token")
     setIsLoggedIn(false)
   }
 

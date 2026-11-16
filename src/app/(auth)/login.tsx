@@ -2,7 +2,7 @@ import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
 import { useAuth } from "@/context/AuthContext"
-import api from "@/service/api"
+import { login } from "@/service/auth.service"
 import { Entypo, Ionicons } from "@expo/vector-icons"
 import Fontisto from "@expo/vector-icons/Fontisto"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -32,13 +32,37 @@ export default function Login() {
   })
   const { refreshAuth } = useAuth()
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (formValue: FormValues) => {
     try {
-      await api.post("/login", { email: data.email, password: data.password })
+      console.log(1)
+      await login(formValue.email, formValue.password)
+      console.log(2)
+
       await refreshAuth()
+      console.log(3)
+
       router.push("/(gym)/dashboard")
-    } catch (error) {
-      Alert.alert("Login gagal :" + error)
+    } catch (error: any) {
+      console.log("=== LOGIN GAGAL ===")
+
+      // Cek jika ini adalah Network Error (Status 0)
+      if (error.request && !error.response) {
+        console.log("Network Error:", error.request._response)
+        Alert.alert("Koneksi Bermasalah", "Tidak dapat terhubung ke server. Pastikan internet Anda menyala dan server dapat diakses.")
+        return // Hentikan eksekusi
+      }
+
+      // Jika error dari server (misal salah password)
+      if (error.response) {
+        console.log("Status Code:", error.response.status)
+        console.log("Pesan dari Backend:", error.response.data)
+
+        const errorMessage = error.response.data?.message || "Terjadi kesalahan pada server"
+        Alert.alert("Login Gagal", errorMessage)
+      } else {
+        // Error lainnya
+        Alert.alert("Login Gagal", error.message)
+      }
     }
   }
 
