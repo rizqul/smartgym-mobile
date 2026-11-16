@@ -45,14 +45,12 @@ export default function Login() {
     } catch (error: any) {
       console.log("=== LOGIN GAGAL ===")
 
-      // Cek jika ini adalah Network Error (Status 0)
       if (error.request && !error.response) {
         console.log("Network Error:", error.request._response)
         Alert.alert("Koneksi Bermasalah", "Tidak dapat terhubung ke server. Pastikan internet Anda menyala dan server dapat diakses.")
-        return // Hentikan eksekusi
+        return
       }
 
-      // Jika error dari server (misal salah password)
       if (error.response) {
         console.log("Status Code:", error.response.status)
         console.log("Pesan dari Backend:", error.response.data)
@@ -60,7 +58,6 @@ export default function Login() {
         const errorMessage = error.response.data?.message || "Terjadi kesalahan pada server"
         Alert.alert("Login Gagal", errorMessage)
       } else {
-        // Error lainnya
         Alert.alert("Login Gagal", error.message)
       }
     }
