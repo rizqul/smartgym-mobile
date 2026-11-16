@@ -1,4 +1,5 @@
 // context/AuthContext.tsx
+import { LogoutAPI, USER_DATA_KEY } from "@/service/auth.service"
 import * as SecureStore from "expo-secure-store"
 import React, { createContext, useContext, useEffect, useState } from "react"
 
@@ -33,9 +34,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logout = async () => {
-    await SecureStore.deleteItemAsync("access-token")
-    await SecureStore.deleteItemAsync("refresh-token")
-    setIsLoggedIn(false)
+    try {
+      await LogoutAPI()
+    } catch (error) {
+      console.log("Error :" + error)
+    } finally {
+      await SecureStore.deleteItemAsync("access-token")
+      await SecureStore.deleteItemAsync("refresh-token")
+      await SecureStore.deleteItemAsync(USER_DATA_KEY)
+      setIsLoggedIn(false)
+    }
   }
 
   const refreshAuth = async () => {
