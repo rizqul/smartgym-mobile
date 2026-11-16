@@ -1,51 +1,50 @@
-import { useEffect } from "react"
-import { Text } from "react-native"
-
+// app/_layout.tsx
+import { AuthProvider, useAuth } from "@/context/AuthContext"
 import { useFonts } from "expo-font"
 import { Stack } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
+import { useEffect } from "react"
 
 import "../../global.css"
 
 void SplashScreen.preventAutoHideAsync()
 
-export default function RootLayout() {
+function RootLayoutNav() {
+  const { isLoggedIn, isLoading } = useAuth()
   const [loaded, error] = useFonts([
     {
       fontFamily: "Inter",
-      fontDefinitions: [
-        {
-          path: require("@/assets/fonts/InterVariable.ttf")
-        }
-      ]
+      fontDefinitions: [{ path: require("@/assets/fonts/InterVariable.ttf") }]
     }
   ])
 
+  const appIsReady = loaded && !isLoading
+
   useEffect(() => {
-    if (loaded || error) void SplashScreen.hideAsync()
-  }, [loaded, error])
+    if (appIsReady || error) {
+      void SplashScreen.hideAsync()
+    }
+  }, [appIsReady, error])
 
-  if (!loaded && !error) return <Text>Loading</Text>
-
-  // const isLogin = false
+  if (!appIsReady && !error) return null
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false
-      }}
-    >
-      <Stack.Screen
-        name="(auth)/login"
-        options={{ headerShown: false }}
-      />
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Protected guard={!isLoggedIn}>
+        <Stack.Screen name="(auth)/login" />
+      </Stack.Protected>
 
-      <Stack.Protected guard={false}>
-        <Stack.Screen
-          name="(gym)/dashboard"
-          options={{ headerShown: false }}
-        />
+      <Stack.Protected guard={isLoggedIn}>
+        <Stack.Screen name="(gym)/dashboard" />
       </Stack.Protected>
     </Stack>
+  )
+}
+
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
   )
 }

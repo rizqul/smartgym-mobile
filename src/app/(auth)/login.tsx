@@ -1,13 +1,15 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
+import { useAuth } from "@/context/AuthContext"
+import api from "@/service/api"
 import { Entypo, Ionicons } from "@expo/vector-icons"
 import Fontisto from "@expo/vector-icons/Fontisto"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { router } from "expo-router"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Image, Pressable, Text, View } from "react-native"
+import { Alert, Image, Pressable, Text, View } from "react-native"
 import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg"
 import { z } from "zod"
 
@@ -28,9 +30,16 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" }
   })
+  const { refreshAuth } = useAuth()
 
-  const onSubmit = (data: FormValues) => {
-    router.push("/(gym)/dashboard")
+  const onSubmit = async (data: FormValues) => {
+    try {
+      await api.post("/login", { email: data.email, password: data.password })
+      await refreshAuth()
+      router.push("/(gym)/dashboard")
+    } catch (error) {
+      Alert.alert("Login gagal :" + error)
+    }
   }
 
   return (
