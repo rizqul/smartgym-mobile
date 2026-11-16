@@ -17,6 +17,22 @@ export async function login(email: string, password: string) {
   return data
 }
 
+export async function ForgotPassword(email: string) {
+  const response = await api.post("/auth/forgot-password", { email })
+  return response.data
+}
+
+export async function ResetPassword(email: string, code: string, password: string) {
+  const response = await api.post("/auth/reset-password", { email, code, password })
+  return response.data
+}
+
 export async function logout() {
+  await api.post("/auth/logout")
   await SecureStore.deleteItemAsync(USER_DATA_KEY)
+}
+
+export async function Profile() {
+  const response = await api.get("/user")
+  return response.data
 }
