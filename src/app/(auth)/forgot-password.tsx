@@ -1,6 +1,7 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
+import { ForgotPassword as forgotPassword } from "@/service/auth.service"
 import { Fontisto } from "@expo/vector-icons"
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -27,7 +28,12 @@ export default function ForgotPassword() {
   })
 
   const onSubmit = async (data: FormValues) => {
-    router.push("/(auth)/otp")
+    try {
+      await forgotPassword(data.email)
+      router.push("/(auth)/otp")
+    } catch (error) {
+      console.log("Error :" + error)
+    }
   }
 
   return (
@@ -72,7 +78,7 @@ export default function ForgotPassword() {
           fill="url(#orangeGlow)"
         />
       </Svg>
-      <View className="flex items-center justify-start gap-8">
+      <View className="flex items-center justify-start gap-12">
         {/* Header */}
         <View className="flex w-[358] items-center justify-center gap-5">
           {/* logo part */}
@@ -90,8 +96,8 @@ export default function ForgotPassword() {
           <View className="flex w-[340] items-center justify-center gap-3">
             <Text className="text-3xl font-bold text-text-body">Lupa Kata Sandi?</Text>
             <Text className="w-full text-center text-sm leading-6 text-[#E2BFB0]">
-              Jangan khawatir! Pilih metode pemulihan yang terdaftar di akun <Text className="font-bold text-[#FFB693]">SmartGym</Text> kamu
-              untuk mereset kata sandi.
+              Jangan khawatir! Kirim Email yang terdaftar di akun <Text className="font-bold text-[#FFB693]">SmartGym</Text> kamu untuk
+              mereset kata sandi.
             </Text>
           </View>
         </View>
