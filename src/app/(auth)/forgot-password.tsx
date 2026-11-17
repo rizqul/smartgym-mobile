@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, router } from "expo-router"
 import { Controller, useForm } from "react-hook-form"
 import { Text, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg"
 import { z } from "zod"
 
@@ -31,8 +32,22 @@ export default function ForgotPassword() {
     try {
       await forgotPassword(data.email)
       router.push("/(auth)/otp")
-    } catch (error) {
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: "Kode OTP Terkirim",
+        textBody: `Silakan periksa email ${data.email} untuk kode verifikasi.`
+      })
+    } catch (error: any) {
       console.log("Error :" + error)
+
+      const message = error.response?.data?.message || "Gagal mengirim kode. Coba lagi."
+
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Gagal",
+        textBody: message,
+        autoClose: 3000
+      })
     }
   }
 
