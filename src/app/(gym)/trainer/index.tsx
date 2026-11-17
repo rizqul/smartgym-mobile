@@ -79,7 +79,6 @@ export default function TrainerScreen() {
               end={{ x: 1, y: 1 }}
             >
               <View className="flex-row items-start gap-4 p-4 ">
-                {" "}
                 <View className="mt-1 h-10 w-10 items-center justify-center rounded-full bg-primary/20">
                   <MaterialCommunityIcons
                     name="medal-outline"
