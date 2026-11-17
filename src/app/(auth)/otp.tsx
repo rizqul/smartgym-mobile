@@ -1,9 +1,9 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
-import { AuthTextField } from "@/components/auth/authTextField"
-import { Entypo, MaterialIcons } from "@expo/vector-icons"
+import { MaterialIcons } from "@expo/vector-icons"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { router } from "expo-router"
 import React, { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Pressable, Text, View } from "react-native"
@@ -11,26 +11,14 @@ import { OtpInput } from "react-native-otp-entry"
 import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg"
 import { z } from "zod"
 
-const forgotPasswordSchema = z
-  .object({
-    otp: z
-      .string()
-      .min(6, "Panjang otp minimal 6 angka")
-      .regex(/[^[0-9]$/, "Input harus berupa angka"),
-    password: z
-      .string()
-      .min(8, "Panjang minimal 8 karakter")
-      .regex(/[A-Z]/, "Minimal ada 1 huruf kapital")
-      .regex(/[a-z]/, "Minimal ada 1 huruf kecil")
-      .regex(/[0-9]/, "Minimal ada 1 angka")
-      .regex(/[!@#$%^&*()_+]/, "Minimal memiliki 1 karakter dari !@#$%^&*()_+"),
-    confirmPassword: z.string()
-  })
-  .refine((data) => data.confirmPassword === data.password, {
-    message: "Kata Sandi Tidak Sama"
-  })
+const otpSchema = z.object({
+  otp: z
+    .string()
+    .min(6, "Panjang otp minimal 6 angka")
+    .regex(/[^[0-9]$/, "Input harus berupa angka")
+})
 
-type FormValues = z.infer<typeof forgotPasswordSchema>
+type FormValues = z.infer<typeof otpSchema>
 
 const formatTime = (totalSeconds: number) => {
   const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0")
@@ -50,8 +38,8 @@ const otpAndResetPassword = () => {
     handleSubmit,
     formState: { errors, isSubmitting }
   } = useForm<FormValues>({
-    resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: { password: "", confirmPassword: "" }
+    resolver: zodResolver(otpSchema),
+    defaultValues: { otp: "" }
   })
 
   useEffect(() => {
@@ -72,7 +60,7 @@ const otpAndResetPassword = () => {
       <Svg
         width="100%"
         height="100%"
-        style={{ position: "absolute", top: -310, left: 0, right: 0, bottom: 0 }}
+        style={{ position: "absolute", top: -200, left: 0, right: 0, bottom: 0 }}
       >
         <Defs>
           <RadialGradient
@@ -124,7 +112,7 @@ const otpAndResetPassword = () => {
           {/* Title and Description part */}
           <View className="flex w-[340] items-center justify-center gap-3">
             <View className="flex w-[340] items-center justify-center gap-3">
-              <Text className="text-3xl font-bold text-text-body">Reset Password</Text>
+              <Text className="text-3xl font-bold text-text-body">OTP Verification</Text>
             </View>
           </View>
         </View>
@@ -161,22 +149,6 @@ const otpAndResetPassword = () => {
               </Text>
             </View>
           )}
-          {/* Kirim ulang via email (nonaktif selama hitung mundur) */}
-          <Pressable
-            onPress={handleResend}
-            disabled={!canResend}
-            className="flex-row items-center gap-1.5 p-1"
-            accessibilityRole="button"
-            accessibilityState={{ disabled: !canResend }}
-            accessibilityLabel="Kirim ulang via email"
-          >
-            <MaterialIcons
-              name="sync"
-              size={14}
-              color={canResend ? "#FFB693" : "#5A5A5F"}
-            />
-            <Text className={`text-xs ${canResend ? "text-[#FFB693]" : "text-[#5A5A5F]"}`}>Kirim Ulang via Email</Text>
-          </Pressable>
         </View>
         {/* Input Part */}
         <View className="flex items-center gap-5">
@@ -222,69 +194,14 @@ const otpAndResetPassword = () => {
             )}
           />
           <Text className="font-inter text-sm text-danger">{errors.otp?.message}</Text>
-          <View>
-            <Controller
-              control={control}
-              name="password"
-              render={({ field: { value, onChange, onBlur } }) => (
-                <AuthTextField
-                  label="Kata Sandi"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder="Masukkan Kata Sandi Baru"
-                  error={errors.password?.message}
-                  secureTextEntry={!showPassword}
-                  accessory={
-                    <Pressable
-                      className="p-2"
-                      onPress={() => setShowPassword((visible) => !visible)}
-                      accessibilityLabel={showPassword ? "Hide password" : "Show password"}
-                    >
-                      <Entypo
-                        name={showPassword ? "eye-with-line" : "eye"}
-                        size={20}
-                        color="#E2BFB0"
-                      />
-                    </Pressable>
-                  }
-                />
-              )}
-            />
-          </View>
-          <View>
-            <Controller
-              control={control}
-              name="confirmPassword"
-              render={({ field: { value, onChange, onBlur } }) => (
-                <AuthTextField
-                  label="Konfirmasi Kata Sandi"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder="Masukkan Kata Sandi"
-                  error={errors.confirmPassword?.message}
-                  secureTextEntry={!showPassword}
-                  accessory={
-                    <Pressable
-                      className="p-2"
-                      onPress={() => setShowConfirmPassword((visible) => !visible)}
-                      accessibilityLabel={showConfirmPassword ? "Hide password" : "Show password"}
-                    >
-                      <Entypo
-                        name={showConfirmPassword ? "eye-with-line" : "eye"}
-                        size={20}
-                        color="#E2BFB0"
-                      />
-                    </Pressable>
-                  }
-                />
-              )}
-            />
-          </View>
         </View>
         <View>
-          <AuthButton label="Verifikasi dan Lanjutkan" />
+          <AuthButton
+            onPress={() => {
+              router.push("/(auth)/reset-password")
+            }}
+            label="Verifikasi dan Lanjutkan"
+          />
         </View>
       </View>
     </AuthScreenLayout>

@@ -39,16 +39,14 @@ const resetPassword = () => {
     defaultValues: { password: "", confirmPassword: "" }
   })
 
-  const onSubmit = async(data: FormValues) => {
-
-  }
+  const onSubmit = async (data: FormValues) => {}
 
   return (
     <AuthScreenLayout>
       <Svg
         width="100%"
         height="100%"
-        style={{ position: "absolute", top: -310, left: 0, right: 0, bottom: 0 }}
+        style={{ position: "absolute", top: -220, left: 0, right: 0, bottom: 0 }}
       >
         <Defs>
           <RadialGradient

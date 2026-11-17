@@ -13,7 +13,7 @@ import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg"
 import { z } from "zod"
 
 const forgotPasswordSchema = z.object({
-  email: z.email("Enter a valid email address")
+  email: z.email("Masukkan alamat email yang valid")
 })
 
 type FormValues = z.infer<typeof forgotPasswordSchema>
@@ -35,7 +35,7 @@ export default function ForgotPassword() {
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
         title: "Kode OTP Terkirim",
-        textBody: `Silakan periksa email ${data.email} untuk kode verifikasi.`
+        textBody: `Silahkan periksa email ${data.email} untuk kode verifikasi.`
       })
     } catch (error: any) {
       console.log("Error :" + error)
@@ -56,7 +56,7 @@ export default function ForgotPassword() {
       <Svg
         width="100%"
         height="100%"
-        style={{ position: "absolute", top: -220, left: 0, right: 0, bottom: 0 }}
+        style={{ position: "absolute", top: -210, left: 0, right: 0, bottom: 0 }}
       >
         <Defs>
           <RadialGradient
@@ -93,7 +93,7 @@ export default function ForgotPassword() {
           fill="url(#orangeGlow)"
         />
       </Svg>
-      <View className="flex items-center justify-start gap-12">
+      <View className="flex items-center justify-start gap-6">
         {/* Header */}
         <View className="flex w-[358] items-center justify-center gap-5">
           {/* logo part */}
