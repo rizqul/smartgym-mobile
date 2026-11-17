@@ -5,6 +5,7 @@ import { Stack } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
 import { useEffect } from "react"
 
+import { AlertNotificationRoot } from "react-native-alert-notification"
 import "../../global.css"
 
 void SplashScreen.preventAutoHideAsync()
@@ -45,8 +46,37 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <RootLayoutNav />
-    </AuthProvider>
+    <AlertNotificationRoot
+      theme="dark"
+      colors={[
+        {
+          label: "#1C1F26",
+          card: "#FFFFFF",
+          overlay: "#000000",
+          success: "#22C55E",
+          danger: "#EF4444",
+          warning: "#FFD166",
+          info: "#60A5FA"
+        },
+        {
+          label: "#FF6B00",
+          card: "#1A1D24",
+          overlay: "#000000",
+          success: "#34D399",
+          danger: "#EF4444",
+          warning: "#FFD166",
+          info: "#60A5FA"
+        }
+      ]}
+      toastConfig={{
+        autoClose: 5000,
+        titleStyle: { fontFamily: "Inter", fontWeight: "700", fontSize: 14 },
+        textBodyStyle: { fontFamily: "Inter", fontSize: 12, color: "#E2BFB0" }
+      }}
+    >
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
+    </AlertNotificationRoot>
   )
 }

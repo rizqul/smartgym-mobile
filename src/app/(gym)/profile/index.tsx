@@ -2,21 +2,20 @@ import { useAuth } from "@/context/AuthContext"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { useRouter } from "expo-router"
-import React from "react"
-import { Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import React, { useState } from "react"
+import { Image, Modal, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function Profile() {
   const router = useRouter()
   const { logout } = useAuth()
+  const [showAlert, setShowAlert] = useState(false)
 
-  const onSubmit = async () => {
-    try {
-      await logout()
-    } catch (error) {
-      console.log("Error :" + error)
-    }
+  const handleLogout = async () => {
+    setShowAlert(false)
+    await logout()
   }
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -325,7 +324,7 @@ export default function Profile() {
 
           {/* ================= LOGOUT & FOOTER ================= */}
           <TouchableOpacity
-            onPress={() => onSubmit()}
+            onPress={() => setShowAlert(true)}
             className="flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card py-4"
           >
             <Ionicons
@@ -337,6 +336,35 @@ export default function Profile() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <Modal
+        visible={showAlert}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowAlert(false)}
+      >
+        <Pressable
+          className="flex-1 items-center justify-center bg-black/70 px-6"
+          onPress={() => setShowAlert(false)}
+        >
+          <Pressable className="flex h-[150] w-[300] items-center justify-center gap-8 rounded-xl border border-border bg-card p-5">
+            <Text className="mb-1 text-center text-xl font-bold text-text-primary">Yakin ingin keluar ?</Text>
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                className="flex-1 items-center rounded-xl border border-border bg-surface py-3"
+                onPress={() => setShowAlert(false)}
+              >
+                <Text className="text-sm font-semibold text-text-secondary">Batal</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="flex-1 items-center rounded-xl bg-primary py-3"
+                onPress={() => handleLogout()}
+              >
+                <Text className="text-sm font-bold text-white">Keluar</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   )
 }

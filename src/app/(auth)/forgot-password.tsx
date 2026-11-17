@@ -1,17 +1,19 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
+import { ForgotPassword as forgotPassword } from "@/service/auth.service"
 import { Fontisto } from "@expo/vector-icons"
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, router } from "expo-router"
 import { Controller, useForm } from "react-hook-form"
 import { Text, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg"
 import { z } from "zod"
 
 const forgotPasswordSchema = z.object({
-  email: z.email("Enter a valid email address")
+  email: z.email("Masukkan alamat email yang valid")
 })
 
 type FormValues = z.infer<typeof forgotPasswordSchema>
@@ -27,7 +29,26 @@ export default function ForgotPassword() {
   })
 
   const onSubmit = async (data: FormValues) => {
-    router.push("/(auth)/otp")
+    try {
+      await forgotPassword(data.email)
+      router.push("/(auth)/otp")
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: "Kode OTP Terkirim",
+        textBody: `Silahkan periksa email ${data.email} untuk kode verifikasi.`
+      })
+    } catch (error: any) {
+      console.log("Error :" + error)
+
+      const message = error.response?.data?.message || "Gagal mengirim kode. Coba lagi."
+
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Gagal",
+        textBody: message,
+        autoClose: 3000
+      })
+    }
   }
 
   return (
@@ -35,7 +56,7 @@ export default function ForgotPassword() {
       <Svg
         width="100%"
         height="100%"
-        style={{ position: "absolute", top: -220, left: 0, right: 0, bottom: 0 }}
+        style={{ position: "absolute", top: -210, left: 0, right: 0, bottom: 0 }}
       >
         <Defs>
           <RadialGradient
@@ -72,7 +93,7 @@ export default function ForgotPassword() {
           fill="url(#orangeGlow)"
         />
       </Svg>
-      <View className="flex items-center justify-start gap-8">
+      <View className="flex items-center justify-start gap-6">
         {/* Header */}
         <View className="flex w-[358] items-center justify-center gap-5">
           {/* logo part */}
@@ -90,8 +111,8 @@ export default function ForgotPassword() {
           <View className="flex w-[340] items-center justify-center gap-3">
             <Text className="text-3xl font-bold text-text-body">Lupa Kata Sandi?</Text>
             <Text className="w-full text-center text-sm leading-6 text-[#E2BFB0]">
-              Jangan khawatir! Pilih metode pemulihan yang terdaftar di akun <Text className="font-bold text-[#FFB693]">SmartGym</Text> kamu
-              untuk mereset kata sandi.
+              Jangan khawatir! Kirim Email yang terdaftar di akun <Text className="font-bold text-[#FFB693]">SmartGym</Text> kamu untuk
+              mereset kata sandi.
             </Text>
           </View>
         </View>
