@@ -15,7 +15,7 @@ const membership = () => {
     <>
       <View className="flex-1 items-center bg-background pt-3">
         <SafeAreaView>
-          <View className="w-full flex-row items-center gap-4 border-b border-border/40  pb-4">
+          <View className="w-full flex-row items-center gap-4 border-b border-border/40 px-3 py-3">
             <TouchableOpacity
               onPress={() => router.back()}
               className="h-10 w-10 items-center justify-center rounded-xl border border-border/50 bg-surface"
@@ -29,7 +29,7 @@ const membership = () => {
             <Text className="text-xl font-bold text-text-primary">Membership</Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View className="items-center gap-5">
+            <View className="items-center gap-5  px-6 py-4">
               <MembershipHeader />
               <MembershipActiveCard
                 planName="SmartGym Elite Gold"
@@ -58,43 +58,38 @@ const membership = () => {
               />
               <View className="w-[350]">
                 <Text className="text-xl font-bold text-text-primary">Pilih Siklus Berlangganan</Text>
-                <Text className="text-text-warm text-sm leading-6">Sesuaikan komitmen latihan dengan target kebugaranmu</Text>
+                <Text className="text-sm leading-6 text-text-warm">Sesuaikan komitmen latihan dengan target kebugaranmu</Text>
               </View>
               <View className="items-center gap-4">
                 <PlanCard
-                  tier="ENTRY TIER"
-                  name="Basic Starter"
-                  description="Ideal untuk pemula yang ingin mulai kondisi."
-                  price="Rp 299.000"
-                  period="/bulan"
-                  features={["Akses single club", "Jam operasional reguler"]}
+                  badge="MINGGUAN"
+                  status="Aktif"
+                  name="Paket Mingguan"
+                  description="Coba dulu ritme latihanmu, cocok untuk memulai dengan komitmen ringan."
+                  price="Rp 99.000"
+                  duration="7 hari"
                   buttonLabel="Pilih Paket"
-                  onPress={() => {}}
                 />
 
                 <PlanCard
                   variant="popular"
-                  badge="MOST POPULAR"
-                  tier="STRATEGI REKOMENDASI"
-                  name="Pro Athlete"
-                  originalPrice="Rp 622.000"
-                  discountLabel="Hemat 20%"
-                  price="Rp 499.000"
-                  period="/bulan"
-                  description="..."
-                  features={["..."]}
-                  buttonLabel="Upgrade Sekarang"
+                  badge="BULANAN"
+                  status="Aktif"
+                  name="Paket Bulanan"
+                  description="Bangun kebiasaan latihan yang konsisten, satu bulan setiap langkah."
+                  price="Rp 299.000"
+                  duration="30 hari"
+                  buttonLabel="Pilih Paket"
                 />
 
                 <PlanCard
-                  tier="ENTRY TIER"
-                  name="Basic Starter"
-                  description="Ideal untuk pemula yang ingin mulai kondisi."
-                  price="Rp 299.000"
-                  period="/bulan"
-                  features={["Akses single club", "Jam operasional reguler"]}
+                  badge="TAHUNAN"
+                  status="Aktif"
+                  name="Paket Tahunan"
+                  description="Investasi jangka panjang untuk progres yang terus berkembang sepanjang tahun."
+                  price="Rp 2.499.000"
+                  duration="365 hari"
                   buttonLabel="Pilih Paket"
-                  onPress={() => {}}
                 />
               </View>
               <MembershipPaymentInfo

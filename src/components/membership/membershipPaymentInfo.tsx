@@ -61,7 +61,7 @@ export default function MembershipPaymentInfo({
             size={12}
             color={ICON_COLORS.secondary}
           />
-          <Text className="text-text-warm text-[10px] font-bold">{provider}</Text>
+          <Text className="text-[10px] font-bold text-text-warm">{provider}</Text>
         </View>
       </View>
 
@@ -84,7 +84,7 @@ export default function MembershipPaymentInfo({
           size={18}
           color={ICON_COLORS.secondary}
         />
-        <Text className="text-text-warm flex-1 text-xs leading-5">{note}</Text>
+        <Text className="flex-1 text-xs leading-5 text-text-warm">{note}</Text>
       </View>
     </View>
   )
