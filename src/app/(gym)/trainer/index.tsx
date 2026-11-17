@@ -2,11 +2,17 @@ import { TrainerCard } from "@/components/trainer/TrainerCard"
 import { DUMMYTRAINER } from "@/data/dummyTrainer"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
+import { useRouter } from "expo-router"
 import React from "react"
 import { ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function TrainerScreen() {
+  const router = useRouter()
+
+  const onShowTrainer = (id: string) => {
+    router.push("/(gym)/trainer/trainerProfil")
+  }
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -96,6 +102,7 @@ export default function TrainerScreen() {
           <View className="gap-5">
             {DUMMYTRAINER.map((trainer) => (
               <TrainerCard
+                handleShow={onShowTrainer}
                 key={trainer.id}
                 data={trainer}
               />

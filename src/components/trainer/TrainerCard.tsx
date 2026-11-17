@@ -1,7 +1,7 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { Image, Text, TouchableOpacity, View } from "react-native"
 
-export const TrainerCard = ({ data }: { data: any }) => {
+export const TrainerCard = ({ data, handleShow }: { data: any; handleShow: (id: string) => void }) => {
   const { name, image, specialty, exp, clients, available, schedule } = data
 
   return (
@@ -61,6 +61,7 @@ export const TrainerCard = ({ data }: { data: any }) => {
         className={`flex-row items-center justify-center gap-2 rounded-xl py-3.5 ${
           available ? "bg-primary" : "border border-border bg-surface"
         }`}
+        onPress={() => handleShow(name as string)}
       >
         {!available && (
           <MaterialCommunityIcons
