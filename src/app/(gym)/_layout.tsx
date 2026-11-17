@@ -41,6 +41,7 @@ export default function GymLayout() {
         tabBarInactiveTintColor: "#D6B8A6"
       }}
     >
+      {/* 1. TAB HOME */}
       <Tabs.Screen
         name="dashboard"
         options={{
@@ -56,51 +57,39 @@ export default function GymLayout() {
         }}
       />
 
+      {/* 2. TAB TRAINER */}
       <Tabs.Screen
-        name="workout"
+        name="trainer"
         options={{
-          title: "Workout",
-          tabBarIcon: ({ color }) => (
+          title: "Trainer",
+          tabBarIcon: ({ focused, color }) => (
             <MaterialCommunityIcons
-              name="dumbbell"
+              name={focused ? "account-star" : "account-star-outline"}
               size={24}
               color={color as string}
             />
           ),
-          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Workout" })
+          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Trainer" })
         }}
       />
 
+      {/* 3. TAB AI COACH (Pengganti AI) */}
       <Tabs.Screen
-        name="history"
+        name="ai"
         options={{
-          title: "History",
-          tabBarIcon: ({ color }) => (
+          title: "AI Coach", // Title yang lebih bagus dan profesional
+          tabBarIcon: ({ focused, color }) => (
             <MaterialCommunityIcons
-              name="chart-timeline-variant-shimmer"
+              name={focused ? "brain" : "brain"}
               size={24}
               color={color as string}
             />
           ),
-          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "History" })
+          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "AI Coach" })
         }}
       />
 
-      <Tabs.Screen
-        name="pass"
-        options={{
-          title: "Pass",
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons
-              name="card-account-details-outline"
-              size={24}
-              color={color as string}
-            />
-          ),
-          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Pass" })
-        }}
-      />
-
+      {/* 4. TAB PROFILE */}
       <Tabs.Screen
         name="profile"
         options={{
