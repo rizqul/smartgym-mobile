@@ -1,19 +1,16 @@
-import { MaterialIcons } from "@expo/vector-icons"
+import { LinearGradient } from "expo-linear-gradient"
 import React from "react"
 import { Pressable, Text, View } from "react-native"
 
-type PlanVariant = "default" | "popular" | "best"
+type PlanVariant = "default" | "popular"
 
 export type PlanCardProps = {
-  tier: string
+  badge: string // contoh: "BULANAN"
+  status?: string // contoh: "Aktif"
   name: string
   description: string
-  price: string
-  period: string
-  originalPrice?: string
-  discountLabel?: string
-  badge?: string
-  features: string[]
+  price: string // contoh: "Rp 299.000"
+  duration: string // contoh: "30 hari"
   buttonLabel: string
   onPress?: () => void
   variant?: PlanVariant
@@ -23,49 +20,32 @@ const variantStyles: Record<
   PlanVariant,
   {
     card: string
-    badge: string
-    badgeText: string
+    gradient: [string, string]
     button: string
     buttonText: string
-    check: string
   }
 > = {
   default: {
-    card: "border-border",
-    badge: "bg-card",
-    badgeText: "text-text-warm",
-    button: "border border-border bg-card",
-    buttonText: "text-text-primary",
-    check: "#E2BFB0" // text.warm
+    card: "border-white/10",
+    gradient: ["#2A2A2E", "#1B1F2A"],
+    button: "border border-primary/40 bg-primary/10",
+    buttonText: "text-accent"
   },
   popular: {
-    card: "border-primary shadow-lg shadow-primary/25",
-    badge: "bg-primary",
-    badgeText: "text-text-primary",
+    card: "border-primary/70",
+    gradient: ["#4A2F22", "#1B1F2A"],
     button: "bg-primary",
-    buttonText: "text-text-primary",
-    check: "#FF6B00" // primary
-  },
-  best: {
-    card: "border-accent/50",
-    badge: "bg-accent",
-    badgeText: "text-background",
-    button: "border border-accent/60 bg-accent/10",
-    buttonText: "text-accent",
-    check: "#FFB693" // accent
+    buttonText: "text-background"
   }
 }
 
 export default function PlanCard({
-  tier,
+  badge,
+  status,
   name,
   description,
   price,
-  period,
-  originalPrice,
-  discountLabel,
-  badge,
-  features,
+  duration,
   buttonLabel,
   onPress,
   variant = "default"
@@ -73,67 +53,52 @@ export default function PlanCard({
   const style = variantStyles[variant]
 
   return (
-    <View className={`w-[370] gap-4 rounded-2xl border bg-surface p-5 ${style.card}`}>
-      {/* Top row: tier + badge */}
-      <View className="flex-row items-center justify-between">
-        <Text className="text-text-warm text-[10px] font-bold tracking-widest">{tier}</Text>
-        {badge ? (
-          <View className={`rounded-full px-2.5 py-1 ${style.badge}`}>
-            <Text className={`text-[10px] font-bold ${style.badgeText}`}>{badge}</Text>
-          </View>
-        ) : null}
-      </View>
-
-      {/* Name + description */}
-      <View className="gap-1">
-        <Text className="text-xl font-bold text-text-body">{name}</Text>
-        <Text className="text-text-warm text-xs leading-5">{description}</Text>
-      </View>
-
-      {/* Price */}
-      <View className="gap-1">
-        {originalPrice || discountLabel ? (
-          <View className="flex-row items-center gap-2">
-            {originalPrice ? <Text className="text-xs text-text-subdued line-through">{originalPrice}</Text> : null}
-            {discountLabel ? (
-              <View className="rounded-md bg-primary/20 px-1.5 py-0.5">
-                <Text className="text-accent text-[10px] font-bold">{discountLabel}</Text>
-              </View>
-            ) : null}
-          </View>
-        ) : null}
-        <View className="flex-row items-end gap-1">
-          <Text className="text-3xl font-bold text-text-body">{price}</Text>
-          <Text className="text-text-warm pb-1 text-xs">{period}</Text>
-        </View>
-      </View>
-
-      {/* Features */}
-      <View className="gap-2.5">
-        {features.map((feature) => (
-          <View
-            key={feature}
-            className="flex-row items-start gap-2"
-          >
-            <MaterialIcons
-              name="check-circle"
-              size={16}
-              color={style.check}
-            />
-            <Text className="text-text-warm flex-1 text-xs leading-5">{feature}</Text>
-          </View>
-        ))}
-      </View>
-
-      {/* Button */}
-      <Pressable
-        onPress={onPress}
-        className={`items-center justify-center rounded-xl py-3.5 active:opacity-80 ${style.button}`}
-        accessibilityRole="button"
-        accessibilityLabel={buttonLabel}
+    <View className={`w-full overflow-hidden rounded-2xl border ${style.card}`}>
+      <LinearGradient
+        colors={style.gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{ padding: 20, gap: 16 }}
       >
-        <Text className={`text-sm font-bold ${style.buttonText}`}>{buttonLabel}</Text>
-      </Pressable>
+        {/* Top row: badge + status */}
+        <View className="flex-row items-center justify-between">
+          <View className="rounded-md bg-primary/15 px-3 py-1.5">
+            <Text className="text-xs font-bold tracking-wider text-accent">{badge}</Text>
+          </View>
+          {status ? <Text className="text-sm font-semibold text-emerald-300">{status}</Text> : null}
+        </View>
+
+        {/* Name + description */}
+        <View className="gap-2">
+          <Text className="text-3xl font-bold text-text-body">{name}</Text>
+          <Text className="text-base leading-6 text-text-warm">{description}</Text>
+        </View>
+
+        {/* Divider */}
+        <View className="h-px bg-white/10" />
+
+        {/* Price + duration */}
+        <View className="flex-row items-end justify-between">
+          <View className="gap-1">
+            <Text className="text-sm text-text-warm">Total paket</Text>
+            <Text className="text-4xl font-bold text-accent">{price}</Text>
+          </View>
+          <View className="items-end gap-1">
+            <Text className="text-sm text-text-warm">Masa berlaku</Text>
+            <Text className="text-xl font-bold text-text-body">{duration}</Text>
+          </View>
+        </View>
+
+        {/* Button */}
+        <Pressable
+          onPress={onPress}
+          className={`items-center justify-center rounded-xl py-4 active:opacity-80 ${style.button}`}
+          accessibilityRole="button"
+          accessibilityLabel={buttonLabel}
+        >
+          <Text className={`text-base font-bold ${style.buttonText}`}>{buttonLabel}</Text>
+        </Pressable>
+      </LinearGradient>
     </View>
   )
 }

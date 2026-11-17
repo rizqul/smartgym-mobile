@@ -31,7 +31,7 @@ export default function MembershipConsultCard({
       {/* Text */}
       <View className="flex-1 gap-0.5">
         <Text className="text-sm font-bold text-text-body">{title}</Text>
-        <Text className="text-text-warm text-xs leading-5">{description}</Text>
+        <Text className="text-xs leading-5 text-text-warm">{description}</Text>
       </View>
 
       {/* Button */}

@@ -76,7 +76,7 @@ export default function MembershipActiveCard({
             size={12}
             color={ICON_COLORS.highlight}
           />
-          <Text className="text-text-warm text-[11px] font-semibold">{memberTier}</Text>
+          <Text className="text-[11px] font-semibold text-text-warm">{memberTier}</Text>
         </View>
       </View>
 
@@ -85,7 +85,7 @@ export default function MembershipActiveCard({
         <View className="flex-row items-center justify-between">
           <Text className="flex-1 text-2xl font-bold text-text-primary">{planName}</Text>
           <View className="rounded-md bg-card px-2.5 py-1">
-            <Text className="text-text-warm text-[10px] font-bold tracking-wider">{billingLabel}</Text>
+            <Text className="text-[10px] font-bold tracking-wider text-text-warm">{billingLabel}</Text>
           </View>
         </View>
         <View className="flex-row items-center gap-2">
@@ -94,7 +94,7 @@ export default function MembershipActiveCard({
             size={16}
             color={ICON_COLORS.highlight}
           />
-          <Text className="text-text-warm text-xs">
+          <Text className="text-xs text-text-warm">
             Aktif s/d <Text className="font-bold text-text-primary">{validUntil}</Text>
           </Text>
           <View className="h-1 w-1 rounded-full bg-text-muted" />
@@ -132,7 +132,7 @@ export default function MembershipActiveCard({
       </View>
 
       {/* Benefits */}
-      <View className="gap-3">
+      {/* <View className="gap-3">
         <Text className="text-text-warm text-[10px] font-bold tracking-widest">KEUNTUNGAN AKTIF TERPASANG</Text>
         {benefits.map((benefit) => {
           const tone = toneStyles[benefit.tone ?? "primary"]
@@ -160,7 +160,7 @@ export default function MembershipActiveCard({
             </View>
           )
         })}
-      </View>
+      </View> */}
 
       {/* Renew button */}
       <Pressable
