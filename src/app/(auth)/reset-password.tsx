@@ -1,7 +1,7 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
-import { Entypo } from "@expo/vector-icons"
+import { AntDesign, Entypo } from "@expo/vector-icons"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useState } from "react"
@@ -33,11 +33,24 @@ const resetPassword = () => {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting }
   } = useForm<FormValues>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: { password: "", confirmPassword: "" }
   })
+
+  const newPassword = watch("password")
+  const confirmPassword = watch("confirmPassword")
+
+  const rules = [
+    { label: "Panjang minimal 8 karakter", ok: newPassword.length >= 8 },
+    { label: "Minimal ada 1 huruf kapital", ok: /[A-Z]/.test(newPassword) },
+    { label: "Minimal ada 1 huruf kecil", ok: /[a-z]/.test(newPassword) },
+    { label: "Minimal ada 1 angka", ok: /[0-9]/.test(newPassword) },
+    { label: "Minimal ada 1 karakter dari !@#$%^&*()_+", ok: /[!@#$%^&*()_+]/.test(newPassword) },
+    { label: "Kata sandi baru harus sama dengan konfirmasi kata sandi", ok: newPassword === confirmPassword }
+  ]
 
   const onSubmit = async (data: FormValues) => {}
 
@@ -46,7 +59,7 @@ const resetPassword = () => {
       <Svg
         width="100%"
         height="100%"
-        style={{ position: "absolute", top: -220, left: 0, right: 0, bottom: 0 }}
+        style={{ position: "absolute", top: -310, left: 0, right: 0, bottom: 0 }}
       >
         <Defs>
           <RadialGradient
@@ -116,7 +129,6 @@ const resetPassword = () => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   placeholder="Masukkan Kata Sandi Baru"
-                  error={errors.password?.message}
                   secureTextEntry={!showPassword}
                   accessory={
                     <Pressable
@@ -145,8 +157,7 @@ const resetPassword = () => {
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
-                  placeholder="Masukkan Kata Sandi"
-                  error={errors.confirmPassword?.message}
+                  placeholder="Ulangi Kata Sandi"
                   secureTextEntry={!showPassword}
                   accessory={
                     <Pressable
@@ -164,10 +175,25 @@ const resetPassword = () => {
                 />
               )}
             />
+            <View className="flex  w-[340] gap-2 rounded-xl bg-surface px-4 py-4 ">
+              {rules.map(({ label, ok }) => (
+                <View
+                  key={label}
+                  className="flex-row items-center gap-2"
+                >
+                  <AntDesign
+                    name={ok ? "check-circle" : "close-circle"}
+                    size={18}
+                    color={ok ? "#FF6B00" : "#EF4444"}
+                  />
+                  <Text className="text-xs font-semibold text-[#A98A7D]">{label}</Text>
+                </View>
+              ))}
+            </View>
           </View>
         </View>
         <View>
-          <AuthButton label="Verifikasi dan Lanjutkan" />
+          <AuthButton label="Simpan Kata Sandi Baru" />
         </View>
       </View>
     </AuthScreenLayout>

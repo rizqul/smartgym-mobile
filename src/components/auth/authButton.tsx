@@ -1,5 +1,5 @@
 import AntDesign from "@expo/vector-icons/AntDesign"
-import { Pressable, Text } from "react-native"
+import { Text, TouchableOpacity } from "react-native"
 
 type AuthButtonProps = {
   label: string
@@ -9,7 +9,7 @@ type AuthButtonProps = {
 
 export function AuthButton({ label, onPress, disabled = false }: AuthButtonProps) {
   return (
-    <Pressable
+    <TouchableOpacity
       className={`w-[335] flex-row items-center justify-center gap-3 rounded-xl py-4 shadow-[#561F00] ${disabled ? "bg-[#FFB580]" : "bg-primary"}`}
       onPress={onPress}
       disabled={disabled}
@@ -20,6 +20,6 @@ export function AuthButton({ label, onPress, disabled = false }: AuthButtonProps
         size={15}
         color="#561F00"
       />
-    </Pressable>
+    </TouchableOpacity>
   )
 }
