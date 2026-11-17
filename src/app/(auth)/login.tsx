@@ -8,7 +8,8 @@ import Fontisto from "@expo/vector-icons/Fontisto"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Alert, Image, Pressable, Text, View } from "react-native"
+import { Image, Pressable, Text, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg"
 import { z } from "zod"
 
@@ -40,19 +41,26 @@ export default function Login() {
       console.log("=== LOGIN GAGAL ===")
 
       if (error.request && !error.response) {
-        console.log("Network Error:", error.request._response)
-        Alert.alert("Koneksi Bermasalah", "Tidak dapat terhubung ke server. Pastikan internet Anda menyala dan server dapat diakses.")
-        return
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Gagal",
+          textBody: `Koneksi Bermasalah, Tidak dapat terhubung ke server. Pastikan internet Anda menyala dan server dapat diakses.`
+        })
       }
 
       if (error.response) {
-        console.log("Status Code:", error.response.status)
-        console.log("Pesan dari Backend:", error.response.data)
-
         const errorMessage = error.response.data?.message || "Terjadi kesalahan pada server"
-        Alert.alert("Login Gagal", errorMessage)
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Login Gagal",
+          textBody: errorMessage
+        })
       } else {
-        Alert.alert("Login Gagal", error.message)
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Login Gagal",
+          textBody: error.message
+        })
       }
     }
   }
