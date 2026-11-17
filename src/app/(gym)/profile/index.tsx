@@ -278,7 +278,7 @@ export default function Profile() {
               {/* Item 1 */}
               <TouchableOpacity
                 onPress={() => {
-                  router.push("/(auth)/change-password")
+                  router.push("/(gym)/profile/change-password")
                 }}
                 className="flex-row items-center border-b border-border/50 p-4"
               >
