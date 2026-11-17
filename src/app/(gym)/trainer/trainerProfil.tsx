@@ -12,6 +12,10 @@ export default function TrainerProfile() {
   const router = useRouter()
   const [selectedTime, setSelectedTime] = useState(TIME_SLOTS[0])
 
+  const onNext = () => {
+    router.push("/trainer/booking-confirm")
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -235,7 +239,10 @@ export default function TrainerProfile() {
             <Text className="text-[10px] text-text-secondary">Kupon Terpasang</Text>
           </View>
         </View>
-        <TouchableOpacity className="flex-row items-center gap-2 rounded-xl bg-primary px-6 py-3.5">
+        <TouchableOpacity
+          onPress={onNext}
+          className="flex-row items-center gap-2 rounded-xl bg-primary px-6 py-3.5"
+        >
           <Text className="text-sm font-bold text-white">Lanjutkan</Text>
           <Ionicons
             name="arrow-forward"
