@@ -52,9 +52,11 @@ export default function ChangePassword() {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting }
   } = useForm<FormValues>({
     resolver: zodResolver(changePasswordSchema),
+    mode: "onChange",
     defaultValues: { oldPassword: "", newPassword: "", confirmPassword: "" }
   })
 
@@ -65,6 +67,20 @@ export default function ChangePassword() {
     // await changePassword({ oldPassword: data.oldPassword, newPassword: data.newPassword })
     router.back()
   }
+
+  const oldPassword = watch("oldPassword")
+  const newPassword = watch("newPassword")
+  const confirmPassword = watch("confirmPassword")
+
+  const rules = [
+    { label: "Panjang minimal 8 karakter", ok: newPassword.length >= 8 },
+    { label: "Minimal ada 1 huruf kapital", ok: /[A-Z]/.test(newPassword) },
+    { label: "Minimal ada 1 huruf kecil", ok: /[a-z]/.test(newPassword) },
+    { label: "Minimal ada 1 angka", ok: /[0-9]/.test(newPassword) },
+    { label: "Minimal ada 1 karakter dari !@#$%^&*()_+", ok: /[!@#$%^&*()_+]/.test(newPassword) },
+    { label: "Kata sandi baru tidak boleh sama dengan kata sandi lama", ok: oldPassword !== newPassword },
+    { label: "Kata sandi baru harus sama dengan konfirmasi kata sandi", ok: newPassword === confirmPassword }
+  ]
 
   return (
     <>
@@ -85,7 +101,7 @@ export default function ChangePassword() {
           </View>
           <View className="flex items-center justify-start gap-8">
             {/* Header */}
-            <View className="w-[345] flex-row items-center gap-6">
+            <View className="mt-5 w-[345] flex-row items-center gap-6">
               <View className="flex h-[76] w-[76] items-center justify-center rounded-2xl bg-white/10 shadow-xl">
                 <View className="flex h-[56] w-[56] items-center justify-center rounded-full border border-dashed border-[#FF6B00]">
                   <MaterialIcons
@@ -97,7 +113,7 @@ export default function ChangePassword() {
               </View>
               <View className="flex w-[340]  gap-1">
                 <Text className="text-3xl font-bold text-text-body">Lindungi akunmu</Text>
-                <Text className="w-[280] text-sm leading-6 text-[#E2BFB0]">
+                <Text className="w-[240] text-sm leading-6 text-[#E2BFB0]">
                   Masukkan kata sandi lama kamu, lalu buat kata sandi baru yang lebih aman.
                 </Text>
               </View>
@@ -146,103 +162,21 @@ export default function ChangePassword() {
             </View>
 
             {/* Label */}
-            <View className="flex w-[340] items-center gap-3 rounded-md bg-surface px-4 py-4">
-              <View className="w-full flex-row items-center gap-2">
-                {errors.newPassword?.message === "Panjang minimal 8 karakter" ? (
+
+            <View className="flex  w-[340] gap-2 rounded-xl bg-surface px-4 py-4 ">
+              {rules.map(({ label, ok }) => (
+                <View
+                  key={label}
+                  className="flex-row items-center gap-2"
+                >
                   <AntDesign
-                    name="close-circle"
+                    name={ok ? "check-circle" : "close-circle"}
                     size={18}
-                    color="#EF4444"
+                    color={ok ? "#FF6B00" : "#EF4444"}
                   />
-                ) : (
-                  <AntDesign
-                    name="check-circle"
-                    size={18}
-                    color="#FF6B00"
-                  />
-                )}
-                <Text className="text-xs font-semibold text-[#A98A7D]">Panjang minimal 8 karakter</Text>
-              </View>
-              <View className="w-full flex-row items-center gap-2">
-                {errors.newPassword?.message === "Minimal ada 1 huruf kecil" ? (
-                  <AntDesign
-                    name="close-circle"
-                    size={18}
-                    color="#EF4444"
-                  />
-                ) : (
-                  <AntDesign
-                    name="check-circle"
-                    size={18}
-                    color="#FF6B00"
-                  />
-                )}
-                <Text className="text-xs font-semibold text-[#A98A7D]">Minimal ada 1 huruf kecil</Text>
-              </View>
-              <View className="w-full flex-row items-center gap-2">
-                {errors.newPassword?.message === "Minimal ada 1 angka" ? (
-                  <AntDesign
-                    name="close-circle"
-                    size={18}
-                    color="#EF4444"
-                  />
-                ) : (
-                  <AntDesign
-                    name="check-circle"
-                    size={18}
-                    color="#FF6B00"
-                  />
-                )}
-                <Text className="text-xs font-semibold text-[#A98A7D]">"Panjang minimal 8 karakter"</Text>
-              </View>
-              <View className="w-full flex-row items-center gap-2">
-                {errors.newPassword?.message === "Minimal memiliki 1 karakter dari !@#$%^&*()_+" ? (
-                  <AntDesign
-                    name="close-circle"
-                    size={18}
-                    color="#EF4444"
-                  />
-                ) : (
-                  <AntDesign
-                    name="check-circle"
-                    size={18}
-                    color="#FF6B00"
-                  />
-                )}
-                <Text className="text-xs font-semibold text-[#A98A7D]">Minimal memiliki 1 karakter dari !@#$%^&*()_+</Text>
-              </View>
-              <View className="w-full flex-row items-center gap-2">
-                {errors.newPassword?.message === "Kata sandi baru tidak boleh sama dengan Kata sandi lama" ? (
-                  <AntDesign
-                    name="close-circle"
-                    size={18}
-                    color="#EF4444"
-                  />
-                ) : (
-                  <AntDesign
-                    name="check-circle"
-                    size={18}
-                    color="#FF6B00"
-                  />
-                )}
-                <Text className="text-xs font-semibold text-[#A98A7D]">Kata sandi baru tidak boleh sama dengan Kata sandi lama</Text>
-              </View>
-              <View className="w-full flex-row items-center gap-2">
-                {errors.confirmPassword?.message === "Kata Sandi Tidak Sama" ? (
-                  <AntDesign
-                    name="close-circle"
-                    size={18}
-                    color="#EF4444"
-                  />
-                ) : (
-                  <AntDesign
-                    name="check-circle"
-                    size={18}
-                    color="#FF6B00"
-                  />
-                )}
-                <Text className="text-xs font-semibold text-[#A98A7D]">Kata Sandi Tidak Sama</Text>
-              </View>
+                  <Text className="text-xs font-semibold text-[#A98A7D]">{label}</Text>
+                </View>
+              ))}
             </View>
 
             {/* Submit */}
