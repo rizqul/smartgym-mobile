@@ -1,12 +1,15 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
+import { ResetPassword } from "@/service/auth.service"
 import { AntDesign, Entypo } from "@expo/vector-icons"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { router } from "expo-router"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Pressable, Text, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg"
 import { z } from "zod"
 
@@ -52,7 +55,32 @@ const resetPassword = () => {
     { label: "Kata sandi baru harus sama dengan konfirmasi kata sandi", ok: newPassword === confirmPassword }
   ]
 
-  const onSubmit = async (data: FormValues) => {}
+  const onSubmit = async (data: FormValues) => {
+    try {
+      await ResetPassword(data.password)
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: "Berhasil",
+        textBody: `Kata sandi berhasil diubah`
+      })
+      router.push("/(auth)/login")
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage = error.response.data?.message || "Terjadi kesalahan pada server"
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Verifikasi Gagal",
+          textBody: errorMessage
+        })
+      } else {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Verifikasi Gagal",
+          textBody: error.message
+        })
+      }
+    }
+  }
 
   return (
     <AuthScreenLayout>
@@ -193,7 +221,10 @@ const resetPassword = () => {
           </View>
         </View>
         <View>
-          <AuthButton label="Simpan Kata Sandi Baru" />
+          <AuthButton
+            onPress={handleSubmit(onSubmit)}
+            label="Simpan Kata Sandi Baru"
+          />
         </View>
       </View>
     </AuthScreenLayout>

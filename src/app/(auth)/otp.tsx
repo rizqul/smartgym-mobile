@@ -1,5 +1,6 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
+import { OtpVerification } from "@/service/auth.service"
 import { MaterialIcons } from "@expo/vector-icons"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -7,15 +8,13 @@ import { router } from "expo-router"
 import React, { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Pressable, Text, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { OtpInput } from "react-native-otp-entry"
 import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg"
 import { z } from "zod"
 
 const otpSchema = z.object({
-  otp: z
-    .string()
-    .min(6, "Panjang otp minimal 6 angka")
-    .regex(/[^[0-9]$/, "Input harus berupa angka")
+  otp: z.string().min(6, "Panjang otp minimal 6 angka")
 })
 
 type FormValues = z.infer<typeof otpSchema>
@@ -29,8 +28,6 @@ const formatTime = (totalSeconds: number) => {
 const RESEND_SECONDS = 60
 
 const otpAndResetPassword = () => {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [otp, setOtp] = useState("")
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS)
   const {
@@ -53,6 +50,28 @@ const otpAndResetPassword = () => {
   const handleResend = () => {
     if (!canResend) return
     setSecondsLeft(RESEND_SECONDS)
+  }
+
+  const onSubmit = async (data: FormValues) => {
+    try {
+      const test = await OtpVerification(data.otp)
+      router.push("/(auth)/reset-password")
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage = error.response.data?.message || "Terjadi kesalahan pada server"
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Verifikasi Gagal",
+          textBody: errorMessage
+        })
+      } else {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Verifikasi Gagal",
+          textBody: error.message
+        })
+      }
+    }
   }
 
   return (
@@ -197,9 +216,7 @@ const otpAndResetPassword = () => {
         </View>
         <View>
           <AuthButton
-            onPress={() => {
-              router.push("/(auth)/reset-password")
-            }}
+            onPress={handleSubmit(onSubmit)}
             label="Verifikasi dan Lanjutkan"
           />
         </View>
