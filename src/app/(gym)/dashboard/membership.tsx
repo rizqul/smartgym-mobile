@@ -16,7 +16,7 @@ const membership = () => {
         <SafeAreaView>
           <HeaderNavigation label="Berlangganan" />
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View className="items-center gap-5  px-6 py-4">
+            <View className="gap-5  px-6 py-4">
               <MembershipHeader />
               <MembershipActiveCard
                 planName="SmartGym Elite Gold"
@@ -43,7 +43,7 @@ const membership = () => {
                 ]}
                 onRenewPress={() => {}}
               />
-              <View className="w-[350]">
+              <View>
                 <Text className="text-xl font-bold text-text-primary">Pilih Siklus Berlangganan</Text>
                 <Text className="text-sm leading-6 text-text-warm">Sesuaikan komitmen latihan dengan target kebugaranmu</Text>
               </View>

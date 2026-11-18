@@ -59,7 +59,7 @@ export default function MembershipActiveCard({
   const percent = totalDays > 0 ? Math.min(Math.round((daysUsed / totalDays) * 100), 100) : 0
 
   return (
-    <View className="w-[370] gap-5 rounded-3xl border border-border bg-surface p-5">
+    <View className="gap-5 rounded-3xl border border-border bg-surface p-5">
       {/* Top row: current plan badge + member tier */}
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-1.5 rounded-full border border-highlight/30 bg-highlight/15 px-3 py-1.5">
