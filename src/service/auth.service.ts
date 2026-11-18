@@ -33,9 +33,15 @@ export async function ForgotPassword(email: string) {
   return response.data
 }
 
-export async function ResetPassword(email: string, code: string, password: string) {
-  const response = await api.post("/auth/reset-password", { email, code, password })
+export async function ResetPassword(password: string) {
+  const response = await api.post("/auth/reset-password", { password })
   return response.data
+}
+
+export async function OtpVerification(code: string) {
+  const response = await api.post("/auth/reset-verify", { code })
+  console.log(response)
+  return response
 }
 
 export async function LogoutAPI() {
