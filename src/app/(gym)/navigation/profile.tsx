@@ -243,7 +243,10 @@ export default function Profile() {
               </TouchableOpacity>
 
               {/* Item 2 */}
-              <TouchableOpacity className="flex-row items-center p-4">
+              <TouchableOpacity
+                className="flex-row items-center p-4"
+                onPress={() => router.push("/(gym)/profile/historyTransaction")}
+              >
                 <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-surface">
                   <MaterialCommunityIcons
                     name="receipt"
