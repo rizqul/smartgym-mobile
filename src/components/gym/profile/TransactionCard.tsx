@@ -19,7 +19,7 @@ const getStatusUI = (status: TransactionStatus) => {
   }
 }
 
-export const TransactionCard = ({ item }: { item: TransactionData }) => {
+export const TransactionCard = ({ item, showDetail }: { item: TransactionData; showDetail: () => void }) => {
   const statusUI = getStatusUI(item.status)
   const isPending = item.status === "PENDING"
 
@@ -57,7 +57,10 @@ export const TransactionCard = ({ item }: { item: TransactionData }) => {
       <View className="flex-row items-center justify-between border-t border-border/30 pt-3">
         <Text className="text-sm font-bold text-text-primary">{FormatRupiah(item.amount)}</Text>
 
-        <TouchableOpacity className="flex-row items-center gap-1">
+        <TouchableOpacity
+          className="flex-row items-center gap-1"
+          onPress={showDetail}
+        >
           <Text className={`text-xs font-semibold ${isPending ? "text-secondary" : "text-primary"}`}>
             {isPending ? "Bayar sekarang" : "Lihat detail"}
           </Text>

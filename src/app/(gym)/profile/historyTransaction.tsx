@@ -26,6 +26,10 @@ export default function TransactionHistory() {
     {} as Record<string, TransactionData[]>
   )
 
+  const handleShowDetail = (id: string) => {
+    router.push("/(gym)/profile/detailHistory")
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -98,6 +102,9 @@ export default function TransactionHistory() {
                 <TransactionCard
                   key={item.id}
                   item={item}
+                  showDetail={() => {
+                    handleShowDetail(String(item.id))
+                  }}
                 />
               ))}
             </View>

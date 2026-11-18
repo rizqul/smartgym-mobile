@@ -9,6 +9,7 @@ export interface TransactionData {
   status: TransactionStatus
   midtrans_order_id: string
   paid_at: string | null
+  payment_method: string | null
   created_at: string
   //   relation
   relation_data: {

@@ -8,6 +8,7 @@ export const DUMMYTRANSACTIONS: TransactionData[] = [
     amount: 0, // Rp 0 karena voucher
     status: "PAID",
     midtrans_order_id: "SG-PT-280524-09",
+    payment_method: "QRIS",
     paid_at: "2024-05-28 08:00:00",
     created_at: "2024-05-24 10:00:00",
     relation_data: {
@@ -23,6 +24,7 @@ export const DUMMYTRANSACTIONS: TransactionData[] = [
     amount: 5017100,
     status: "PENDING", // Belum dibayar
     midtrans_order_id: "SG-MB-994821",
+    payment_method: null,
     paid_at: null,
     created_at: "2024-05-24 09:30:00",
     relation_data: {
@@ -38,6 +40,7 @@ export const DUMMYTRANSACTIONS: TransactionData[] = [
     amount: 0,
     status: "PAID",
     midtrans_order_id: "SG-PT-140524-02",
+    payment_method: "QRIS",
     paid_at: "2024-05-14 09:00:00",
     created_at: "2024-05-10 14:20:00",
     relation_data: {
@@ -53,6 +56,7 @@ export const DUMMYTRANSACTIONS: TransactionData[] = [
     amount: 5017100,
     status: "PAID",
     midtrans_order_id: "SG-MB-230524-01",
+    payment_method: "QRIS",
     paid_at: "2023-05-24 11:00:00",
     created_at: "2023-05-24 10:45:00",
     relation_data: {
