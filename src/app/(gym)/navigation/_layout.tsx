@@ -75,17 +75,17 @@ export default function GymLayout() {
 
       {/* 3. TAB AI COACH (Pengganti AI) */}
       <Tabs.Screen
-        name="ai"
+        name="aIWorkout"
         options={{
-          title: "AI Coach", // Title yang lebih bagus dan profesional
+          title: "AI Workout",
           tabBarIcon: ({ focused, color }) => (
             <MaterialCommunityIcons
-              name={focused ? "brain" : "brain"}
+              name={focused ? "arm-flex" : "arm-flex-outline"}
               size={24}
               color={color as string}
             />
           ),
-          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "AI Coach" })
+          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "AI Workout" })
         }}
       />
 
