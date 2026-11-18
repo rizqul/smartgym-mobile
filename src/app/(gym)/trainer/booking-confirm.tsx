@@ -1,3 +1,4 @@
+import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import React, { useState } from "react"
@@ -22,21 +23,7 @@ export default function BookingConfirm() {
       <StatusBar barStyle="light-content" />
 
       {/* HEADER */}
-      <View className="flex-row items-center justify-between border-b border-border/40 px-5 py-4">
-        <View className="flex-row items-center gap-4">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="h-10 w-10 justify-center"
-          >
-            <Ionicons
-              name="arrow-back"
-              size={24}
-              color="white"
-            />
-          </TouchableOpacity>
-          <Text className="text-lg font-bold text-text-primary">Booking Confirmation</Text>
-        </View>
-      </View>
+      <HeaderNavigation label="Konfirmasi Pemesanan" />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="px-5 pb-44 pt-4">

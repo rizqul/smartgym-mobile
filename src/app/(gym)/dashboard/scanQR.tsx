@@ -1,3 +1,4 @@
+import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import React from "react"
@@ -12,19 +13,7 @@ export default function ScanQR() {
       <StatusBar barStyle="light-content" />
 
       {/* HEADER */}
-      <View className="flex-row items-center gap-4 border-b border-border/40 px-5 py-4">
-        <TouchableOpacity
-          onPress={() => router.back()}
-          className="h-10 w-10 items-center justify-center rounded-xl border border-border/50 bg-surface"
-        >
-          <Ionicons
-            name="chevron-back"
-            size={20}
-            color="white"
-          />
-        </TouchableOpacity>
-        <Text className="text-xl font-bold text-text-primary">Scan QR Code</Text>
-      </View>
+      <HeaderNavigation label="Scan QR" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}

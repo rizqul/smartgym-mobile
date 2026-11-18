@@ -1,4 +1,4 @@
-import { TrainerCard } from "@/components/trainer/TrainerCard"
+import { TrainerCard } from "@/components/gym/trainer/TrainerCard"
 import { DUMMYTRAINER } from "@/data/dummyTrainer"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"

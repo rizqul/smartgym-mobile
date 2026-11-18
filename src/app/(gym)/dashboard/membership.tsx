@@ -1,13 +1,12 @@
-import MembershipActiveCard from "@/components/membership/membershipActiveCard"
-import MembershipConsultCard from "@/components/membership/membershipConsultCard"
-import MembershipHeader from "@/components/membership/membershipHeader"
-import MembershipPaymentInfo from "@/components/membership/membershipPaymentInfo"
-import PlanCard from "@/components/membership/membershipPlanCard"
-import { Ionicons } from "@expo/vector-icons"
-import { router } from "expo-router"
+import MembershipActiveCard from "@/components/gym/membership/membershipActiveCard"
+import MembershipConsultCard from "@/components/gym/membership/membershipConsultCard"
+import MembershipHeader from "@/components/gym/membership/membershipHeader"
+import MembershipPaymentInfo from "@/components/gym/membership/membershipPaymentInfo"
+import PlanCard from "@/components/gym/membership/membershipPlanCard"
+import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 
 import React from "react"
-import { ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 const membership = () => {
@@ -15,19 +14,7 @@ const membership = () => {
     <>
       <View className="flex-1 items-center bg-background pt-3">
         <SafeAreaView>
-          <View className="w-full flex-row items-center gap-4 border-b border-border/40 px-3 py-3">
-            <TouchableOpacity
-              onPress={() => router.back()}
-              className="h-10 w-10 items-center justify-center rounded-xl border border-border/50 bg-surface"
-            >
-              <Ionicons
-                name="chevron-back"
-                size={20}
-                color="white"
-              />
-            </TouchableOpacity>
-            <Text className="text-xl font-bold text-text-primary">Membership</Text>
-          </View>
+          <HeaderNavigation label="Berlangganan" />
           <ScrollView showsVerticalScrollIndicator={false}>
             <View className="items-center gap-5  px-6 py-4">
               <MembershipHeader />

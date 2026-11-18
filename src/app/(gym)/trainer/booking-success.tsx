@@ -212,7 +212,7 @@ export default function BookingSuccess() {
 
           <TouchableOpacity
             className="w-full flex-row items-center justify-center gap-2 rounded-xl border border-border/50 bg-surface py-4"
-            onPress={() => router.replace("/(gym)/dashboard")} // Arahkan ke dashboard
+            onPress={() => router.replace("/(gym)/navigation/dashboard")} // Arahkan ke dashboard
           >
             <Ionicons
               name="home"

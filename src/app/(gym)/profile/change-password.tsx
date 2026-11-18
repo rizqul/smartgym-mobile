@@ -1,12 +1,13 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthTextField } from "@/components/auth/authTextField"
-import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons"
+import HeaderNavigation from "@/components/gym/templates/headerNavigation"
+import { Entypo, MaterialIcons } from "@expo/vector-icons"
 import AntDesign from "@expo/vector-icons/AntDesign"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "expo-router"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Pressable, Text, TouchableOpacity, View } from "react-native"
+import { Pressable, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { z } from "zod"
 
@@ -86,19 +87,7 @@ export default function ChangePassword() {
     <>
       <SafeAreaView className="flex-1 bg-background">
         <View className="flex-1 bg-background">
-          <View className="w-full flex-row items-center gap-4 border-b border-border/40  px-3 py-2 pb-4">
-            <TouchableOpacity
-              onPress={() => router.back()}
-              className="h-10 w-10 items-center justify-center rounded-xl border border-border/50 bg-surface"
-            >
-              <Ionicons
-                name="chevron-back"
-                size={20}
-                color="white"
-              />
-            </TouchableOpacity>
-            <Text className="text-xl font-bold text-text-primary">Ubah Kata Sandi</Text>
-          </View>
+          <HeaderNavigation label="Ubah Kata Sandi" />
           <View className="flex items-center justify-start gap-8">
             {/* Header */}
             <View className="mt-5 w-[345] flex-row items-center gap-6">
