@@ -72,7 +72,12 @@ const membership = () => {
                     price={`Rp ${val.price.toString()}`}
                     duration={`${val.duration} hari`}
                     buttonLabel="Pilih Paket"
-                    onPress={() => router.push("/(gym)/dashboard/membershipConfirm")}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(gym)/dashboard/[id]",
+                        params: { id: val.id }
+                      })
+                    }
                   />
                 ))}
                 {monthly?.map((val) => (
@@ -85,7 +90,12 @@ const membership = () => {
                     price={`Rp ${val.price.toString()}`}
                     duration={`${val.duration} hari`}
                     buttonLabel="Pilih Paket"
-                    onPress={() => router.push("/(gym)/dashboard/membershipConfirm")}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(gym)/dashboard/[id]",
+                        params: { id: val.id }
+                      })
+                    }
                   />
                 ))}
                 {yearly?.map((val) => (
@@ -98,7 +108,12 @@ const membership = () => {
                     price={`Rp ${val.price.toString()}`}
                     duration={`${val.duration} hari`}
                     buttonLabel="Pilih Paket"
-                    onPress={() => router.push("/(gym)/dashboard/membershipConfirm")}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(gym)/dashboard/[id]",
+                        params: { id: val.id }
+                      })
+                    }
                   />
                 ))}
               </View>

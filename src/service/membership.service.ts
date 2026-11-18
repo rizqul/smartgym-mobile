@@ -1,8 +1,8 @@
 import { TypePackage } from "@/type/membership.type"
 import api from "./api"
 
-// export const createMembership = async ({transactionId, packageId}) => {
-//   const response = await api.post("member/membership", )
+// export const buyMembership = async ({ transactionId, packageId }: {}) => {
+//   const response = await api.post("member/membership")
 // }
 
 export const getAllMemberships = async (): Promise<TypePackage> => {
