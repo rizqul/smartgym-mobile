@@ -4,7 +4,7 @@ import React from "react"
 
 const index = () => {
   const { isLoggedIn } = useAuth()
-  return <Redirect href={isLoggedIn ? "/(gym)/dashboard" : "/(auth)/login"} />
+  return <Redirect href={isLoggedIn ? "/(gym)/navigation/dashboard" : "/(auth)/login"} />
 }
 
 export default index
