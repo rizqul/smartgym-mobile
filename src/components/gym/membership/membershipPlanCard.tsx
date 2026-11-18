@@ -80,7 +80,7 @@ export default function PlanCard({
         {/* Price + duration */}
         <View className="flex-row items-end justify-between">
           <View className="gap-1">
-            <Text className="text-sm text-text-warm">Total paket</Text>
+            <Text className="text-sm text-text-warm">Harga paket</Text>
             <Text className="text-4xl font-bold text-accent">{price}</Text>
           </View>
           <View className="items-end gap-1">

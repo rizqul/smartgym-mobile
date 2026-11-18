@@ -2,11 +2,29 @@ import { AuthButton } from "@/components/auth/authButton"
 import PaymentSection from "@/components/gym/membership/membershipPaymentSection"
 import PlanCard from "@/components/gym/membership/membershipPlanCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
+import { RootState } from "@/store/store"
+import { useLocalSearchParams } from "expo-router"
 import React from "react"
 import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useSelector } from "react-redux"
 
 const membershipConfirm = () => {
+  const { id } = useLocalSearchParams()
+  const { result } = useSelector((state: RootState) => state.membership)
+  const weekly = result?.WEEKLY?.find((val) => val.id === id)
+  const monthly = result?.MONTHLY?.find((val) => val.id === id)
+  const yearly = result?.YEARLY?.find((val) => val.id === id)
+  let data = null
+
+  if (weekly) {
+    data = weekly
+  } else if (monthly) {
+    data = monthly
+  } else {
+    data = yearly
+  }
+
   return (
     <View className="items-center bg-background">
       <SafeAreaView>
@@ -26,21 +44,21 @@ const membershipConfirm = () => {
             <View className="gap-5">
               <Text className="text-text-primary ">Paket Pilihanmu</Text>
               <PlanCard
-                badge="MINGGUAN"
+                badge={data?.type!}
                 status="Aktif"
-                name="Paket Mingguan"
-                description="Coba dulu ritme latihanmu, cocok untuk memulai dengan komitmen ringan."
-                price="Rp 99.000"
-                duration="7 hari"
+                name={data?.name!}
+                description={data?.description!}
+                price={`Rp ${data?.price}`}
+                duration={`${data?.duration} hari`}
                 buttonLabel="Pilih Paket"
               />
             </View>
             <PaymentSection
               summary={{
-                planName: "Daily Pass",
-                price: "Rp 50.000",
-                duration: "1 hari",
-                total: "Rp 50.000"
+                planName: data?.name!,
+                price: `Rp ${data?.price}`,
+                duration: `${data?.duration} hari`,
+                total: `${data?.price}`
               }}
               onSelectMethod={(id) => console.log(id)}
             />

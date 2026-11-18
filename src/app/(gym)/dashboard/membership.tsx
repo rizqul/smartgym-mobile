@@ -4,13 +4,26 @@ import MembershipHeader from "@/components/gym/membership/membershipHeader"
 import MembershipPaymentInfo from "@/components/gym/membership/membershipPaymentInfo"
 import PlanCard from "@/components/gym/membership/membershipPlanCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
+import { fetchMemberships } from "@/store/slice/membershipSlice"
+import { AppDispatch, RootState } from "@/store/store"
 import { router } from "expo-router"
 
-import React from "react"
+import React, { useEffect } from "react"
 import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useDispatch, useSelector } from "react-redux"
 
 const membership = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { result } = useSelector((state: RootState) => state.membership)
+  const weekly = result?.WEEKLY
+  const monthly = result?.MONTHLY
+  const yearly = result?.YEARLY
+
+  useEffect(() => {
+    dispatch(fetchMemberships())
+  }, [])
+
   return (
     <>
       <View className="flex-1 items-center bg-background pt-3">
@@ -49,39 +62,60 @@ const membership = () => {
                 <Text className="text-sm leading-6 text-text-warm">Sesuaikan komitmen latihan dengan target kebugaranmu</Text>
               </View>
               <View className="items-center gap-4">
-                <PlanCard
-                  badge="MINGGUAN"
-                  status="Aktif"
-                  name="Paket Mingguan"
-                  description="Coba dulu ritme latihanmu, cocok untuk memulai dengan komitmen ringan."
-                  price="Rp 99.000"
-                  duration="7 hari"
-                  buttonLabel="Pilih Paket"
-                  onPress={() => router.push("/(gym)/dashboard/membershipConfirm")}
-                />
-
-                <PlanCard
-                  variant="popular"
-                  badge="BULANAN"
-                  status="Aktif"
-                  name="Paket Bulanan"
-                  description="Bangun kebiasaan latihan yang konsisten, satu bulan setiap langkah."
-                  price="Rp 299.000"
-                  duration="30 hari"
-                  buttonLabel="Pilih Paket"
-                  onPress={() => router.push("/(gym)/dashboard/membershipConfirm")}
-                />
-
-                <PlanCard
-                  badge="TAHUNAN"
-                  status="Aktif"
-                  name="Paket Tahunan"
-                  description="Investasi jangka panjang untuk progres yang terus berkembang sepanjang tahun."
-                  price="Rp 2.499.000"
-                  duration="365 hari"
-                  buttonLabel="Pilih Paket"
-                  onPress={() => router.push("/(gym)/dashboard/membershipConfirm")}
-                />
+                {weekly?.map((val) => (
+                  <PlanCard
+                    key={val.id}
+                    badge={val.type}
+                    status="Aktif"
+                    name={val.name}
+                    description={val.description}
+                    price={`Rp ${val.price.toString()}`}
+                    duration={`${val.duration} hari`}
+                    buttonLabel="Pilih Paket"
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(gym)/dashboard/[id]",
+                        params: { id: val.id }
+                      })
+                    }
+                  />
+                ))}
+                {monthly?.map((val) => (
+                  <PlanCard
+                    key={val.id}
+                    badge={val.type}
+                    status="Aktif"
+                    name={val.name}
+                    description={val.description}
+                    price={`Rp ${val.price.toString()}`}
+                    duration={`${val.duration} hari`}
+                    buttonLabel="Pilih Paket"
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(gym)/dashboard/[id]",
+                        params: { id: val.id }
+                      })
+                    }
+                  />
+                ))}
+                {yearly?.map((val) => (
+                  <PlanCard
+                    key={val.id}
+                    badge={val.type}
+                    status="Aktif"
+                    name={val.name}
+                    description={val.description}
+                    price={`Rp ${val.price.toString()}`}
+                    duration={`${val.duration} hari`}
+                    buttonLabel="Pilih Paket"
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(gym)/dashboard/[id]",
+                        params: { id: val.id }
+                      })
+                    }
+                  />
+                ))}
               </View>
               <MembershipPaymentInfo
                 provider="Powered by Midtrans"
