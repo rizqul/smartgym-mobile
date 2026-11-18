@@ -5,12 +5,12 @@ import { Pressable, Text, View } from "react-native"
 type PlanVariant = "default" | "popular"
 
 export type PlanCardProps = {
-  badge: string // contoh: "BULANAN"
-  status?: string // contoh: "Aktif"
+  badge: string
+  status?: string
   name: string
   description: string
-  price: string // contoh: "Rp 299.000"
-  duration: string // contoh: "30 hari"
+  price: string
+  duration: string
   buttonLabel: string
   onPress?: () => void
   variant?: PlanVariant

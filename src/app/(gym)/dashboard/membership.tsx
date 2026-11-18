@@ -4,6 +4,7 @@ import MembershipHeader from "@/components/gym/membership/membershipHeader"
 import MembershipPaymentInfo from "@/components/gym/membership/membershipPaymentInfo"
 import PlanCard from "@/components/gym/membership/membershipPlanCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
+import { router } from "expo-router"
 
 import React from "react"
 import { ScrollView, Text, View } from "react-native"
@@ -56,6 +57,7 @@ const membership = () => {
                   price="Rp 99.000"
                   duration="7 hari"
                   buttonLabel="Pilih Paket"
+                  onPress={() => router.push("/(gym)/dashboard/membershipConfirm")}
                 />
 
                 <PlanCard
@@ -67,6 +69,7 @@ const membership = () => {
                   price="Rp 299.000"
                   duration="30 hari"
                   buttonLabel="Pilih Paket"
+                  onPress={() => router.push("/(gym)/dashboard/membershipConfirm")}
                 />
 
                 <PlanCard
@@ -77,6 +80,7 @@ const membership = () => {
                   price="Rp 2.499.000"
                   duration="365 hari"
                   buttonLabel="Pilih Paket"
+                  onPress={() => router.push("/(gym)/dashboard/membershipConfirm")}
                 />
               </View>
               <MembershipPaymentInfo
