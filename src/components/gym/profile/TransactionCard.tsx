@@ -1,5 +1,5 @@
+import { TransactionData, TransactionStatus } from "@/type/Transaction.type"
 import { formatDate, FormatRupiah } from "@/utils/FormaterHelper"
-import { TransactionData, TransactionStatus } from "@/utils/types/Transaction.type"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { Text, TouchableOpacity, View } from "react-native"
 
