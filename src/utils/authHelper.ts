@@ -1,5 +1,6 @@
-import { USER_DATA_KEY } from "@/service/auth.service"
 import * as SecureStore from "expo-secure-store"
+
+export const USER_DATA_KEY = "user_profile"
 
 export const extractAndSaveTokens = async (setCookieHeaders: string | string[]) => {
   if (!setCookieHeaders) return false
