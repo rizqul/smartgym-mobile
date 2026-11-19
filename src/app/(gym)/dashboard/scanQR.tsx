@@ -9,7 +9,6 @@ import { SafeAreaView } from "react-native-safe-area-context"
 export default function ScanQR() {
   const router = useRouter()
 
-  // State untuk Camera & Scanning
   const [permission, requestPermission] = useCameraPermissions()
   const [scanned, setScanned] = useState(false)
   const [flashOn, setFlashOn] = useState(false)
@@ -21,6 +20,11 @@ export default function ScanQR() {
         <Text className="text-text-primary">Memuat kamera...</Text>
       </SafeAreaView>
     )
+  }
+
+  const handleMountError = (error: any) => {
+    console.error("Camera Mount Error:", error)
+    Alert.alert("Kamera Tidak Tersedia", "Pastikan tidak ada aplikasi lain yang menggunakan kamera dan coba lagi.")
   }
 
   if (!permission.granted) {
@@ -94,6 +98,7 @@ export default function ScanQR() {
               barcodeTypes: ["qr"]
             }}
             onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+            onMountError={handleMountError}
           />
 
           {/* OVERLAY UI ) */}
