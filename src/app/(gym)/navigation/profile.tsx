@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function Profile() {
   const router = useRouter()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const [showAlert, setShowAlert] = useState(false)
 
   const handleLogout = async () => {
@@ -47,7 +47,7 @@ export default function Profile() {
               </View>
               <View className="flex-1">
                 <View className="mb-1 flex-row items-center gap-2">
-                  <Text className="text-lg font-bold text-text-primary">Dhafin Rizky</Text>
+                  <Text className="text-lg font-bold text-text-primary">{user?.name}</Text>
                   <View className="flex-row items-center gap-1 rounded-full bg-secondary/20 px-2 py-0.5">
                     <MaterialCommunityIcons
                       name="crown"

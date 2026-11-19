@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/AuthContext"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { router } from "expo-router"
@@ -7,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 // Core
 export default function Dashboard() {
+  const { user } = useAuth()
   return (
     <SafeAreaView className="flex bg-background">
       <StatusBar barStyle="light-content" />
@@ -27,7 +29,7 @@ export default function Dashboard() {
             <View className="flex-row items-start justify-between">
               <View>
                 <Text className="mb-1 text-2xl font-bold text-text-primary">
-                  Hello, <Text className="text-text-subdued">Dhafin</Text> 👋
+                  Hello, <Text className="text-text-subdued">{user?.name}</Text> 👋
                 </Text>
                 <Text className="text-xs font-medium text-secondary">Gold Member • Active until 18 Dec 2025</Text>
               </View>
@@ -62,7 +64,7 @@ export default function Dashboard() {
                 size={24}
                 color="#60A5FA"
               />
-              <Text className="text-xs font-semibold text-text-primary">Packages</Text>
+              <Text className="text-xs font-semibold text-text-primary">Membership</Text>
             </TouchableOpacity>
           </View>
 
@@ -105,6 +107,11 @@ export default function Dashboard() {
 
 // Card Membership
 const MembershipCard = () => {
+  const { user } = useAuth()
+  const expiredDate = new Date(user?.membershipExpiredAt!)
+  const expiredDay = expiredDate.getDate()
+  const expiredMonth = expiredDate.getMonth()
+  const expiredYear = expiredDate.getFullYear()
   return (
     <LinearGradient
       colors={["#2E1A14", "#1A1D24", "#1A1D24"]}
@@ -151,12 +158,12 @@ const MembershipCard = () => {
       <View className="flex-row items-end justify-between">
         <View>
           <Text className="mb-1 text-[10px] font-semibold text-text-muted">Cardholder</Text>
-          <Text className="text-xs font-semibold text-text-primary">DHAFIN RIZKY</Text>
+          <Text className="text-xs font-semibold text-text-primary">{user?.name}</Text>
         </View>
 
         <View className="items-end">
           <Text className="mb-1 text-[10px] font-semibold text-text-muted">Expires</Text>
-          <Text className="text-xs font-semibold text-secondary">18 / 12 / 2025</Text>
+          <Text className="text-xs font-semibold text-secondary">{`${expiredDay} / ${expiredMonth} / ${expiredYear}`}</Text>
         </View>
       </View>
     </LinearGradient>

@@ -1,12 +1,57 @@
+import { AuthButton } from "@/components/auth/authButton"
+import { AuthTextField } from "@/components/auth/authTextField"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
+import { useAuth } from "@/context/AuthContext"
+import { updateProfile } from "@/service/user.service"
 import { Ionicons } from "@expo/vector-icons"
-import { useRouter } from "expo-router"
+import { zodResolver } from "@hookform/resolvers/zod"
 import React from "react"
-import { Image, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Controller, useForm } from "react-hook-form"
+import { Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { z } from "zod"
+
+const updateProfileSchema = z.object({
+  fullname: z.string().min(4, "Panjang minimal 4 karakter"),
+  phoneNumber: z
+    .string()
+    .min(1, "Nomor HP wajib diisi")
+    .regex(/^(\+62|62|0)8[1-9][0-9]{6,10}$/, "Format nomor HP tidak valid (contoh: 081234567890 atau +6281234567890)")
+})
+
+type FormValues = z.infer<typeof updateProfileSchema>
 
 export default function EditProfile() {
-  const router = useRouter()
+  const { user } = useAuth()
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm<FormValues>({
+    resolver: zodResolver(updateProfileSchema),
+    defaultValues: { fullname: user?.name, phoneNumber: user?.phoneNumber }
+  })
+
+  const onSubmit = async (data: FormValues) => {
+    try {
+      await updateProfile(data.fullname, data.phoneNumber, "")
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: "Berhasil",
+        textBody: `Data berhasil diperbaharui.`
+      })
+    } catch (error: any) {
+      console.log("error :", error)
+      const message = error.response?.data?.message || "Gagal mengirim kode. Coba lagi."
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Gagal",
+        textBody: message,
+        autoClose: 3000
+      })
+    }
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -45,50 +90,45 @@ export default function EditProfile() {
           </View>
 
           {/* ================= FORM SECTION ================= */}
-          <View className="">
-            <Text className="mb-5 text-base font-bold text-text-primary">Informasi pribadi</Text>
-
-            <View className="gap-5">
-              {/* Input Nama */}
-              <View className="gap-2">
-                <Text className="text-xs font-medium text-text-secondary">Nama lengkap</Text>
-                <TextInput
-                  className="rounded-xl border border-border bg-field-primary px-4 py-3.5 text-sm text-text-primary"
-                  defaultValue="Dhafin Rizky"
-                  placeholderTextColor="#A98A7D"
-                />
-              </View>
-
-              {/* Input Email */}
-              <View className="gap-2">
-                <Text className="text-xs font-medium text-text-secondary">Email</Text>
-                <TextInput
-                  className="rounded-xl border border-border bg-field-primary px-4 py-3.5 text-sm text-text-primary"
-                  placeholder="Masukkan alamat email"
-                  placeholderTextColor="#A98A7D"
+          <View className="mt-5 items-center">
+            <Controller
+              control={control}
+              name="fullname"
+              render={({ field: { value, onChange, onBlur } }) => (
+                <AuthTextField
+                  label="Nama Lengkap"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder="Masukkan Email Anda"
+                  error={errors.fullname?.message}
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
-              </View>
-
-              {/* Input Nomor Telepon */}
-              <View className="gap-2">
-                <Text className="text-xs font-medium text-text-secondary">Nomor telepon</Text>
-                <TextInput
-                  className="rounded-xl border border-border bg-field-primary px-4 py-3.5 text-sm text-text-primary"
-                  placeholder="Masukkan nomor telepon"
-                  placeholderTextColor="#A98A7D"
-                  keyboardType="phone-pad"
+              )}
+            />
+            <Controller
+              control={control}
+              name="phoneNumber"
+              render={({ field: { value, onChange, onBlur } }) => (
+                <AuthTextField
+                  label="Nomor Telepon"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder="Masukkan Nomor Telepon Anda"
+                  error={errors.phoneNumber?.message}
                 />
-              </View>
-            </View>
+              )}
+            />
           </View>
 
           {/* ================= SUBMIT BUTTON & FOOTER ================= */}
-          <View className="">
-            <TouchableOpacity className="w-full items-center justify-center rounded-xl bg-primary py-4 shadow-lg shadow-primary/20">
-              <Text className="text-sm font-bold text-background">Simpan Perubahan</Text>
-            </TouchableOpacity>
+          <View className="px-6">
+            <AuthButton
+              onPress={handleSubmit(onSubmit)}
+              label="Simpan Perubahan"
+            />
 
             <Text className="mt-4 text-center text-[11px] text-text-secondary">Perubahan akan diterapkan pada profil member.</Text>
           </View>
