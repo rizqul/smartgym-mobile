@@ -1,5 +1,5 @@
 import { getSavedPlans } from "@/service/ai.service"
-import { WorkoutPlan } from "@/utils/types/Ai.type"
+import { WorkoutPlan } from "@/type/Ai.type"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { useFocusEffect, useRouter } from "expo-router"
 import React, { useCallback, useState } from "react"
