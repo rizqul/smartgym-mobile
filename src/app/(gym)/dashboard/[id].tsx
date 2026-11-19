@@ -2,15 +2,17 @@ import { AuthButton } from "@/components/auth/authButton"
 import PaymentSection from "@/components/gym/membership/membershipPaymentSection"
 import PlanCard from "@/components/gym/membership/membershipPlanCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
+import { buyMembership } from "@/service/membership.service"
 import { RootState } from "@/store/store"
-import { useLocalSearchParams } from "expo-router"
+import * as Crypto from "expo-crypto"
+import { router, useLocalSearchParams } from "expo-router"
 import React from "react"
 import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useSelector } from "react-redux"
 
 const membershipConfirm = () => {
-  const { id } = useLocalSearchParams()
+  const { id }: { id: string } = useLocalSearchParams()
   const { result } = useSelector((state: RootState) => state.membership)
   const weekly = result?.WEEKLY?.find((val) => val.id === id)
   const monthly = result?.MONTHLY?.find((val) => val.id === id)
@@ -23,6 +25,20 @@ const membershipConfirm = () => {
     data = monthly
   } else {
     data = yearly
+  }
+
+  const handlePay = async () => {
+    try {
+      const transactionId = Crypto.randomUUID()
+      const paymentUrl = await buyMembership(transactionId, id)
+      console.log(paymentUrl)
+      router.push({
+        pathname: "/(gym)/dashboard/paymentScreen",
+        params: { paymentUrl }
+      })
+    } catch (err: any) {
+      console.log(err.response?.status, err.response?.data)
+    }
   }
 
   return (
@@ -63,7 +79,10 @@ const membershipConfirm = () => {
               onSelectMethod={(id) => console.log(id)}
             />
             <View className="items-center">
-              <AuthButton label="Lanjutkan Pembayaran" />
+              <AuthButton
+                onPress={handlePay}
+                label="Lanjutkan Pembayaran"
+              />
             </View>
           </View>
         </ScrollView>
