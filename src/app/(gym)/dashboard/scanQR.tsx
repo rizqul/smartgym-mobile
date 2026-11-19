@@ -4,6 +4,7 @@ import { CameraView, useCameraPermissions } from "expo-camera"
 import { useRouter } from "expo-router"
 import React, { useState } from "react"
 import { Alert, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function ScanQR() {
@@ -24,7 +25,11 @@ export default function ScanQR() {
 
   const handleMountError = (error: any) => {
     console.error("Camera Mount Error:", error)
-    Alert.alert("Kamera Tidak Tersedia", "Pastikan tidak ada aplikasi lain yang menggunakan kamera dan coba lagi.")
+    Toast.show({
+      type: ALERT_TYPE.DANGER,
+      title: "Kamera Tidak Tersedia",
+      textBody: "Pastikan tidak ada aplikasi lain yang menggunakan kamera dan coba lagi."
+    })
   }
 
   if (!permission.granted) {
@@ -53,16 +58,10 @@ export default function ScanQR() {
     )
   }
 
-  // Fungsi saat QR Code berhasil terdeteksi
   const handleBarCodeScanned = ({ type, data }: { type: string; data: string }) => {
     setScanned(true)
-
-    console.log("=== QR CODE TERDETEKSI ===")
-    console.log("Tipe Barcode:", type)
-    console.log("Data/Isi QR  :", data)
-    console.log("==========================")
-
-    Alert.alert("Scan Berhasil", `Data QR: ${data}\n\n(Cek console log untuk detail)`, [
+    // sementara
+    Alert.alert(`Scan Berhasil - ${type}`, `Data QR: ${data}\n\n(Cek console log untuk detail)`, [
       {
         text: "Scan Lagi",
         onPress: () => setScanned(false)
