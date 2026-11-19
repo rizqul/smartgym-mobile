@@ -1,5 +1,5 @@
 import { generateAndSavePlan } from "@/service/ai.service"
-import { WorkoutConfig } from "@/utils/types/Ai.type"
+import { WorkoutConfig } from "@/type/Ai.type"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import React, { useState } from "react"

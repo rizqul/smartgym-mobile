@@ -1,4 +1,4 @@
-import { TransactionData } from "@/utils/types/Transaction.type"
+import { TransactionData } from "@/type/Transaction.type"
 
 export const DUMMYTRANSACTIONS: TransactionData[] = [
   {
