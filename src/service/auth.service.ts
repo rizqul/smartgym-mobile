@@ -18,15 +18,15 @@ export async function login(email: string, password: string) {
   return data
 }
 
-export async function Refresh() {
-  const response = await api.post("auth/refresh")
+// export async function Refresh() {
+//   const response = await api.post("auth/refresh")
 
-  const setCookieHeader = response.headers["set-cookie"]
+//   const setCookieHeader = response.headers["set-cookie"]
 
-  if (setCookieHeader) {
-    await extractAndSaveTokens(setCookieHeader)
-  }
-}
+//   if (setCookieHeader) {
+//     await extractAndSaveTokens(setCookieHeader)
+//   }
+// }
 
 export async function ForgotPassword(email: string) {
   const response = await api.post("/auth/forgot-password", { email })

@@ -1,5 +1,6 @@
-// context/AuthContext.tsx
-import { LogoutAPI, USER_DATA_KEY } from "@/service/auth.service"
+import { refreshSession, setSessionExpiredHandler } from "@/service/api"
+import { LogoutAPI } from "@/service/auth.service"
+import { clearSession, isTokenExpired } from "@/utils/authHelper"
 import * as SecureStore from "expo-secure-store"
 import React, { createContext, useContext, useEffect, useState } from "react"
 
@@ -11,7 +12,6 @@ type AuthContextType = {
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType)
-
 export const useAuth = () => useContext(AuthContext)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -19,14 +19,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    // Interceptor memanggil ini kalau refresh gagal
+    setSessionExpiredHandler(() => setIsLoggedIn(false))
     checkAuth()
+    return () => setSessionExpiredHandler(null)
   }, [])
 
   const checkAuth = async () => {
     try {
-      const token = await SecureStore.getItemAsync("access-token")
-      setIsLoggedIn(!!token)
+      const accessToken = await SecureStore.getItemAsync("access-token")
+      const refreshToken = await SecureStore.getItemAsync("refresh-token")
+
+      // 1. Access token masih valid
+      if (accessToken && !isTokenExpired(accessToken)) {
+        setIsLoggedIn(true)
+        return
+      }
+
+      // 2. Expire, tapi masih ada refresh token → coba perbarui
+      if (refreshToken) {
+        await refreshSession()
+        setIsLoggedIn(true)
+        return
+      }
+
+      // 3. Tidak ada token sama sekali
+      setIsLoggedIn(false)
     } catch (error) {
+      // Refresh gagal (refresh token juga expire/tidak valid)
+      await clearSession()
       setIsLoggedIn(false)
     } finally {
       setIsLoading(false)
@@ -39,9 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.log("Error :" + error)
     } finally {
-      await SecureStore.deleteItemAsync("access-token")
-      await SecureStore.deleteItemAsync("refresh-token")
-      await SecureStore.deleteItemAsync(USER_DATA_KEY)
+      await clearSession()
       setIsLoggedIn(false)
     }
   }
