@@ -9,6 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 // Core
 export default function Dashboard() {
   const { user } = useAuth()
+  const firstName = user?.name.split(" ")[0]
   return (
     <SafeAreaView className="flex bg-background">
       <StatusBar barStyle="light-content" />
@@ -29,7 +30,7 @@ export default function Dashboard() {
             <View className="flex-row items-start justify-between">
               <View>
                 <Text className="mb-1 text-2xl font-bold text-text-primary">
-                  Hello, <Text className="text-text-subdued">{user?.name}</Text> 👋
+                  Hello, <Text className="text-text-subdued">{firstName}</Text> 👋
                 </Text>
                 <Text className="text-xs font-medium text-secondary">Gold Member • Active until 18 Dec 2025</Text>
               </View>

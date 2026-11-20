@@ -1,5 +1,6 @@
 import { refreshSession, setSessionExpiredHandler } from "@/service/api"
 import { LogoutAPI } from "@/service/auth.service"
+import { getProfile } from "@/service/user.service"
 import { User } from "@/type/user.type"
 import { clearSession, isTokenExpired, USER_DATA_KEY } from "@/utils/authHelper"
 import * as SecureStore from "expo-secure-store"
@@ -10,6 +11,7 @@ type AuthContextType = {
   isLoading: boolean
   user: User | null
   logout: () => Promise<void>
+  refreshUser: () => Promise<void>
   refreshAuth: () => Promise<void>
 }
 
@@ -24,6 +26,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loadUser = async () => {
     const json = await SecureStore.getItemAsync(USER_DATA_KEY)
     setUser(json ? JSON.parse(json) : null)
+  }
+
+  const refreshUser = async () => {
+    if (!user) return
+    const { data } = await getProfile()
+    const updated = { ...user, ...data }
+    await SecureStore.setItemAsync(USER_DATA_KEY, JSON.stringify(updated))
+    setUser(updated)
   }
 
   useEffect(() => {
@@ -56,11 +66,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return
       }
 
-      // 3. Tidak ada token sama sekali
       setUser(null)
       setIsLoggedIn(false)
     } catch (error) {
-      // Refresh gagal (refresh token juga expire/tidak valid)
       await clearSession()
       setUser(null)
       setIsLoggedIn(false)
@@ -85,5 +93,5 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await checkAuth()
   }
 
-  return <AuthContext.Provider value={{ isLoggedIn, isLoading, logout, refreshAuth, user }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ isLoggedIn, isLoading, logout, refreshUser, refreshAuth, user }}>{children}</AuthContext.Provider>
 }
