@@ -1,11 +1,11 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthTextField } from "@/components/auth/authTextField"
-import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { useAuth } from "@/context/AuthContext"
 import { updateProfile } from "@/service/user.service"
 import { Ionicons } from "@expo/vector-icons"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as ImagePicker from "expo-image-picker"
+import { router } from "expo-router"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
@@ -127,43 +127,66 @@ export default function EditProfile() {
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
 
-      <HeaderNavigation label="Ubah Profil" />
+      {/* <HeaderNavigation label="Ubah Profil" /> */}
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ paddingBottom: 40 }}
       >
-        <View className="flex gap-5 px-5 pb-10 pt-3">
-          {/* ================= PROFILE PHOTO SECTION ================= */}
-          <View className=" flex-row items-center gap-4">
-            <View className="relative">
-              <Image
-                source={{ uri: user?.profileUrl }}
-                className="h-[72px] w-[72px] rounded-xl border border-border"
+        {/* ================= HEADER + PROFILE PHOTO ================= */}
+        <View className=" border-b border-border bg-surface px-5 pb-8 pt-3 shadow-lg">
+          {/* Header: tombol back di kiri, judul tepat di tengah */}
+          <View className="h-11 flex-row items-center justify-center">
+            <TouchableOpacity
+              onPress={() => router.back()}
+              activeOpacity={0.7}
+              className="absolute left-0 h-10 w-10 items-center justify-center rounded-full border border-border bg-background"
+            >
+              <Ionicons
+                name="arrow-back"
+                size={22}
+                color="white"
               />
+            </TouchableOpacity>
+            <Text className="font-inter text-lg font-bold tracking-wide text-text-primary">Profil</Text>
+          </View>
+
+          {/* Foto profil */}
+          <View className="mt-6 items-center gap-5">
+            <View className="relative">
+              {/* Ring luar berwarna primary */}
+              <View className="rounded-full border-2 border-primary p-1 shadow-lg shadow-primary">
+                <Image
+                  source={{ uri: user?.profileUrl }}
+                  className="h-[108px] w-[108px] rounded-full bg-background"
+                />
+              </View>
               {/* Camera Button Overlay */}
               <TouchableOpacity
                 onPress={() => uploadPhoto()}
-                className="absolute -bottom-2 -right-2 rounded-lg border-2 border-background bg-primary p-2"
+                activeOpacity={0.8}
+                className="absolute bottom-0 right-0 h-9 w-9 flex-row items-center justify-center rounded-full border-[3px] border-surface bg-primary shadow-md"
               >
                 <Ionicons
-                  name="camera"
-                  size={16}
-                  color="white"
+                  name="pencil"
+                  size={15}
+                  color="#1A1C20"
                 />
               </TouchableOpacity>
             </View>
-            <View>
-              <Text className="mb-0.5 text-lg font-bold text-text-primary">{user?.name}</Text>
-              <Text className="mb-1.5 text-sm text-text-secondary">ID: SG-88294</Text>
-              <TouchableOpacity onPress={() => uploadPhoto()}>
-                <Text className="text-xs font-semibold text-primary">Ubah foto profil</Text>
-              </TouchableOpacity>
+
+            <View className="items-center gap-2">
+              <Text className="text-2xl font-bold tracking-tight text-text-primary">{user?.name}</Text>
+              <View className="rounded-full border border-border bg-background px-4 py-1.5">
+                <Text className="font-inter text-xs text-text-secondary">{user?.email}</Text>
+              </View>
             </View>
           </View>
-
+        </View>
+        <View className="items-center">
           {/* ================= FORM SECTION ================= */}
-          <View className="mt-5 items-center">
+          <View className=" mt-6 items-center rounded-3xl border border-border px-5 pb-3 pt-4 shadow-md">
             <Controller
               control={control}
               name="fullname"
@@ -197,13 +220,15 @@ export default function EditProfile() {
           </View>
 
           {/* ================= SUBMIT BUTTON & FOOTER ================= */}
-          <View className="px-6">
+          <View className="mt-6 px-6">
             <AuthButton
               onPress={handleSubmit(onSubmit)}
               label="Simpan Perubahan"
             />
 
-            <Text className="mt-4 text-center text-[11px] text-text-secondary">Perubahan akan diterapkan pada profil member.</Text>
+            <Text className="mt-5 text-center text-[11px] leading-4 text-text-secondary">
+              Perubahan akan diterapkan pada profil member.
+            </Text>
           </View>
         </View>
       </ScrollView>
