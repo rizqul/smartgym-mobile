@@ -8,8 +8,12 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function Profile() {
   const router = useRouter()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const [showAlert, setShowAlert] = useState(false)
+  const accountCreatedDate = new Date(user?.createdAt!)
+  const month = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+  const accountCreatedMonth = month[accountCreatedDate.getMonth()]
+  const accountCreatedYear = accountCreatedDate.getFullYear()
 
   const handleLogout = async () => {
     setShowAlert(false)
@@ -27,99 +31,94 @@ export default function Profile() {
             colors={["#2E1A14", "#1A1D24", "#1A1D24"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            className="border border-border"
+            className="w-screen border border-border"
             style={{ padding: 16, borderRadius: 16 }}
           >
             {/* Top Row: Avatar & Info */}
-            <View className="mb-5 flex-row items-center gap-4">
+            <View className="flex items-center gap-4">
               <View className="relative">
                 <Image
-                  source={{ uri: "https://i.pravatar.cc/150?img=11" }}
-                  className="h-16 w-16 rounded-xl border-2 border-border/50"
+                  source={{ uri: user?.profileUrl }}
+                  className="h-[100px] w-[100px] rounded-full border-2 border-border/50"
                 />
-                <TouchableOpacity className="absolute -bottom-1 -right-1 rounded-md border border-border bg-card p-1">
+                <TouchableOpacity
+                  onPress={() => router.push("/(gym)/profile/editProfile")}
+                  className="absolute -right-1 bottom-2 rounded-md border border-border bg-card p-1"
+                >
                   <Ionicons
                     name="pencil"
-                    size={12}
+                    size={16}
                     color="#B8BDC7"
                   />
                 </TouchableOpacity>
               </View>
-              <View className="flex-1">
-                <View className="mb-1 flex-row items-center gap-2">
-                  <Text className="text-lg font-bold text-text-primary">Dhafin Rizky</Text>
-                  <View className="flex-row items-center gap-1 rounded-full bg-secondary/20 px-2 py-0.5">
-                    <MaterialCommunityIcons
-                      name="crown"
-                      size={10}
-                      color="#FFD166"
-                    />
-                    <Text className="text-[10px] font-bold text-secondary">GOLD TIER</Text>
-                  </View>
+              <View className="items-center gap-2">
+                <View className="flex-row items-center justify-center gap-2">
+                  <Text className="font-inter text-2xl font-bold text-text-primary">{user?.name}</Text>
+                  {/* <View className="flex-row items-center gap-1 rounded-full bg-secondary/20 px-2 py-0.5">
+                  <MaterialCommunityIcons
+                    name="crown"
+                    size={10}
+                    color="#FFD166"
+                  />
+                  <Text className="text-[10px] font-bold text-secondary">GOLD TIER</Text>
+                </View> */}
                 </View>
-                <Text className="text-xs text-text-secondary">ID: SG-88294 • Sejak Jan 2023</Text>
+                <Text className="font-inter text-lg text-text-secondary">{user?.email}</Text>
+                <View className="flex-row items-center justify-between gap-2">
+                  <View className="items-center rounded-md bg-[#493522] px-[6px] py-[4px]">
+                    <Text className="font-inter text-xs text-[#FFC178]">MEMBER</Text>
+                  </View>
+                  <View className="h-[7px] w-[7px] rounded-full bg-[#777E8A]"></View>
+                  <Text className="font-inter text-sm text-[#777E8A]">{`Sejak ${accountCreatedMonth} ${accountCreatedYear}`}</Text>
+                </View>
               </View>
             </View>
 
             {/* Stats Row (Tinggi, Berat, Body Fat) */}
-            <View className="mb-4 flex-row justify-between">
-              <View className="mr-2 flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
-                <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Tinggi</Text>
-                <Text className="text-lg font-bold text-text-primary">
-                  178 <Text className="text-xs font-normal">cm</Text>
-                </Text>
-              </View>
-              <View className="mr-2 flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
-                <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Berat</Text>
-                <Text className="text-lg font-bold text-text-primary">
-                  74.5 <Text className="text-xs font-normal">kg</Text>
-                </Text>
-              </View>
-              <View className="flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
-                <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Body Fat</Text>
-                <Text className="text-lg font-bold text-primary">
-                  13.8<Text className="text-xs font-normal">%</Text>
-                </Text>
-              </View>
+            {/* <View className="mb-4 flex-row justify-between">
+            <View className="mr-2 flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
+              <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Tinggi</Text>
+              <Text className="text-lg font-bold text-text-primary">
+                178 <Text className="text-xs font-normal">cm</Text>
+              </Text>
             </View>
-
-            {/* Sync Status */}
-            <View className="mb-5 flex-row items-center justify-between">
-              <View className="flex-row items-center gap-1.5">
-                <MaterialCommunityIcons
-                  name="sync"
-                  size={14}
-                  color="#B8BDC7"
-                />
-                <Text className="text-xs text-text-secondary">InBody Sync: Kemarin, 19:40</Text>
-              </View>
-              <TouchableOpacity>
-                <Text className="text-xs font-semibold text-text-primary underline">Perbarui Data</Text>
-              </TouchableOpacity>
+            <View className="mr-2 flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
+              <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Berat</Text>
+              <Text className="text-lg font-bold text-text-primary">
+                74.5 <Text className="text-xs font-normal">kg</Text>
+              </Text>
             </View>
+            <View className="flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
+              <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Body Fat</Text>
+              <Text className="text-lg font-bold text-primary">
+                13.8<Text className="text-xs font-normal">%</Text>
+              </Text>
+            </View>
+          </View> */}
 
             {/* Action Buttons */}
-            <View className="flex-row gap-3">
-              <TouchableOpacity
-                className="flex-1 flex-row items-center justify-center gap-2 rounded-xl border border-border bg-card py-3"
-                onPress={() => router.push("/(gym)/profile/editProfile")}
-              >
-                <Ionicons
-                  name="options-outline"
-                  size={16}
-                  color="white"
-                />
-                <Text className="text-xs font-semibold text-text-primary">Edit Profil</Text>
-              </TouchableOpacity>
-              <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 rounded-xl bg-primary py-3">
-                <MaterialCommunityIcons
-                  name="qrcode-scan"
-                  size={16}
-                  color="white"
-                />
-                <Text className="text-xs font-bold text-white">QR Turnstile</Text>
-              </TouchableOpacity>
-            </View>
+            {/* <View className="flex-row gap-3">
+            <TouchableOpacity
+              className="flex-1 flex-row items-center justify-center gap-2 rounded-xl border border-border bg-card py-3"
+              onPress={() => router.push("/(gym)/profile/editProfile")}
+            >
+              <Ionicons
+                name="options-outline"
+                size={16}
+                color="white"
+              />
+              <Text className="text-xs font-semibold text-text-primary">Edit Profil</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 rounded-xl bg-primary py-3">
+              <MaterialCommunityIcons
+                name="qrcode-scan"
+                size={16}
+                color="white"
+              />
+              <Text className="text-xs font-bold text-white">QR Turnstile</Text>
+            </TouchableOpacity>
+          </View> */}
           </LinearGradient>
 
           {/* ================= ACTIVE PLAN CARD ================= */}

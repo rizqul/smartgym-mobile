@@ -1,6 +1,7 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthTextField } from "@/components/auth/authTextField"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
+import { changePassword } from "@/service/user.service"
 import { Entypo, MaterialIcons } from "@expo/vector-icons"
 import AntDesign from "@expo/vector-icons/AntDesign"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -8,6 +9,7 @@ import { useRouter } from "expo-router"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Pressable, Text, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { z } from "zod"
 
@@ -27,7 +29,7 @@ const changePasswordSchema = z
     message: "Kata sandi baru tidak boleh sama dengan Kata sandi lama",
     path: ["newPassword"]
   })
-  .refine((data) => data.newPassword !== data.confirmPassword, {
+  .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Kata sandi dan konfirmasi kata sandi tidak sama",
     path: ["confirmPassword"]
   })
@@ -64,9 +66,23 @@ export default function ChangePassword() {
   const toggleVisible = (name: FieldName) => setVisible((prev) => ({ ...prev, [name]: !prev[name] }))
 
   const onSubmit = async (data: FormValues) => {
-    // TODO: panggil API ubah Kata Sandi (backend yang memverifikasi Kata Sandi lama)
-    // await changePassword({ oldPassword: data.oldPassword, newPassword: data.newPassword })
-    router.back()
+    try {
+      await changePassword(data.oldPassword, data.newPassword)
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: "Berhasil",
+        textBody: `Kata Sandi berhasil diperbaharui.`
+      })
+      router.back()
+    } catch (error: any) {
+      const message = error.response?.data?.message || "Gagal mengirim kode. Coba lagi."
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Gagal",
+        textBody: message,
+        autoClose: 3000
+      })
+    }
   }
 
   const oldPassword = watch("oldPassword")
@@ -171,8 +187,8 @@ export default function ChangePassword() {
             {/* Submit */}
             <View>
               <AuthButton
-                label="Simpan Password Baru"
                 onPress={handleSubmit(onSubmit)}
+                label="Simpan Password Baru"
               />
             </View>
           </View>
