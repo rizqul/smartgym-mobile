@@ -1,3 +1,4 @@
+import MembershipActiveCard from "@/components/gym/membership/membershipActiveCard"
 import { useAuth } from "@/context/AuthContext"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
@@ -122,87 +123,29 @@ export default function Profile() {
           </LinearGradient>
 
           {/* ================= ACTIVE PLAN CARD ================= */}
-          <View className="rounded-2xl border border-border bg-card p-5">
-            <View className="mb-4 flex-row items-start justify-between">
-              <Text className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">Active Plan</Text>
-              <View className="flex-row items-center gap-1 rounded-md bg-primary/20 px-2 py-1">
-                <View className="h-1.5 w-1.5 rounded-full bg-primary" />
-                <Text className="text-[10px] font-bold text-primary">Aktif</Text>
-              </View>
-            </View>
-
-            <Text className="mb-4 text-xl font-bold text-text-primary">SmartGym{"\n"}Pro Athlete</Text>
-
-            <View className="mb-5 flex-row items-center justify-between rounded-xl border border-border/50 bg-surface p-3">
-              <Text className="text-xs text-text-secondary">
-                Masa Berlaku: <Text className="font-semibold text-text-primary">24 Mei 2025</Text>
-              </Text>
-              <Text className="text-xs font-semibold text-primary">364 Hari Tersisa</Text>
-            </View>
-
-            <Text className="mb-3 text-[10px] font-bold uppercase tracking-wider text-text-secondary">Hak Istimewa Paket:</Text>
-
-            {/* Benefits Grid */}
-            <View className="mb-5 flex-row flex-wrap gap-y-3">
-              <View className="w-1/2 flex-row items-center gap-2">
-                <Ionicons
-                  name="infinite-outline"
-                  size={16}
-                  color="#FF8A33"
-                />
-                <Text className="text-xs text-text-primary">Akses 24/7 Nasional</Text>
-              </View>
-              <View className="w-1/2 flex-row items-center gap-2">
-                <MaterialCommunityIcons
-                  name="brain"
-                  size={16}
-                  color="#FF8A33"
-                />
-                <Text className="text-xs text-text-primary">AI Neural Copilot</Text>
-              </View>
-              <View className="w-1/2 flex-row items-center gap-2">
-                <MaterialCommunityIcons
-                  name="account-details"
-                  size={16}
-                  color="#FF8A33"
-                />
-                <Text className="text-xs text-text-primary">InBody VIP Unlimited</Text>
-              </View>
-              <View className="w-1/2 flex-row items-center gap-2">
-                <MaterialCommunityIcons
-                  name="dumbbell"
-                  size={16}
-                  color="#FF8A33"
-                />
-                <Text className="text-xs text-text-primary">4x Free Personal Trainer</Text>
-              </View>
-            </View>
-
-            <TouchableOpacity className="mb-3 flex-row items-center justify-between rounded-xl bg-border px-4 py-3">
-              <View className="flex-row items-center gap-2">
-                <Ionicons
-                  name="swap-vertical"
-                  size={16}
-                  color="white"
-                />
-                <Text className="text-sm font-semibold text-text-primary">Kelola Paket / Perpanjang</Text>
-              </View>
-              <Ionicons
-                name="arrow-forward"
-                size={16}
-                color="white"
-              />
-            </TouchableOpacity>
-
-            <TouchableOpacity className="flex-row items-center justify-center gap-2 rounded-xl py-3">
-              <Ionicons
-                name="pause-circle-outline"
-                size={16}
-                color="#B8BDC7"
-              />
-              <Text className="text-xs text-text-secondary">Freeze / Cutti Membership (Garansi 60 Hari)</Text>
-            </TouchableOpacity>
-          </View>
+          <MembershipActiveCard
+            planName="SmartGym Elite Gold"
+            billingLabel="TAHUNAN"
+            memberTier="Member"
+            validUntil="18 Des 2025"
+            autoRenew={false}
+            benefits={[
+              {
+                icon: "meeting-room",
+                title: "Akses 24/7 Seluruh Cabang (All Clubs)",
+                description: "Fast-pass turnstile QR gate siap pakai",
+                tone: "primary"
+              },
+              {
+                icon: "smart-toy",
+                title: "AI Neural Trainer & Plan",
+                description: "Penyesuaian repetisi & target harian",
+                tone: "info"
+              }
+            ]}
+            onRenewPress={() => {}}
+          />
+          {/*  */}
 
           {/* ================= HISTORY ================= */}
           <View className="">

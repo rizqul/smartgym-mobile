@@ -4,7 +4,6 @@ import PlanCard from "@/components/gym/membership/membershipPlanCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { buyMembership } from "@/service/membership.service"
 import { RootState } from "@/store/store"
-import * as Crypto from "expo-crypto"
 import { router, useLocalSearchParams } from "expo-router"
 import React from "react"
 import { ScrollView, Text, View } from "react-native"
@@ -29,8 +28,7 @@ const membershipConfirm = () => {
 
   const handlePay = async () => {
     try {
-      const transactionId = Crypto.randomUUID()
-      const paymentUrl = await buyMembership(transactionId, id)
+      const paymentUrl = await buyMembership(id)
       console.log(paymentUrl)
       router.push({
         pathname: "/(gym)/dashboard/paymentScreen",

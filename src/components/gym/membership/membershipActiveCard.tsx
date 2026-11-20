@@ -15,27 +15,21 @@ export type MembershipBenefit = {
 
 export type MembershipActiveCardProps = {
   planName: string
-  /** Mis. "TAHUNAN" */
   billingLabel: string
-  /** Mis. "Gold Member" */
   memberTier: string
-  /** Sudah diformat, mis. "18 Des 2025" */
   validUntil: string
-  /** Sudah diformat, mis. "18 Des 2024" */
-  startDate: string
-  /** Jumlah hari yang sudah terpakai dari total siklus */
-  daysUsed: number
-  totalDays: number
+  startDate?: string
+  daysUsed?: number
+  totalDays?: number
   autoRenew: boolean
   benefits: MembershipBenefit[]
   onRenewPress?: () => void
 }
 
-// Prop `color` pada icon tidak bisa memakai className, jadi tetap hex. Samakan dengan tailwind.config.
 const ICON_COLORS = {
-  primary: "#FF6B00", // primary
-  info: "#60A5FA", // info
-  highlight: "#FDE047" // highlight
+  primary: "#FF6B00",
+  info: "#60A5FA",
+  highlight: "#FDE047"
 }
 
 const toneStyles: Record<BenefitTone, { box: string; icon: string }> = {
@@ -55,9 +49,6 @@ export default function MembershipActiveCard({
   benefits,
   onRenewPress
 }: MembershipActiveCardProps) {
-  const daysLeft = Math.max(totalDays - daysUsed, 0)
-  const percent = totalDays > 0 ? Math.min(Math.round((daysUsed / totalDays) * 100), 100) : 0
-
   return (
     <View className="gap-5 rounded-3xl border border-border bg-surface p-5">
       {/* Top row: current plan badge + member tier */}
@@ -97,13 +88,11 @@ export default function MembershipActiveCard({
           <Text className="text-xs text-text-warm">
             Aktif s/d <Text className="font-bold text-text-primary">{validUntil}</Text>
           </Text>
-          <View className="h-1 w-1 rounded-full bg-text-muted" />
-          <Text className="text-xs font-bold text-highlight">Sisa {daysLeft} Hari</Text>
         </View>
       </View>
 
       {/* Cycle progress */}
-      <View className="gap-3 rounded-xl border border-border bg-background p-3.5">
+      {/* <View className="gap-3 rounded-xl border border-border bg-background p-3.5">
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center gap-1.5">
             <MaterialIcons
@@ -129,11 +118,11 @@ export default function MembershipActiveCard({
           <Text className="text-[11px] text-text-subdued">Mulai: {startDate}</Text>
           <Text className="text-[11px] text-text-subdued">Perpanjangan Otomatis: {autoRenew ? "Aktif" : "Nonaktif"}</Text>
         </View>
-      </View>
+      </View> */}
 
       {/* Benefits */}
-      {/* <View className="gap-3">
-        <Text className="text-text-warm text-[10px] font-bold tracking-widest">KEUNTUNGAN AKTIF TERPASANG</Text>
+      <View className="gap-3">
+        <Text className="text-[10px] font-bold tracking-widest text-text-warm">KEUNTUNGAN AKTIF TERPASANG</Text>
         {benefits.map((benefit) => {
           const tone = toneStyles[benefit.tone ?? "primary"]
           return (
@@ -150,7 +139,7 @@ export default function MembershipActiveCard({
               </View>
               <View className="flex-1 gap-0.5">
                 <Text className="text-sm font-semibold text-text-body">{benefit.title}</Text>
-                <Text className="text-text-warm text-xs">{benefit.description}</Text>
+                <Text className="text-xs text-text-warm">{benefit.description}</Text>
               </View>
               <MaterialIcons
                 name="check-circle"
@@ -160,7 +149,7 @@ export default function MembershipActiveCard({
             </View>
           )
         })}
-      </View> */}
+      </View>
 
       {/* Renew button */}
       <Pressable

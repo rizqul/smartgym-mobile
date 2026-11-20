@@ -51,9 +51,13 @@ export default function PlanCard({
   variant = "default"
 }: PlanCardProps) {
   const style = variantStyles[variant]
-
+  const facility = description
+    .substring(28)
+    .split("\n")
+    .map((line) => line.replace(/^- /, "").trim())
+    .filter((line) => line !== "" && line !== "Fasilitas:")
   return (
-    <View className={`w-full overflow-hidden rounded-2xl border ${style.card}`}>
+    <View className={`h-50 w-full overflow-hidden rounded-2xl border ${style.card}`}>
       <LinearGradient
         colors={style.gradient}
         start={{ x: 0, y: 0 }}
@@ -71,7 +75,18 @@ export default function PlanCard({
         {/* Name + description */}
         <View className="gap-2">
           <Text className="text-3xl font-bold text-text-body">{name}</Text>
-          <Text className="text-base leading-6 text-text-warm">{description}</Text>
+          <Text className="text-base leading-6 text-text-warm">{description.substring(0, 25)}</Text>
+          <Text className="text-base leading-6 text-text-warm">Fasilitas:</Text>
+          <View className="flex-row items-center justify-between">
+            <View>
+              <Text className="text-base leading-6 text-text-warm">{facility[0]}</Text>
+              <Text className="text-base leading-6 text-text-warm">{facility[1]}</Text>
+            </View>
+            <View>
+              <Text className="text-base leading-6 text-text-warm">{facility[2]}</Text>
+              <Text className="text-base leading-6 text-text-warm">{facility[3]}</Text>
+            </View>
+          </View>
         </View>
 
         {/* Divider */}
