@@ -30,23 +30,26 @@ export function AuthTextField({
   accessory,
   label2,
   icon
-}: AuthTextFieldProps) {
+}: Readonly<AuthTextFieldProps>) {
   return (
-    <View className="mb-5">
+    <View className="">
       <View className="flex-row items-center justify-between">
         <View className="flex-row gap-2 px-2">
           {icon}
           <Text className="mb-2 font-inter text-sm font-semibold text-text-body">{label}</Text>
         </View>
-        <View>
-          <Link href={"/(auth)/forgot-password"}>
-            <Text className="mb-2 font-inter text-sm font-semibold text-primary">{label2}</Text>
-          </Link>
-        </View>
+        {label2 && (
+          <View>
+            <Link href={"/(auth)/forgot-password"}>
+              <Text className="mb-2 font-inter text-sm font-semibold text-primary">{label2}</Text>
+            </Link>
+          </View>
+        )}
       </View>
-      <View className={` w-[340] flex-row items-center rounded-xl border bg-field-primary px-4 ${error ? "border-danger" : ""}`}>
+      <View className={`w-full flex-row items-center rounded-xl border bg-field-primary px-4 py-1 ${error ? "border-danger" : ""}`}>
         <TextInput
-          className="min-h-14 flex-1 font-inter text-base text-text-body"
+          // min-h-14
+          className=" flex-1 font-inter text-base text-text-body"
           value={value}
           onChangeText={onChangeText}
           onBlur={onBlur}

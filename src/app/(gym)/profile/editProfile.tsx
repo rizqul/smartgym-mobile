@@ -127,14 +127,11 @@ export default function EditProfile() {
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
 
-      {/* <HeaderNavigation label="Ubah Profil" /> */}
-
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingBottom: 40 }}
       >
-        {/* ================= HEADER + PROFILE PHOTO ================= */}
+        {/* Header */}
         <View className=" border-b border-border bg-surface px-5 pb-8 pt-3 shadow-lg">
           {/* Header: tombol back di kiri, judul tepat di tengah */}
           <View className="h-11 flex-row items-center justify-center">
@@ -184,43 +181,67 @@ export default function EditProfile() {
             </View>
           </View>
         </View>
-        <View className="items-center">
-          {/* ================= FORM SECTION ================= */}
-          <View className=" mt-6 items-center rounded-3xl border border-border px-5 pb-3 pt-4 shadow-md">
-            <Controller
-              control={control}
-              name="fullname"
-              render={({ field: { value, onChange, onBlur } }) => (
-                <AuthTextField
-                  label="Nama Lengkap"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder="Masukkan Email Anda"
-                  error={errors.fullname?.message}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name="phoneNumber"
-              render={({ field: { value, onChange, onBlur } }) => (
-                <AuthTextField
-                  label="Nomor Telepon"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder="Masukkan Nomor Telepon Anda"
-                  error={errors.phoneNumber?.message}
-                />
-              )}
-            />
+
+        {/* Body */}
+        <View className="mt-6 px-5 pb-6">
+          {/* ================= SECTION 1: INFORMASI DASAR ================= */}
+          <View className="mb-6">
+            <View className="mb-4 flex-row items-center gap-2">
+              <Ionicons
+                name="person-outline"
+                size={18}
+                color="#FF6B00"
+              />
+              <Text className="text-base font-bold text-text-primary">Informasi Dasar</Text>
+            </View>
+
+            <View className="gap-4 rounded-2xl border border-border/50 bg-card p-4">
+              <View className="">
+                <View className="flex-row items-center justify-between">
+                  <View className="flex-row gap-2 px-2">
+                    <Text className="mb-2 font-inter text-sm font-semibold text-text-body">Email</Text>
+                  </View>
+                </View>
+                <View className="w-full flex-row items-center rounded-xl border border-border/80 bg-surface px-4 py-5 opacity-70">
+                  <Text className="font-inter text-base  text-text-primary ">{user?.email}</Text>
+                </View>
+              </View>
+
+              <Controller
+                control={control}
+                name="fullname"
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <AuthTextField
+                    label="Nama Lengkap"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="Masukkan Nama Anda"
+                    error={errors.fullname?.message}
+                    autoCapitalize="words"
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="phoneNumber"
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <AuthTextField
+                    label="Nomor Telepon"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="Contoh: 081234567890"
+                    error={errors.phoneNumber?.message}
+                    keyboardType="phone-pad"
+                  />
+                )}
+              />
+            </View>
           </View>
 
           {/* ================= SUBMIT BUTTON & FOOTER ================= */}
-          <View className="mt-6 px-6">
+          <View className="">
             <AuthButton
               onPress={handleSubmit(onSubmit)}
               label="Simpan Perubahan"
