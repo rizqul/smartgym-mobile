@@ -1,6 +1,7 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
+import { OrangeGlowBackground } from "@/components/auth/OrangeGlowBackground"
 import { useAuth } from "@/context/AuthContext"
 import { login } from "@/service/auth.service"
 import { Entypo, Ionicons } from "@expo/vector-icons"
@@ -10,7 +11,6 @@ import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Image, Pressable, Text, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
-import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg"
 import { z } from "zod"
 
 const loginSchema = z.object({
@@ -67,46 +67,8 @@ export default function Login() {
 
   return (
     <AuthScreenLayout>
-      <Svg
-        width="100%"
-        height="100%"
-        style={{ position: "absolute", top: -320, left: 0, right: 0, bottom: 0 }}
-      >
-        <Defs>
-          <RadialGradient
-            id="orangeGlow"
-            cx="50%"
-            cy="52%"
-            rx="70%"
-            ry="30%"
-            fx="50%"
-            fy="52%"
-          >
-            <Stop
-              offset="0%"
-              stopColor="#FF6B00"
-              stopOpacity="0.28"
-            />
-            <Stop
-              offset="50%"
-              stopColor="#7A3300"
-              stopOpacity="0.14"
-            />
-            <Stop
-              offset="100%"
-              stopColor="#121215"
-              stopOpacity="0"
-            />
-          </RadialGradient>
-        </Defs>
-        <Rect
-          x="0"
-          y="0"
-          width="100%"
-          height="100%"
-          fill="url(#orangeGlow)"
-        />
-      </Svg>
+      <OrangeGlowBackground style={{ position: "absolute", top: -320, left: 0, right: 0, bottom: 0 }} />
+
       {/* Header */}
       <View className="mx-auto w-full max-w-[385px] gap-14 px-5">
         <View className="flex items-center justify-center gap-5">
