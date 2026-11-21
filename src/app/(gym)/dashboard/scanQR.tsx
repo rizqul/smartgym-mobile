@@ -1,15 +1,16 @@
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
+import { scanQr } from "@/service/scan.service"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { CameraView, useCameraPermissions } from "expo-camera"
 import { useRouter } from "expo-router"
 import React, { useState } from "react"
-import { Alert, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function ScanQR() {
   const router = useRouter()
-
+  const [isLoading, setIsLoading] = useState(false)
   const [permission, requestPermission] = useCameraPermissions()
   const [scanned, setScanned] = useState(false)
   const [flashOn, setFlashOn] = useState(false)
@@ -58,15 +59,57 @@ export default function ScanQR() {
     )
   }
 
-  const handleBarCodeScanned = ({ type, data }: { type: string; data: string }) => {
+  // const handleBarCodeScanned = async ({ type, data }: { type: string; data: string }) => {
+  //   setScanned(true)
+  //   // const res = await scanQr(data)
+  //   // sementara
+  //   Alert.alert(`Scan Berhasil - ${type}`, "res", [
+  //     {
+  //       text: "Scan Lagi",
+  //       onPress: () => setScanned(false)
+  //     }
+  //   ])
+  // }
+
+  const handleBarCodeScanned = async ({ type, data }: { type: string; data: string }) => {
+    if (scanned || isLoading) return // Cegah scan ganda
     setScanned(true)
-    // sementara
-    Alert.alert(`Scan Berhasil - ${type}`, `Data QR: ${data}\n\n(Cek console log untuk detail)`, [
-      {
-        text: "Scan Lagi",
-        onPress: () => setScanned(false)
+    setIsLoading(true)
+
+    try {
+      const res = await scanQr(data)
+      if (res.status === "GRANTED") {
+        Toast.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: "Akses Diberikan",
+          textBody: `Selamat berlatih, ${res.memberName}!\nPaket: ${res.membershipName}`,
+          autoClose: 5000 
+        })
+      } else {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Akses Ditolak",
+          textBody: res.denialReason || "Membership Anda tidak aktif atau telah kedaluwarsa.",
+          autoClose: 5000
+        })
       }
-    ])
+    } catch (error: any) {
+      console.log("Error Scan QR:", error.response?.data || error.message)
+
+      const errorMessage = error.response?.data?.message || "Gagal terhubung ke server. Periksa koneksi internet Anda."
+
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Koneksi Gagal",
+        textBody: errorMessage,
+        autoClose: 4000
+      })
+    } finally {
+      setIsLoading(false)
+      setTimeout(() => {
+        setScanned(false)
+      }, 2000)
+    }
   }
 
   return (
