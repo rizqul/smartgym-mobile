@@ -7,7 +7,7 @@ type AuthButtonProps = {
   disabled?: boolean
 }
 
-export function AuthButton({ label, onPress, disabled = false }: AuthButtonProps) {
+export function AuthButton({ label, onPress, disabled = false }: Readonly<AuthButtonProps>) {
   return (
     <Pressable
       className={`w-full flex-row items-center justify-center gap-3 rounded-xl py-4 shadow-[#561F00] ${disabled ? "bg-[#FFB580]" : "bg-primary"} active:opacity-70 `}

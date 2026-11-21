@@ -108,11 +108,8 @@ export default function Login() {
         />
       </Svg>
       {/* Header */}
-      <View
-        className="flex items-center gap-14
-      "
-      >
-        <View className="flex w-[358] items-center justify-center gap-5">
+      <View className="mx-auto w-full max-w-[385px] gap-14 px-5">
+        <View className="flex items-center justify-center gap-5">
           {/* logo part */}
           <View className="flex h-[70] w-[70] items-center justify-center rounded-xl bg-[#231105]">
             <Image
@@ -130,7 +127,7 @@ export default function Login() {
           </View>
         </View>
         {/* Welcome Part */}
-        <View className="flex w-[340] items-center justify-center gap-3 font-inter">
+        <View className="flex items-center justify-center gap-3 font-inter">
           <Text className="font-inter text-3xl font-bold text-text-body">Selamat Datang</Text>
           <Text className="text-md w-full text-center font-inter leading-6 text-[#E2BFB0]">
             Masuk ke akun SmartGym kamu untuk melanjutkan sesi latihan dan akses fasilitas gym pintar.
@@ -138,7 +135,7 @@ export default function Login() {
         </View>
         {/* Input Part */}
         <View className="flex">
-          <View>
+          <View className="gap-5">
             <Controller
               control={control}
               name="email"

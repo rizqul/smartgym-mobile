@@ -6,7 +6,7 @@ type AuthScreenLayoutProps = {
   children: ReactNode
 }
 
-export function AuthScreenLayout({ children }: AuthScreenLayoutProps) {
+export function AuthScreenLayout({ children }: Readonly<AuthScreenLayoutProps>) {
   const [keyboardHeight, setKeyboardHeight] = useState(0)
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export function AuthScreenLayout({ children }: AuthScreenLayoutProps) {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View className="flex-1 items-center justify-center gap-12 bg-background">{children}</View>
+          <View className="flex-1 justify-center gap-12 bg-background">{children}</View>
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
