@@ -1,6 +1,7 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
+import { OrangeGlowBackground } from "@/components/auth/OrangeGlowBackground"
 import { ForgotPassword as forgotPassword } from "@/service/auth.service"
 import { Fontisto } from "@expo/vector-icons"
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
@@ -9,7 +10,6 @@ import { Link, router } from "expo-router"
 import { Controller, useForm } from "react-hook-form"
 import { Text, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
-import { Defs, RadialGradient, Rect, Stop, Svg } from "react-native-svg"
 import { z } from "zod"
 
 const forgotPasswordSchema = z.object({
@@ -53,49 +53,11 @@ export default function ForgotPassword() {
 
   return (
     <AuthScreenLayout>
-      <Svg
-        width="100%"
-        height="100%"
-        style={{ position: "absolute", top: -210, left: 0, right: 0, bottom: 0 }}
-      >
-        <Defs>
-          <RadialGradient
-            id="orangeGlow"
-            cx="50%"
-            cy="52%"
-            rx="70%"
-            ry="30%"
-            fx="50%"
-            fy="52%"
-          >
-            <Stop
-              offset="0%"
-              stopColor="#FF6B00"
-              stopOpacity="0.28"
-            />
-            <Stop
-              offset="50%"
-              stopColor="#7A3300"
-              stopOpacity="0.14"
-            />
-            <Stop
-              offset="100%"
-              stopColor="#121215"
-              stopOpacity="0"
-            />
-          </RadialGradient>
-        </Defs>
-        <Rect
-          x="0"
-          y="0"
-          width="100%"
-          height="100%"
-          fill="url(#orangeGlow)"
-        />
-      </Svg>
-      <View className="flex items-center justify-start gap-6">
+      <OrangeGlowBackground style={{ position: "absolute", top: -210, left: 0, right: 0, bottom: 0 }} />
+
+      <View className="mx-auto w-full max-w-[385px] justify-start gap-6 px-5">
         {/* Header */}
-        <View className="flex w-[358] items-center justify-center gap-5">
+        <View className="flex items-center justify-center gap-5">
           {/* logo part */}
           <View className="flex h-[96] w-[96] items-center justify-center rounded-2xl  bg-white/10 shadow-xl">
             <View className="opacity-120 flex h-[76] w-[76] items-center justify-center rounded-full border border-dashed border-[#FF6B00]">
@@ -118,31 +80,29 @@ export default function ForgotPassword() {
         </View>
         {/* Input Part */}
         <View className="flex">
-          <View>
-            <Controller
-              control={control}
-              name="email"
-              render={({ field: { value, onChange, onBlur } }) => (
-                <AuthTextField
-                  icon={
-                    <Fontisto
-                      name="email"
-                      size={15}
-                      color="#FF6B00"
-                    />
-                  }
-                  label="Email"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder="you@example.com"
-                  error={errors.email?.message}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-              )}
-            />
-          </View>
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <AuthTextField
+                icon={
+                  <Fontisto
+                    name="email"
+                    size={15}
+                    color="#FF6B00"
+                  />
+                }
+                label="Email"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                placeholder="you@example.com"
+                error={errors.email?.message}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            )}
+          />
         </View>
         <View>
           <AuthButton
@@ -150,7 +110,7 @@ export default function ForgotPassword() {
             label="Kirim Tautan & Kode Verifikasi"
           />
         </View>
-        <View>
+        <View className="flex items-center">
           <Text className="text-sm text-[#E2BFB0]">
             Ingat kata sandi?{" "}
             <Link href={"/(auth)/login"}>
