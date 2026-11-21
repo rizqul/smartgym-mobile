@@ -18,10 +18,6 @@ export default function TrainerScreen() {
     dispatch(fetchTrainers())
   }, [])
 
-  const onShowTrainer = (id: string) => {
-    router.push("/(gym)/trainer/trainerProfil")
-  }
-
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -110,7 +106,6 @@ export default function TrainerScreen() {
           <View className="gap-5">
             {result?.map((trainer) => (
               <TrainerCard
-                handleShow={onShowTrainer}
                 key={trainer.id}
                 data={trainer}
               />

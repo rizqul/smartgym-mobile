@@ -8,3 +8,13 @@ export interface Trainer {
   experience: number
   rate: number
 }
+
+export interface TrainerSlot {
+  id: string
+  description: string
+  startTime: string
+  endTime: string
+  status: string
+  createdAt: string
+  updatedAt: string
+}

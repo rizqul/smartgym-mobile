@@ -5,7 +5,12 @@ export const getAllTrainers = async () => {
   return response.data.data
 }
 
-export const getTrainerDetail = async (id: string, date?: string) => {
-  const response = await api.get(`/member/trainers/slot/${id}`, { params: date })
+export const getTrainerSlot = async (id: string, date?: string) => {
+  const response = await api.get(`/member/trainers/slot/${id}`, { params: { date } })
+  return response.data
+}
+
+export const bookingTrainer = async (slotId: string) => {
+  const response = await api.post(`/member/trainers/booking`, { slotId })
   return response.data
 }
