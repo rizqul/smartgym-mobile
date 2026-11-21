@@ -42,16 +42,6 @@ export default function TrainerProfile() {
     }
   }, [id, selectedDate])
 
-  // const handleSelectDate = async (fullDate: string) => {
-  //   try {
-  //     setSelectedDate(fullDate)
-  //     const response = await getTrainerSlot(id, fullDate)
-  //     setTimeSlots(response.data)
-  //   } catch (error) {
-  //     console.log("Error : ", error)
-  //   }
-  // }
-
   const dateText = new Date(selectedDate).toLocaleDateString("id-ID", {
     day: "numeric",
     month: "long",
@@ -265,31 +255,35 @@ export default function TrainerProfile() {
       </ScrollView>
 
       {/* ================= STICKY BOTTOM BAR ================= */}
-      <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between border-t border-border bg-surface p-5 pb-8">
-        <View>
-          <Text className="mb-1 text-[9px] font-bold uppercase tracking-widest text-text-secondary">Sesi Dipilih</Text>
-          <Text className="mb-0.5 text-sm font-bold text-text-primary">Selasa, 28 Mei •{/* {selectedTime.time.split(" - ")[0]} */}</Text>
-          <View className="flex-row items-center gap-1">
-            <Ionicons
-              name="checkmark-circle"
-              size={12}
-              color="#B8BDC7"
-            />
-            <Text className="text-[10px] text-text-secondary">Kupon Terpasang</Text>
+      {selectedTime ? (
+        <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between border-t border-border bg-surface p-5 pb-8">
+          <View>
+            <Text className="mb-1 text-[9px] font-bold uppercase tracking-widest text-text-secondary">Sesi Dipilih</Text>
+            <Text className="mb-0.5 text-sm font-bold text-text-primary">
+              {dateText} • {`${selectedTime.startTime.substring(11, 16)} - ${selectedTime.endTime.substring(11, 16)}`}
+            </Text>
+            <View className="flex-row items-center gap-1">
+              <Ionicons
+                name="checkmark-circle"
+                size={12}
+                color="#B8BDC7"
+              />
+              <Text className="text-[10px] text-text-secondary">Kupon Terpasang</Text>
+            </View>
           </View>
+          <TouchableOpacity
+            onPress={onNext}
+            className="flex-row items-center gap-2 rounded-xl bg-primary px-6 py-3.5"
+          >
+            <Text className="text-sm font-bold text-white">Lanjutkan</Text>
+            <Ionicons
+              name="arrow-forward"
+              size={16}
+              color="white"
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={onNext}
-          className="flex-row items-center gap-2 rounded-xl bg-primary px-6 py-3.5"
-        >
-          <Text className="text-sm font-bold text-white">Lanjutkan</Text>
-          <Ionicons
-            name="arrow-forward"
-            size={16}
-            color="white"
-          />
-        </TouchableOpacity>
-      </View>
+      ) : null}
     </SafeAreaView>
   )
 }
