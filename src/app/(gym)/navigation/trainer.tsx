@@ -1,18 +1,27 @@
 import { TrainerCard } from "@/components/gym/trainer/TrainerCard"
-import { DUMMYTRAINER } from "@/data/dummyTrainer"
+import { fetchTrainers } from "@/store/slice/trainerSlice"
+import { AppDispatch, RootState } from "@/store/store"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { useRouter } from "expo-router"
-import React from "react"
+import React, { useEffect } from "react"
 import { ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useDispatch, useSelector } from "react-redux"
 
 export default function TrainerScreen() {
   const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
+  const { result } = useSelector((state: RootState) => state.trainer)
+
+  useEffect(() => {
+    dispatch(fetchTrainers())
+  }, [])
 
   const onShowTrainer = (id: string) => {
     router.push("/(gym)/trainer/trainerProfil")
   }
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -99,7 +108,7 @@ export default function TrainerScreen() {
 
           {/* ================= TRAINER LIST ================= */}
           <View className="gap-5">
-            {DUMMYTRAINER.map((trainer) => (
+            {result?.map((trainer) => (
               <TrainerCard
                 handleShow={onShowTrainer}
                 key={trainer.id}
