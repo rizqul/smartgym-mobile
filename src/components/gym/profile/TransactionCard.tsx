@@ -1,25 +1,10 @@
-import { TransactionData, TransactionStatus } from "@/type/Transaction.type"
+import { TransactionsResponse } from "@/type/Transaction.type"
 import { formatDate, FormatRupiah } from "@/utils/FormaterHelper"
+import { getStatusUI } from "@/utils/transactionHelper"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { Text, TouchableOpacity, View } from "react-native"
 
-const getStatusUI = (status: TransactionStatus) => {
-  switch (status) {
-    case "PAID":
-      return { label: "Berhasil", color: "success", textColor: "text-success", bgColor: "bg-success/15" }
-    case "PENDING":
-      return { label: "Menunggu", color: "secondary", textColor: "text-secondary", bgColor: "bg-secondary/15" }
-    case "FAILED":
-    case "EXPIRED":
-      return { label: "Gagal/Kedaluwarsa", color: "danger", textColor: "text-danger", bgColor: "bg-danger/15" }
-    case "REFUNDED":
-      return { label: "Dikembalikan", color: "info", textColor: "text-info", bgColor: "bg-info/15" }
-    default:
-      return { label: status, color: "text-secondary", textColor: "text-text-secondary", bgColor: "bg-surface" }
-  }
-}
-
-export const TransactionCard = ({ item, showDetail }: { item: TransactionData; showDetail: () => void }) => {
+export const TransactionCard = ({ item, showDetail }: { item: TransactionsResponse; showDetail: () => void }) => {
   const statusUI = getStatusUI(item.status)
   const isPending = item.status === "PENDING"
 
@@ -46,10 +31,12 @@ export const TransactionCard = ({ item, showDetail }: { item: TransactionData; s
 
       {/* Body Card */}
       <View className="mb-3">
-        <Text className="mb-1 text-sm font-bold text-text-primary">{item.relation_data.title}</Text>
-        <Text className="mb-1 text-[11px] text-text-secondary">{item.relation_data.description}</Text>
+        <Text className="mb-1 text-sm font-bold text-text-primary">{item.name}</Text>
+        {isPending && item.expiredAt ? (
+          <Text className="mb-1 text-[11px] text-text-secondary">Bayar sebelum {formatDate(item.expiredAt)}</Text>
+        ) : null}
         <Text className="text-[10px] text-text-secondary">
-          #{item.midtrans_order_id} • {formatDate(item.created_at)}
+          #{item.orderId} • {formatDate(item.createdAt)}
         </Text>
       </View>
 
