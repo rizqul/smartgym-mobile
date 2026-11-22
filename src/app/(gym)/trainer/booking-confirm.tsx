@@ -12,7 +12,7 @@ export default function BookingConfirm() {
   const { trainerId, slotId } = useLocalSearchParams<{ trainerId: string; slotId: string }>()
   const [isChecked, setIsChecked] = useState(false)
   const [paymentId, setPaymentId] = useState<PaymentMethodId | "">("OTHER_QRIS")
-  const [bankId, setBankId] = useState<BankId | "">("BRI_VA")
+  const [bankId, setBankId] = useState<BankId | "">("")
 
   const handleConfirm = async () => {
     try {
@@ -20,7 +20,7 @@ export default function BookingConfirm() {
       const paymentUrl = await bookingTrainer(slotId, paymentType)
       router.push({
         pathname: "/(gym)/dashboard/paymentScreen",
-        params: { paymentUrl, type: "pt-booking" }
+        params: { paymentUrl: paymentUrl, type: "pt-booking" }
       })
     } catch (err: any) {
       console.log(err.response?.status, err.response?.data)

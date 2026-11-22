@@ -5,12 +5,12 @@ export const getAllTransactions = async () => {
   return response.data
 }
 
-export const checkTransaction = async (id: string, orderId: string) => {
-  const response = await api.get(`/member/transactions/${id}`, { params: { orderId } })
+export const checkTransactionStatus = async (orderId: string) => {
+  const response = await api.get(`/member/transactions/${orderId}`)
   return response.data
 }
 
-export const cancelTransaction = async (id: string, orderId: string) => {
-  const response = await api.delete(`/member/transactions/${id}`, { params: { orderId } })
+export const cancelTransaction = async (orderId: string) => {
+  const response = await api.delete(`/member/transactions/${orderId}`)
   return response.data
 }

@@ -20,8 +20,8 @@ type BankOption = {
 export const PAYMENT_METHODS: PaymentMethod[] = [
   { id: "OTHER_QRIS", tile: "QRIS", title: "QRIS", description: "Scan dengan aplikasi bank atau e-wallet" },
   { id: "bank", tile: "BANK", title: "Transfer bank / Virtual Account", description: "BNI, BSI, BRI, dan SeaBank" },
-  { id: "ECHANNEL", tile: "PAY", title: "E-wallet", description: "GoPay • ShopeePay" },
-  { id: "GOPAY", tile: "CARD", title: "Kartu kredit / debit", description: "Visa • Mastercard • JCB • American Express" },
+  { id: "ECHANNEL", tile: "ECHANNEL", title: "ECHANNEL", description: "ECHANNEL" },
+  { id: "GOPAY", tile: "CARD", title: "GOPAY", description: "GOPAY" },
   { id: "DANA", tile: "TOKO", title: "Gerai retail", description: "Alfamart • Indomaret" },
   { id: "SHOPEEPAY", tile: "TOKO", title: "Gerai retail", description: "Alfamart • Indomaret" }
 ]
