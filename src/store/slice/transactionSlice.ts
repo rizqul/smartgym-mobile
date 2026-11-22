@@ -23,7 +23,7 @@ export const fetchTransactions = createAsyncThunk("transaction/fetchTransactions
 })
 
 const transactionSlice = createSlice({
-  name: "trainers",
+  name: "transaction",
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
