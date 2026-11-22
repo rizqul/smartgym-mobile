@@ -1,33 +1,42 @@
 import { TransactionCard } from "@/components/gym/profile/TransactionCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
-import { DUMMYTRANSACTIONS } from "@/data/dummyTransaction"
-import { TransactionData } from "@/type/Transaction.type"
+import { fetchTransactions } from "@/store/slice/transactionSlice"
+import { AppDispatch, RootState } from "@/store/store"
 import { Ionicons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
-import React from "react"
+import React, { useEffect } from "react"
 import { ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useDispatch, useSelector } from "react-redux"
 
 export default function TransactionHistory() {
   const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
+  const { result } = useSelector((state: RootState) => state.transaction)
+
+  useEffect(() => {
+    dispatch(fetchTransactions())
+  }, [])
+
+  const transaction = result?.data
 
   // map by date
-  const groupedTransactions = DUMMYTRANSACTIONS.reduce(
-    (acc, curr) => {
-      const date = new Date(curr.created_at)
-      const monthYear = date.toLocaleDateString("id-ID", { month: "long", year: "numeric" }).toUpperCase()
+  // const groupedTransactions = DUMMYTRANSACTIONS.reduce(
+  //   (acc, curr) => {
+  //     const date = new Date(curr.created_at)
+  //     const monthYear = date.toLocaleDateString("id-ID", { month: "long", year: "numeric" }).toUpperCase()
 
-      if (!acc[monthYear]) {
-        acc[monthYear] = []
-      }
-      acc[monthYear].push(curr)
-      return acc
-    },
-    {} as Record<string, TransactionData[]>
-  )
+  //     if (!acc[monthYear]) {
+  //       acc[monthYear] = []
+  //     }
+  //     acc[monthYear].push(curr)
+  //     return acc
+  //   },
+  //   {} as Record<string, TransactionData[]>
+  // )
 
   const handleShowDetail = (id: string) => {
-    router.push("/(gym)/profile/detailHistory")
+    router.push({ pathname: "/(gym)/profile/detailHistory", params: { id } })
   }
 
   return (
@@ -85,20 +94,20 @@ export default function TransactionHistory() {
         </View>
 
         {/* TRANSACTION LIST (BERDASARKAN HASIL GROUPING) */}
-        <View>
-          {Object.entries(groupedTransactions).map(([monthYear, items], index) => (
+        <View className="gap-4">
+          {/* {Object.entries(groupedTransactions).map(([monthYear, items], index) => (
             <View
               key={index}
               className="mb-6 gap-3"
             >
               {/* Group Header */}
-              <View className="flex-row items-center justify-between">
+          {/* <View className="flex-row items-center justify-between">
                 <Text className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{monthYear}</Text>
                 <Text className="text-[10px] text-text-secondary">{items.length} transaksi</Text>
-              </View>
+              </View> */}
 
-              {/* Group Items */}
-              {items.map((item) => (
+          {/* Group Items */}
+          {/* {items.map((item) => (
                 <TransactionCard
                   key={item.id}
                   item={item}
@@ -107,8 +116,19 @@ export default function TransactionHistory() {
                   }}
                 />
               ))}
-            </View>
-          ))}
+            </View> */}
+          {/* ))}} */}
+          {transaction?.map((item) => {
+            return (
+              <TransactionCard
+                key={item.id}
+                item={item}
+                showDetail={() => {
+                  handleShowDetail(item.id)
+                }}
+              />
+            )
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>

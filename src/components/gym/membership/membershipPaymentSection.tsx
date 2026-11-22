@@ -20,8 +20,8 @@ type BankOption = {
 export const PAYMENT_METHODS: PaymentMethod[] = [
   { id: "OTHER_QRIS", tile: "QRIS", title: "QRIS", description: "Scan dengan aplikasi bank atau e-wallet" },
   { id: "bank", tile: "BANK", title: "Transfer bank / Virtual Account", description: "BNI, BSI, BRI, dan SeaBank" },
-  { id: "ECHANNEL", tile: "PAY", title: "E-wallet", description: "GoPay • ShopeePay" },
-  { id: "GOPAY", tile: "CARD", title: "Kartu kredit / debit", description: "Visa • Mastercard • JCB • American Express" },
+  { id: "ECHANNEL", tile: "ECHANNEL", title: "ECHANNEL", description: "ECHANNEL" },
+  { id: "GOPAY", tile: "CARD", title: "GOPAY", description: "GOPAY" },
   { id: "DANA", tile: "TOKO", title: "Gerai retail", description: "Alfamart • Indomaret" },
   { id: "SHOPEEPAY", tile: "TOKO", title: "Gerai retail", description: "Alfamart • Indomaret" }
 ]
@@ -49,7 +49,7 @@ export type PaymentSectionProps = {
   onSelectBank?: (id: BankId) => void
 }
 
-function MethodOption({ method, selected, onPress }: { method: PaymentMethod; selected: boolean; onPress: () => void }) {
+function MethodOption({ method, selected, onPress }: Readonly<{ method: PaymentMethod; selected: boolean; onPress: () => void }>) {
   return (
     <Pressable
       onPress={onPress}
@@ -150,7 +150,7 @@ function BankDropdown({
   )
 }
 
-export default function PaymentSection({ summary, selectedMethod, onSelectMethod, selectedBank, onSelectBank }: PaymentSectionProps) {
+export default function PaymentSection({ summary, selectedMethod, onSelectMethod, selectedBank, onSelectBank }: Readonly<PaymentSectionProps>) {
   const [internalSelected, setInternalSelected] = useState<PaymentMethodId>("OTHER_QRIS")
   const [internalBank, setInternalBank] = useState<BankId | undefined>(undefined)
   const [bankOpen, setBankOpen] = useState(false)

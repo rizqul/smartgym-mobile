@@ -1,6 +1,7 @@
 import checkinReducer from "@/store/slice/checkinSlice"
 import membershipReducer from "@/store/slice/membershipSlice"
 import trainerReducer from "@/store/slice/trainerSlice"
+import transactionReducer from "@/store/slice/transactionSlice"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import { persistReducer, persistStore } from "redux-persist"
@@ -8,6 +9,7 @@ import { persistReducer, persistStore } from "redux-persist"
 const rootReducer = combineReducers({
   trainer: trainerReducer,
   membership: membershipReducer,
+  transaction: transactionReducer,
   checkin: checkinReducer
 })
 

@@ -48,7 +48,7 @@ export default function MembershipActiveCard({
   autoRenew,
   benefits,
   onRenewPress
-}: MembershipActiveCardProps) {
+}: Readonly<MembershipActiveCardProps>) {
   return (
     <View className="gap-5 rounded-3xl border border-border bg-surface p-5">
       {/* Top row: current plan badge + member tier */}

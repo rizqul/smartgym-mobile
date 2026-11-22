@@ -12,5 +12,5 @@ export const getTrainerSlot = async (id: string, date?: string) => {
 
 export const bookingTrainer = async (slotId: string, paymentType: string) => {
   const response = await api.post(`/member/trainers/booking`, { slotId, paymentType })
-  return response.data
+  return response.data.data
 }
