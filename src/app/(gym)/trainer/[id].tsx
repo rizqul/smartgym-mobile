@@ -49,7 +49,7 @@ export default function TrainerProfile() {
   })
 
   const onNext = () => {
-    router.push("/trainer/booking-confirm")
+    router.push({ pathname: "/trainer/booking-confirm", params: { trainerId: id, slotId: String(selectedTime?.id) } })
   }
 
   return (
@@ -212,12 +212,12 @@ export default function TrainerProfile() {
                   key={slot.id}
                   onPress={() => setSelectedTime(slot)}
                   className={`flex-row items-center rounded-2xl border p-4 
-                  ${selectedTime?.id === slot.id ? "border-primary bg-surface" : "border-border bg-card"}`}
+                  ${selectedTime?.id === slot.id && slot.status === "AVAILABLE" ? "border-primary bg-surface" : "border-border bg-card"}`}
                 >
                   {/* Icon */}
                   <View
                     className={`mr-3 h-10 w-10 items-center justify-center rounded-full ${
-                      selectedTime?.id === slot.id ? "bg-primary" : "bg-background"
+                      selectedTime?.id === slot.id && slot.status === "AVAILABLE" ? "bg-primary" : "bg-background"
                     }`}
                   >
                     <Ionicons
@@ -255,7 +255,7 @@ export default function TrainerProfile() {
       </ScrollView>
 
       {/* ================= STICKY BOTTOM BAR ================= */}
-      {selectedTime ? (
+      {selectedTime?.status === "AVAILABLE" ? (
         <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between border-t border-border bg-surface p-5 pb-8">
           <View>
             <Text className="mb-1 text-[9px] font-bold uppercase tracking-widest text-text-secondary">Sesi Dipilih</Text>

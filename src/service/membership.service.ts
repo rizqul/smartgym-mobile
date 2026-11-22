@@ -1,9 +1,9 @@
 import { TypePackage } from "@/type/membership.type"
 import api from "./api"
 
-export const buyMembership = async (packageId: string) => {
+export const buyMembership = async (packageId: string, paymentType:string) => {
   try {
-    const res = await api.post("/member/membership/order", { packageId })
+    const res = await api.post("/member/membership/order", { packageId, paymentType })
     const paymentUrl = res.data.data
     return paymentUrl
   } catch (err: any) {
