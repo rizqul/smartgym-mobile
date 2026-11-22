@@ -59,18 +59,6 @@ export default function ScanQR() {
     )
   }
 
-  // const handleBarCodeScanned = async ({ type, data }: { type: string; data: string }) => {
-  //   setScanned(true)
-  //   // const res = await scanQr(data)
-  //   // sementara
-  //   Alert.alert(`Scan Berhasil - ${type}`, "res", [
-  //     {
-  //       text: "Scan Lagi",
-  //       onPress: () => setScanned(false)
-  //     }
-  //   ])
-  // }
-
   const handleBarCodeScanned = async ({ type, data }: { type: string; data: string }) => {
     if (scanned || isLoading) return // Cegah scan ganda
     setScanned(true)
@@ -78,13 +66,15 @@ export default function ScanQR() {
 
     try {
       const res = await scanQr(data)
+
       if (res.status === "GRANTED") {
         Toast.show({
           type: ALERT_TYPE.SUCCESS,
           title: "Akses Diberikan",
-          textBody: `Selamat berlatih, ${res.memberName}!\nPaket: ${res.membershipName}`,
-          autoClose: 5000 
+          textBody: `Selamat berlatih, ${res.memberName}!`,
+          autoClose: 5000
         })
+        router.push("/(gym)/navigation/dashboard")
       } else {
         Toast.show({
           type: ALERT_TYPE.DANGER,

@@ -18,7 +18,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 export const useAuth = () => useContext(AuthContext)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState<User | null>(null)
@@ -72,6 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await clearSession()
       setUser(null)
       setIsLoggedIn(false)
+      console.log(error);
     } finally {
       setIsLoading(false)
     }
