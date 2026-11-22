@@ -1,7 +1,9 @@
+import { Ionicons } from "@expo/vector-icons"
 import React, { useState } from "react"
 import { Pressable, Text, View } from "react-native"
 
-export type PaymentMethodId = "qris" | "bank" | "ewallet" | "card" | "retail"
+export type PaymentMethodId = "OTHER_QRIS" | "bank" | "ECHANNEL" | "GOPAY" | "DANA" | "SHOPEEPAY"
+export type BankId = "BCA_VA" | "BNI_VA" | "BSI_VA" | "BRI_VA" | "SEABANK_VA"
 
 type PaymentMethod = {
   id: PaymentMethodId
@@ -10,12 +12,26 @@ type PaymentMethod = {
   description: string
 }
 
-const PAYMENT_METHODS: PaymentMethod[] = [
-  { id: "qris", tile: "QRIS", title: "QRIS", description: "Scan dengan aplikasi bank atau e-wallet" },
-  { id: "bank", tile: "BANK", title: "Transfer bank / Virtual Account", description: "BCA, BNI, BRI, Mandiri, dan bank lainnya" },
-  { id: "ewallet", tile: "PAY", title: "E-wallet", description: "GoPay • ShopeePay" },
-  { id: "card", tile: "CARD", title: "Kartu kredit / debit", description: "Visa • Mastercard • JCB • American Express" },
-  { id: "retail", tile: "TOKO", title: "Gerai retail", description: "Alfamart • Indomaret" }
+type BankOption = {
+  id: BankId
+  name: string
+}
+
+export const PAYMENT_METHODS: PaymentMethod[] = [
+  { id: "OTHER_QRIS", tile: "QRIS", title: "QRIS", description: "Scan dengan aplikasi bank atau e-wallet" },
+  { id: "bank", tile: "BANK", title: "Transfer bank / Virtual Account", description: "BNI, BSI, BRI, dan SeaBank" },
+  { id: "ECHANNEL", tile: "PAY", title: "E-wallet", description: "GoPay • ShopeePay" },
+  { id: "GOPAY", tile: "CARD", title: "Kartu kredit / debit", description: "Visa • Mastercard • JCB • American Express" },
+  { id: "DANA", tile: "TOKO", title: "Gerai retail", description: "Alfamart • Indomaret" },
+  { id: "SHOPEEPAY", tile: "TOKO", title: "Gerai retail", description: "Alfamart • Indomaret" }
+]
+
+export const BANK_OPTIONS: BankOption[] = [
+  { id: "BCA_VA", name: "BCA" },
+  { id: "BNI_VA", name: "BNI" },
+  { id: "BSI_VA", name: "BSI" },
+  { id: "BRI_VA", name: "BRI" },
+  { id: "SEABANK_VA", name: "SeaBank" }
 ]
 
 export type PaymentSummary = {
@@ -29,6 +45,8 @@ export type PaymentSectionProps = {
   summary: PaymentSummary
   selectedMethod?: PaymentMethodId
   onSelectMethod?: (id: PaymentMethodId) => void
+  selectedBank?: BankId
+  onSelectBank?: (id: BankId) => void
 }
 
 function MethodOption({ method, selected, onPress }: { method: PaymentMethod; selected: boolean; onPress: () => void }) {
@@ -61,13 +79,94 @@ function MethodOption({ method, selected, onPress }: { method: PaymentMethod; se
   )
 }
 
-export default function PaymentSection({ summary, selectedMethod, onSelectMethod }: PaymentSectionProps) {
-  const [internalSelected, setInternalSelected] = useState<PaymentMethodId>("qris")
+function BankDropdown({
+  selectedBank,
+  open,
+  onToggle,
+  onSelect
+}: {
+  selectedBank?: BankId
+  open: boolean
+  onToggle: () => void
+  onSelect: (id: BankId) => void
+}) {
+  const selected = BANK_OPTIONS.find((b) => b.id === selectedBank)
+
+  return (
+    <View className="gap-2">
+      {/* Trigger */}
+      <Pressable
+        onPress={onToggle}
+        accessibilityRole="button"
+        accessibilityLabel="Pilih bank"
+        accessibilityState={{ expanded: open }}
+        className={`flex-row items-center justify-between rounded-xl border bg-surface px-4 py-3.5 active:opacity-80 ${
+          open ? "border-primary" : "border-border"
+        }`}
+      >
+        <View className="gap-0.5">
+          <Text className="text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Bank</Text>
+          <Text className={`text-sm ${selected ? "font-bold text-text-primary" : "text-text-muted"}`}>
+            {selected ? selected.name : "Pilih bank"}
+          </Text>
+        </View>
+        <Ionicons
+          name={open ? "chevron-up" : "chevron-down"}
+          size={20}
+          color="#B8BDC7"
+        />
+      </Pressable>
+
+      {/* List */}
+      {open ? (
+        <View className="overflow-hidden rounded-xl border border-border bg-surface">
+          {BANK_OPTIONS.map((bank, index) => {
+            const isSelected = bank.id === selectedBank
+            return (
+              <Pressable
+                key={bank.id}
+                onPress={() => onSelect(bank.id)}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: isSelected }}
+                accessibilityLabel={bank.name}
+                className={`flex-row items-center justify-between px-4 py-3.5 active:opacity-80 ${
+                  index !== BANK_OPTIONS.length - 1 ? "border-b border-border" : ""
+                } ${isSelected ? "bg-primary/10" : ""}`}
+              >
+                <Text className={`text-sm ${isSelected ? "font-bold text-primary" : "font-semibold text-text-primary"}`}>{bank.name}</Text>
+                {isSelected ? (
+                  <Ionicons
+                    name="checkmark-circle"
+                    size={20}
+                    color="#FF6B00"
+                  />
+                ) : null}
+              </Pressable>
+            )
+          })}
+        </View>
+      ) : null}
+    </View>
+  )
+}
+
+export default function PaymentSection({ summary, selectedMethod, onSelectMethod, selectedBank, onSelectBank }: PaymentSectionProps) {
+  const [internalSelected, setInternalSelected] = useState<PaymentMethodId>("OTHER_QRIS")
+  const [internalBank, setInternalBank] = useState<BankId | undefined>(undefined)
+  const [bankOpen, setBankOpen] = useState(false)
   const selected = selectedMethod ?? internalSelected
+  const bank = selectedBank ?? internalBank
 
   const handleSelect = (id: PaymentMethodId) => {
     setInternalSelected(id)
     onSelectMethod?.(id)
+    setBankOpen(id === "bank")
+  }
+
+  const handleSelectBank = (id: BankId) => {
+    setInternalBank(id)
+    onSelectBank?.(id)
+    setBankOpen(false)
   }
 
   return (
@@ -86,16 +185,27 @@ export default function PaymentSection({ summary, selectedMethod, onSelectMethod
           accessibilityRole="radiogroup"
         >
           {PAYMENT_METHODS.map((method) => (
-            <MethodOption
+            <View
               key={method.id}
-              method={method}
-              selected={selected === method.id}
-              onPress={() => handleSelect(method.id)}
-            />
+              className="gap-2"
+            >
+              <MethodOption
+                method={method}
+                selected={selected === method.id}
+                onPress={() => handleSelect(method.id)}
+              />
+
+              {method.id === "bank" && selected === "bank" ? (
+                <BankDropdown
+                  selectedBank={bank}
+                  open={bankOpen}
+                  onToggle={() => setBankOpen((prev) => !prev)}
+                  onSelect={handleSelectBank}
+                />
+              ) : null}
+            </View>
           ))}
         </View>
-
-        <Text className="text-xs text-text-subdued">Metode yang tersedia mengikuti pengaturan merchant di Midtrans.</Text>
       </View>
 
       {/* Ringkasan pembayaran */}

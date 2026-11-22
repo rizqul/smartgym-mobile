@@ -4,18 +4,22 @@ import { Alert } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { WebView } from "react-native-webview"
 
-const MEMBERSHIP_REDIRECT_PATH = "/midtrans/membership"
+const REDIRECT_PATHS = {
+  membership: "/midtrans/membership",
+  "pt-booking": "/midtrans/pt-booking"
+} as const
 
 export default function PaymentScreen() {
-  const { paymentUrl } = useLocalSearchParams<{ paymentUrl: string }>()
+  const { paymentUrl, type } = useLocalSearchParams<{ paymentUrl: string; type: keyof typeof REDIRECT_PATHS }>()
   const router = useRouter()
+  const redirectPath = REDIRECT_PATHS[type ?? "membership"]
 
   return (
     <SafeAreaView className="flex-1">
       <WebView
         source={{ uri: paymentUrl }}
         onShouldStartLoadWithRequest={(req) => {
-          if (!req.url.includes(MEMBERSHIP_REDIRECT_PATH)) return true
+          if (!req.url.includes(redirectPath)) return true
 
           const { queryParams } = ExpoLinking.parse(req.url)
           const status = queryParams?.transaction_status
@@ -28,8 +32,8 @@ export default function PaymentScreen() {
             Alert.alert("Gagal", "Pembayaran tidak berhasil atau sudah kedaluwarsa.")
           }
 
-          router.dismissTo("/(gym)/navigation/profile") // ganti ke screen yang sudah ada
-          return false // jangan load endpoint backend di WebView
+          router.dismissTo("/(gym)/navigation/profile")
+          return false
         }}
       />
     </SafeAreaView>
