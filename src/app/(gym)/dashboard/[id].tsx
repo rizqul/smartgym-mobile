@@ -1,11 +1,11 @@
 import { AuthButton } from "@/components/auth/authButton"
-import PaymentSection from "@/components/gym/membership/membershipPaymentSection"
+import PaymentSection, { BankId, PaymentMethodId } from "@/components/gym/membership/membershipPaymentSection"
 import PlanCard from "@/components/gym/membership/membershipPlanCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { buyMembership } from "@/service/membership.service"
 import { RootState } from "@/store/store"
 import { router, useLocalSearchParams } from "expo-router"
-import React from "react"
+import React, { useState } from "react"
 import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useSelector } from "react-redux"
@@ -13,6 +13,8 @@ import { useSelector } from "react-redux"
 const membershipConfirm = () => {
   const { id }: { id: string } = useLocalSearchParams()
   const { result } = useSelector((state: RootState) => state.membership)
+  const [paymentId, setPaymentId] = useState<PaymentMethodId | "">("OTHER_QRIS")
+  const [bankId, setBankId] = useState<BankId | "">("")
   const weekly = result?.WEEKLY?.find((val) => val.id === id)
   const monthly = result?.MONTHLY?.find((val) => val.id === id)
   const yearly = result?.YEARLY?.find((val) => val.id === id)
@@ -28,11 +30,11 @@ const membershipConfirm = () => {
 
   const handlePay = async () => {
     try {
-      const paymentUrl = await buyMembership(id)
-      console.log(paymentUrl)
+      const paymentType = paymentId !== "" ? paymentId : bankId
+      const paymentUrl = await buyMembership(id, paymentType)
       router.push({
         pathname: "/(gym)/dashboard/paymentScreen",
-        params: { paymentUrl }
+        params: { paymentUrl, type: "membership" }
       })
     } catch (err: any) {
       console.log(err.response?.status, err.response?.data)
@@ -74,7 +76,14 @@ const membershipConfirm = () => {
                 duration: `${data?.duration} hari`,
                 total: `${data?.price}`
               }}
-              onSelectMethod={(id) => console.log(id)}
+              onSelectMethod={(id) => {
+                setPaymentId(id)
+                setBankId("")
+              }}
+              onSelectBank={(id) => {
+                setBankId(id)
+                setPaymentId("")
+              }}
             />
             <View className="items-center">
               <AuthButton

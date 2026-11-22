@@ -1,19 +1,32 @@
+import PaymentSection, { BankId, PaymentMethodId } from "@/components/gym/membership/membershipPaymentSection"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
+import { bookingTrainer } from "@/service/trainer.service"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-import { useRouter } from "expo-router"
+import { useLocalSearchParams, useRouter } from "expo-router"
 import React, { useState } from "react"
-import { Image, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function BookingConfirm() {
   const router = useRouter()
+  const { trainerId, slotId } = useLocalSearchParams<{ trainerId: string; slotId: string }>()
   const [isChecked, setIsChecked] = useState(false)
+  const [paymentId, setPaymentId] = useState<PaymentMethodId | "">("OTHER_QRIS")
+  const [bankId, setBankId] = useState<BankId | "">("BRI_VA")
 
-  const handleConfirm = () => {
-    if (isChecked) {
-      router.push("/trainer/booking-success")
+  const handleConfirm = async () => {
+    try {
+      const paymentType = paymentId !== "" ? paymentId : bankId
+      const paymentUrl = await bookingTrainer(slotId, paymentType)
+      router.push({
+        pathname: "/(gym)/dashboard/paymentScreen",
+        params: { paymentUrl, type: "pt-booking" }
+      })
+    } catch (err: any) {
+      console.log(err.response?.status, err.response?.data)
     }
   }
+
   const handleRescedule = () => {
     router.push("/trainer/trainerProfil")
   }
@@ -49,7 +62,6 @@ export default function BookingConfirm() {
               </View>
             </View>
           </View>
-
           {/* RINGKASAN SESI */}
           <View className="mb-6 rounded-2xl border border-border/50 bg-card p-4">
             <View className="mb-4 flex-row items-center justify-between">
@@ -132,9 +144,8 @@ export default function BookingConfirm() {
               </View>
             </View>
           </View>
-
           {/* CATATAN UNTUK TRAINER */}
-          <View className="mb-6 rounded-2xl border border-border/50 bg-card p-4">
+          {/* <View className="mb-6 rounded-2xl border border-border/50 bg-card p-4">
             <View className="mb-2 flex-row items-center justify-between">
               <View className="flex-row items-center gap-2">
                 <MaterialCommunityIcons
@@ -149,31 +160,46 @@ export default function BookingConfirm() {
             <Text className="mb-3 text-[11px] text-text-secondary">Tuliskan fokus latihan atau kondisi fisik tekini untuk coach.</Text>
 
             {/* Chips */}
-            <View className="mb-3 flex-row flex-wrap gap-2">
-              {["+ Fokus Upper Body", "+ Form Correction", "+ Recovery / Mobility"].map((chip, idx) => (
-                <TouchableOpacity
-                  key={idx}
-                  className="rounded-md border border-border/50 bg-surface px-2 py-1.5"
-                >
-                  <Text className="text-[10px] font-semibold text-text-primary">{chip}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* Text Area */}
-            <TextInput
-              multiline
-              numberOfLines={4}
-              placeholder="Contoh: Fokus latihan otot dada dan perbaikan teknik bench press, bahu kanan sempat sedikit pegal..."
-              placeholderTextColor="#6B7280"
-              className="text-top rounded-xl border border-border/50 bg-surface p-3 text-xs text-text-primary"
-              style={{ minHeight: 80 }}
-            />
-          </View>
-
+          {/* <View className="mb-3 flex-row flex-wrap gap-2">
+            {["+ Fokus Upper Body", "+ Form Correction", "+ Recovery / Mobility"].map((chip, idx) => (
+              <TouchableOpacity
+                key={idx}
+                className="rounded-md border border-border/50 bg-surface px-2 py-1.5"
+              >
+                <Text className="text-[10px] font-semibold text-text-primary">{chip}</Text>
+              </TouchableOpacity>
+            ))}
+          </View> */}
+          {/* Text Area */}
+          {/* <TextInput
+            multiline
+            numberOfLines={4}
+            placeholder="Contoh: Fokus latihan otot dada dan perbaikan teknik bench press, bahu kanan sempat sedikit pegal..."
+            placeholderTextColor="#6B7280"
+            className="text-top rounded-xl border border-border/50 bg-surface p-3 text-xs text-text-primary"
+            style={{ minHeight: 80 }}
+          /> */}
+          {/* </View> */}
+          {/* Payment Section */}
+          <PaymentSection
+            summary={{
+              planName: "tes",
+              price: `tes2`,
+              duration: `tes`,
+              total: `tes`
+            }}
+            onSelectMethod={(id) => {
+              setPaymentId(id)
+              setBankId("")
+            }}
+            onSelectBank={(id) => {
+              setBankId(id)
+              setPaymentId("")
+            }}
+          />
           {/* CHECKBOX KETENTUAN */}
           <TouchableOpacity
-            className="mb-4 flex-row items-start gap-3"
+            className="mb-4 mt-4 flex-row items-start gap-3"
             onPress={() => setIsChecked(!isChecked)}
             activeOpacity={0.7}
           >

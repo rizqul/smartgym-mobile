@@ -10,7 +10,7 @@ export const getTrainerSlot = async (id: string, date?: string) => {
   return response.data
 }
 
-export const bookingTrainer = async (slotId: string) => {
-  const response = await api.post(`/member/trainers/booking`, { slotId })
+export const bookingTrainer = async (slotId: string, paymentType: string) => {
+  const response = await api.post(`/member/trainers/booking`, { slotId, paymentType })
   return response.data
 }
