@@ -1,10 +1,16 @@
+import CheckinCard from "@/components/gym/dashboard/CheckinCard"
 import { useAuth } from "@/context/AuthContext"
+import { checkOut } from "@/service/scan.service"
+import { clearActiveCheckin } from "@/store/slice/checkinSlice"
+import { AppDispatch, RootState } from "@/store/store"
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { router } from "expo-router"
 import React from "react"
-import { ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { Alert, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useDispatch, useSelector } from "react-redux"
 
 const COLOR_PRIMARY = "#FF7A00"
 const COLOR_INFO = "#60A5FA"
@@ -12,8 +18,38 @@ const COLOR_HIGHLIGHT = "#FFD166"
 
 // Core
 export default function Dashboard() {
+  const dispatch = useDispatch<AppDispatch>()
+  const activeCheckin = useSelector((state: RootState) => state.checkin.activeCheckin)
   const { user } = useAuth()
   const firstName = user?.name.split(" ")[0]
+
+  const handleCheckout = () => {
+    Alert.alert("Konfirmasi", "Akhiri sesi latihan?", [
+      { text: "Batal", style: "cancel" },
+      {
+        text: "Checkout",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await checkOut();
+            dispatch(clearActiveCheckin())
+            Toast.show({
+              type: ALERT_TYPE.SUCCESS,
+              title: "Berhasil",
+              textBody: "Sesi latihan selesai."
+            })
+          } catch (error) {
+            console.log(error)
+            Toast.show({
+              type: ALERT_TYPE.DANGER,
+              title: "Gagal",
+              textBody: "Coba lagi."
+            })
+          }
+        }
+      }
+    ])
+  }
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -47,6 +83,11 @@ export default function Dashboard() {
 
           {/* MEMBERSHIP CARD COMPONENT */}
           <MembershipCard />
+
+          {/* CHECKIN CARD COMPONENT */}
+          {(activeCheckin) && (
+            <CheckinCard activeCheckin={activeCheckin} handleCheckout={handleCheckout} />
+          )}
 
           {/* ACTION BUTTONS */}
           <View className="flex-row gap-3">

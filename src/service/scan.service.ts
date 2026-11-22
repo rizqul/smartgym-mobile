@@ -10,3 +10,12 @@ export const scanQr = async (code: string): Promise<CheckinResponse> => {
     throw err
   }
 }
+export const checkOut = async (): Promise<CheckinResponse> => {
+  try {
+    const res = await api.post("/member/checkins/checkout")
+    return res.data.data
+  } catch (err: any) {
+    console.log(err.response?.data)
+    throw err
+  }
+}

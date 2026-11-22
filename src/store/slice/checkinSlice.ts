@@ -15,6 +15,7 @@ const checkinSlice = createSlice({
   reducers: {
     setActiveCheckin: (state, action: PayloadAction<CheckinResponse>) => {
       state.activeCheckin = action.payload
+      console.log(state.activeCheckin)
     },
     clearActiveCheckin: (state) => {
       state.activeCheckin = null

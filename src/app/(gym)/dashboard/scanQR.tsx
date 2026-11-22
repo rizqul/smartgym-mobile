@@ -1,5 +1,7 @@
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { scanQr } from "@/service/scan.service"
+import { setActiveCheckin } from "@/store/slice/checkinSlice"
+import { AppDispatch } from "@/store/store"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { CameraView, useCameraPermissions } from "expo-camera"
 import { useRouter } from "expo-router"
@@ -7,8 +9,10 @@ import React, { useState } from "react"
 import { ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useDispatch } from "react-redux"
 
 export default function ScanQR() {
+  const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [permission, requestPermission] = useCameraPermissions()
@@ -68,6 +72,7 @@ export default function ScanQR() {
       const res = await scanQr(data)
 
       if (res.status === "GRANTED") {
+        dispatch(setActiveCheckin(res))
         Toast.show({
           type: ALERT_TYPE.SUCCESS,
           title: "Akses Diberikan",
