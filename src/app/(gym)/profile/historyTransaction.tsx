@@ -1,7 +1,6 @@
 import { TransactionCard } from "@/components/gym/profile/TransactionCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { DUMMYTRANSACTIONS } from "@/data/dummyTransaction"
-import { TransactionData } from "@/type/Transaction.type"
 import { Ionicons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import React from "react"
