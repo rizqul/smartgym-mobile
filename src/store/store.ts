@@ -3,7 +3,7 @@ import membershipReducer from "@/store/slice/membershipSlice"
 import trainerReducer from "@/store/slice/trainerSlice"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
-import { persistReducer, persistStore } from "redux-persist"
+import { persistReducer, persistStore } from ""
 
 const rootReducer = combineReducers({
   trainer: trainerReducer,
