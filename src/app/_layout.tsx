@@ -1,10 +1,13 @@
-// app/_layout.tsx
 import { AuthProvider, useAuth } from "@/context/AuthContext"
 import { useFonts } from "expo-font"
 import { Stack } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
 import { useEffect } from "react"
+import { Provider } from "react-redux"
+import { PersistGate } from "redux-persist/integration/react"
 
+import { persistor, store } from "@/store/store"
+import { ActivityIndicator, View } from "react-native"
 import { AlertNotificationRoot } from "react-native-alert-notification"
 import "../../global.css"
 
@@ -74,9 +77,20 @@ export default function RootLayout() {
         textBodyStyle: { fontFamily: "Inter", fontSize: 12, color: "#E2BFB0" }
       }}
     >
-      <AuthProvider>
-        <RootLayoutNav />
-      </AuthProvider>
+      <Provider store={store}>
+        <PersistGate
+          loading={
+            <View className="flex-1 bg-background justify-center items-center">
+              <ActivityIndicator size="large" color="#FF6B00" />
+            </View>
+          }
+          persistor={persistor}
+        >
+          <AuthProvider>
+            <RootLayoutNav />
+          </AuthProvider>
+        </PersistGate>
+      </Provider>
     </AlertNotificationRoot>
   )
 }
