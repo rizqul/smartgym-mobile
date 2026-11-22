@@ -1,3 +1,4 @@
+import checkinReducer from "@/store/slice/checkinSlice"
 import membershipReducer from "@/store/slice/membershipSlice"
 import trainerReducer from "@/store/slice/trainerSlice"
 import { configureStore } from "@reduxjs/toolkit"
@@ -5,7 +6,8 @@ import { configureStore } from "@reduxjs/toolkit"
 export const store = configureStore({
   reducer: {
     trainer: trainerReducer,
-    membership: membershipReducer
+    membership: membershipReducer,
+    checkin: checkinReducer
   }
 })
 
