@@ -49,7 +49,7 @@ export type PaymentSectionProps = {
   onSelectBank?: (id: BankId) => void
 }
 
-function MethodOption({ method, selected, onPress }: { method: PaymentMethod; selected: boolean; onPress: () => void }) {
+function MethodOption({ method, selected, onPress }: Readonly<{ method: PaymentMethod; selected: boolean; onPress: () => void }>) {
   return (
     <Pressable
       onPress={onPress}
@@ -150,7 +150,7 @@ function BankDropdown({
   )
 }
 
-export default function PaymentSection({ summary, selectedMethod, onSelectMethod, selectedBank, onSelectBank }: PaymentSectionProps) {
+export default function PaymentSection({ summary, selectedMethod, onSelectMethod, selectedBank, onSelectBank }: Readonly<PaymentSectionProps>) {
   const [internalSelected, setInternalSelected] = useState<PaymentMethodId>("OTHER_QRIS")
   const [internalBank, setInternalBank] = useState<BankId | undefined>(undefined)
   const [bankOpen, setBankOpen] = useState(false)

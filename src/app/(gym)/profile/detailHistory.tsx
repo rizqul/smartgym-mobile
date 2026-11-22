@@ -108,7 +108,7 @@ export default function TransactionDetail() {
   const expiryChecked = useRef(false)
 
   useEffect(() => {
-    dispatch(fetchTransactions())
+    void dispatch(fetchTransactions())
   }, [])
 
   const data = result?.data.find((item) => item.id === id)
@@ -129,7 +129,7 @@ export default function TransactionDetail() {
 
   useFocusEffect(
     useCallback(() => {
-      load()
+      void load()
     }, [load])
   )
 
@@ -146,7 +146,7 @@ export default function TransactionDetail() {
   useEffect(() => {
     if (isTimeUp && !expiryChecked.current) {
       expiryChecked.current = true
-      handleCheckStatus(true)
+      void handleCheckStatus(true)
     }
   }, [isTimeUp])
 
