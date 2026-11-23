@@ -7,6 +7,7 @@ import { LinearGradient } from "expo-linear-gradient"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import React, { useEffect, useMemo, useState } from "react"
 import { Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function TrainerProfile() {
@@ -18,24 +19,23 @@ export default function TrainerProfile() {
   const [selectedDate, setSelectedDate] = useState<string>(dates[0].fullDate)
   const [loading, setLoading] = useState(false)
 
+  const fetchSlots = async (ignore: boolean) => {
+    try {
+      setLoading(true)
+      setSelectedTime(null)
+      const response = await getTrainerSlot(id, selectedDate)
+      if (!ignore) setTimeSlots(response.data)
+    } catch (error) {
+      console.log("Error : ", error)
+      if (!ignore) setTimeSlots([])
+    } finally {
+      if (!ignore) setLoading(false)
+    }
+  }
+
   useEffect(() => {
     let ignore = false
-
-    const fetchSlots = async () => {
-      try {
-        setLoading(true)
-        setSelectedTime(null)
-        const response = await getTrainerSlot(id, selectedDate)
-        if (!ignore) setTimeSlots(response.data)
-      } catch (error) {
-        console.log("Error : ", error)
-        if (!ignore) setTimeSlots([])
-      } finally {
-        if (!ignore) setLoading(false)
-      }
-    }
-
-    fetchSlots()
+    void fetchSlots(ignore)
 
     return () => {
       ignore = true
@@ -49,7 +49,19 @@ export default function TrainerProfile() {
   })
 
   const onNext = () => {
-    router.push({ pathname: "/trainer/booking-confirm", params: { trainerId: id, slotId: String(selectedTime?.id) } })
+    if (!selectedTime?.id) {
+      Toast.show({
+        type: ALERT_TYPE.WARNING,
+        title: "Pilih Slot",
+        textBody: "Silakan pilih slot jadwal terlebih dahulu sebelum melanjutkan.",
+        autoClose: 3000
+      })
+      return
+    }
+    router.push({
+      pathname: "/trainer/booking-confirm",
+      params: { trainerId: id, slotId: String(selectedTime?.id) }
+    })
   }
 
   return (
@@ -169,13 +181,12 @@ export default function TrainerProfile() {
                   key={item.fullDate}
                   disabled={item.disabled}
                   onPress={() => setSelectedDate(item.fullDate)}
-                  className={`h-20 w-14 items-center justify-center rounded-2xl border ${
-                    isActive
-                      ? "border-primary bg-primary"
-                      : item.disabled
-                        ? "border-border/30 bg-card/50 opacity-50"
-                        : "border-border bg-card"
-                  }`}
+                  className={`h-20 w-14 items-center justify-center rounded-2xl border ${isActive
+                    ? "border-primary bg-primary"
+                    : item.disabled
+                      ? "border-border/30 bg-card/50 opacity-50"
+                      : "border-border bg-card"
+                    }`}
                 >
                   <Text className={`mb-1 text-[10px] ${isActive ? "text-white" : "text-text-secondary"}`}>{item.day}</Text>
                   <Text className={`text-xl font-bold ${isActive ? "text-white" : "text-text-primary"}`}>{item.date}</Text>
@@ -216,9 +227,8 @@ export default function TrainerProfile() {
                 >
                   {/* Icon */}
                   <View
-                    className={`mr-3 h-10 w-10 items-center justify-center rounded-full ${
-                      selectedTime?.id === slot.id && slot.status === "AVAILABLE" ? "bg-primary" : "bg-background"
-                    }`}
+                    className={`mr-3 h-10 w-10 items-center justify-center rounded-full ${selectedTime?.id === slot.id && slot.status === "AVAILABLE" ? "bg-primary" : "bg-background"
+                      }`}
                   >
                     <Ionicons
                       name="time-outline"
@@ -236,13 +246,12 @@ export default function TrainerProfile() {
                   {/* Status Badge */}
                   <View className={`items-end rounded-md px-2 py-1.5 ${slot.status === "AVAILABLE" ? "bg-success/15" : "bg-border/50"}`}>
                     <Text
-                      className={`mb-0.5 text-[10px] font-bold ${
-                        slot.status === "Available"
-                          ? "text-success"
-                          : slot.status === "Limited Slot"
-                            ? "text-warning"
-                            : "text-text-secondary"
-                      }`}
+                      className={`mb-0.5 text-[10px] font-bold ${slot.status === "AVAILABLE"
+                        ? "text-success"
+                        : slot.status === "Limited Slot"
+                          ? "text-warning"
+                          : "text-text-secondary"
+                        }`}
                     >
                       {slot.status}
                     </Text>
