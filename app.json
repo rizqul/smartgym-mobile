@@ -39,9 +39,13 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Izinkan $(PRODUCT_NAME) mengakses kamera untuk memindai QR Code check-in gym.",
-          "microphonePermission": "Izinkan $(PRODUCT_NAME) mengakses mikrofon.",
-          "recordAudioAndroid": true
+          "cameraPermission": "Izinkan $(PRODUCT_NAME) mengakses kamera untuk memindai QR Code check-in gym."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Aplikasi ini memerlukan akses ke galeri foto Anda untuk mengunggah foto profil."
         }
       ]
     ],
