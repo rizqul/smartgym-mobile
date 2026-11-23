@@ -13,6 +13,14 @@ import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
 
+const STATUS_LEWAT = "Lewat"
+
+const getSlotStatus = (slot: TrainerSlot, now: number): string => {
+  const start = new Date(slot.startTime).getTime()
+  if (!Number.isNaN(start) && start <= now) return STATUS_LEWAT
+  return slot.status
+}
+
 export default function TrainerProfile() {
   const { id }: { id: string } = useLocalSearchParams()
   const router = useRouter()
@@ -24,6 +32,20 @@ export default function TrainerProfile() {
   const dispatch = useDispatch<AppDispatch>()
   const { result } = useSelector((state: RootState) => state.trainer)
   const data = result?.find((item: Trainer) => item.id === id)
+  const [now, setNow] = useState(() => Date.now())
+  const firstDate = new Date(dates[0].fullDate).toLocaleDateString("id-ID", { month: "short" })
+  const lastDate = new Date(dates[13].fullDate).toLocaleDateString("id-ID", { month: "short" })
+  const lastYear = new Date(dates[13].fullDate).getFullYear()
+  const month = firstDate === lastDate ? `${firstDate}` : `${firstDate} - ${lastDate} ${lastYear}`
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 60_000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const slots = useMemo(() => timeSlots.map((slot) => ({ ...slot, status: getSlotStatus(slot, now) })), [timeSlots, now])
+
+  const isSelectedValid = !!selectedTime && getSlotStatus(selectedTime, now) === "AVAILABLE"
 
   const fetchSlots = async (ignore: boolean) => {
     try {
@@ -60,7 +82,7 @@ export default function TrainerProfile() {
     year: "numeric"
   })
 
-  const availableCount = timeSlots.filter((s) => s.status === "AVAILABLE").length
+  const availableCount = slots.filter((s) => s.status === "AVAILABLE").length
 
   const onNext = () => {
     if (!selectedTime?.id) {
@@ -68,6 +90,17 @@ export default function TrainerProfile() {
         type: ALERT_TYPE.WARNING,
         title: "Pilih Slot",
         textBody: "Silakan pilih slot jadwal terlebih dahulu sebelum melanjutkan.",
+        autoClose: 3000
+      })
+      return
+    }
+
+    if (!isSelectedValid) {
+      setSelectedTime(null)
+      Toast.show({
+        type: ALERT_TYPE.WARNING,
+        title: "Slot Tidak Tersedia",
+        textBody: "Waktu slot ini sudah lewat, silakan pilih slot lain.",
         autoClose: 3000
       })
       return
@@ -198,7 +231,7 @@ export default function TrainerProfile() {
               <Text className="mb-1 text-xl font-bold text-text-primary">Available Schedule</Text>
               <Text className="text-xs text-text-secondary">Pilih tanggal sesi latihan minggu ini</Text>
             </View>
-            <Text className="text-[10px] font-bold tracking-widest text-primary">MEI - JUN 2024</Text>
+            <Text className="text-xs font-bold tracking-widest text-primary">{month}</Text>
           </View>
 
           {/* Date Picker */}
@@ -234,16 +267,6 @@ export default function TrainerProfile() {
             })}
           </ScrollView>
 
-          {/* Info Text */}
-          <View className="mb-6 flex-row items-center gap-2">
-            <Ionicons
-              name="information-circle-outline"
-              size={16}
-              color="#FF6B00"
-            />
-            <Text className="text-[11px] text-text-secondary">Hari aktif di-highlight oranye/hijau, trainer libur di-nonaktifkan.</Text>
-          </View>
-
           <View className="mb-3 flex-row items-center justify-between">
             <Text className="text-base font-bold text-text-primary">Slot Latihan ({dateText})</Text>
             <Text className="text-[10px] font-bold text-text-secondary">{getTimezoneLabel()}</Text>
@@ -251,46 +274,45 @@ export default function TrainerProfile() {
 
           {/* Time Slots List */}
           <View className="gap-3">
-            {timeSlots.map((slot) => {
+            {slots.map((slot) => {
               const time = `${slot.startTime.substring(11, 16)} - ${slot.endTime.substring(11, 16)}`
+              const isAvailable = slot.status === "AVAILABLE"
+              const isSelected = selectedTime?.id === slot.id && isAvailable
+
               return (
                 <TouchableOpacity
                   key={slot.id}
+                  disabled={!isAvailable}
                   onPress={() => setSelectedTime(slot)}
-                  className={`flex-row items-center rounded-2xl border p-4 
-                  ${selectedTime?.id === slot.id && slot.status === "AVAILABLE" ? "border-primary bg-surface" : "border-border bg-card"}`}
+                  className={`flex-row items-center rounded-2xl border p-4 ${
+                    isSelected ? "border-primary bg-surface" : "border-border bg-card"
+                  } ${!isAvailable ? "opacity-50" : ""}`}
                 >
                   {/* Icon */}
                   <View
-                    className={`mr-3 h-10 w-10 items-center justify-center rounded-full ${
-                      selectedTime?.id === slot.id && slot.status === "AVAILABLE" ? "bg-primary" : "bg-background"
-                    }`}
+                    className={`mr-3 h-10 w-10 items-center justify-center rounded-full ${isSelected ? "bg-primary" : "bg-background"}`}
                   >
                     <Ionicons
                       name="time-outline"
                       size={20}
-                      color={selectedTime?.id === slot.id ? "white" : "#B8BDC7"}
+                      color={isSelected ? "white" : "#B8BDC7"}
                     />
                   </View>
 
                   {/* Time & Title */}
                   <View className="flex-1">
-                    <Text className={`mb-0.5 text-sm font-bold text-text-primary`}>{time}</Text>
+                    <Text className="mb-0.5 text-sm font-bold text-text-primary">{time}</Text>
                     {slot.description ? <Text className="text-[11px] text-text-secondary">{slot.description}</Text> : null}
                   </View>
 
                   {/* Status Badge */}
-                  <View className={`items-end rounded-md px-2 py-1.5 ${slot.status === "AVAILABLE" ? "bg-success/15" : "bg-border/50"}`}>
+                  <View className={`items-end rounded-md px-2 py-1.5 ${isAvailable ? "bg-success/15" : "bg-border/50"}`}>
                     <Text
                       className={`mb-0.5 text-[10px] font-bold ${
-                        slot.status === "AVAILABLE"
-                          ? "text-success"
-                          : slot.status === "Limited Slot"
-                            ? "text-warning"
-                            : "text-text-secondary"
+                        isAvailable ? "text-success" : slot.status === "BOOKED" ? "text-warning" : "text-text-secondary"
                       }`}
                     >
-                      {slot.status}
+                      {slot.status === "AVAILABLE" ? "TERSEDIA" : slot.status === "BOOKED" ? "DIPESAN" : slot.status}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -301,7 +323,7 @@ export default function TrainerProfile() {
       </ScrollView>
 
       {/* ================= STICKY BOTTOM BAR ================= */}
-      {selectedTime?.status === "AVAILABLE" ? (
+      {isSelectedValid && selectedTime ? (
         <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between border-t border-border bg-surface p-5 pb-8">
           <View>
             <Text className="mb-1 text-[9px] font-bold uppercase tracking-widest text-text-secondary">Sesi Dipilih</Text>
