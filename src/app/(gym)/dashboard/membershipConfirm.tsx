@@ -11,12 +11,12 @@ import { ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useSelector } from "react-redux"
 
-export const MembershipConfirm = () => {
+const MembershipConfirm = () => {
   const { id }: { id: string } = useLocalSearchParams()
   const { result } = useSelector((state: RootState) => state.membership)
   const [paymentId, setPaymentId] = useState<PaymentMethodId | "">("OTHER_QRIS")
   const [bankId, setBankId] = useState<BankId | "">("")
-  
+
   const weekly = result?.WEEKLY?.find((val) => val.id === id)
   const monthly = result?.MONTHLY?.find((val) => val.id === id)
   const yearly = result?.YEARLY?.find((val) => val.id === id)
@@ -95,3 +95,5 @@ export const MembershipConfirm = () => {
     </View>
   )
 }
+
+export default MembershipConfirm

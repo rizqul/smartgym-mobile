@@ -60,7 +60,7 @@ const Membership = () => {
                   buttonLabel="Pilih Paket"
                   onPress={() =>
                     router.push({
-                      pathname: "/(gym)/dashboard/membershipComfirm",
+                      pathname: "/(gym)/dashboard/membershipConfirm",
                       params: { id: val.id }
                     })
                   }
@@ -79,7 +79,7 @@ const Membership = () => {
                 buttonLabel="Pilih Paket"
                 onPress={() =>
                   router.push({
-                    pathname: "/(gym)/dashboard/membershipComfirm",
+                    pathname: "/(gym)/dashboard/membershipConfirm",
                     params: { id: val.id }
                   })
                 }
@@ -97,7 +97,7 @@ const Membership = () => {
                 buttonLabel="Pilih Paket"
                 onPress={() =>
                   router.push({
-                    pathname: "/(gym)/dashboard/membershipComfirm",
+                    pathname: "/(gym)/dashboard/membershipConfirm",
                     params: { id: val.id }
                   })
                 }
@@ -108,7 +108,6 @@ const Membership = () => {
       </ScrollView>
       <MembershipConsultCard />
     </SafeAreaView>
-
   )
 }
 
