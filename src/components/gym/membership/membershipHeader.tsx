@@ -8,9 +8,9 @@ type MembershipHeaderProps = {
 }
 
 export default function MembershipHeader({
-  badge = "MEMBERSHIP SUITE",
-  title = "Membership & Paket",
-  subtitle = "Kelola status langganan dan pilih paket terbaik untuk capai fitness goal-mu."
+  badge = "Pusat Langganan",
+  title = "Langganan & Paket",
+  subtitle = "Kelola status langganan dan pilih paket terbaik untuk capai target kebugaranmu."
 }: MembershipHeaderProps) {
   return (
     <View className=" gap-3">
@@ -23,7 +23,7 @@ export default function MembershipHeader({
       {/* Title + subtitle */}
       <View className="gap-2">
         <Text className="text-3xl font-bold text-text-primary">{title}</Text>
-        <Text className="text-text-warm text-sm leading-6">{subtitle}</Text>
+        <Text className="text-sm leading-6 text-text-warm">{subtitle}</Text>
       </View>
     </View>
   )

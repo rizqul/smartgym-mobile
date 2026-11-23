@@ -106,9 +106,9 @@ const membership = () => {
                   />
                 ))}
               </View>
-              <MembershipConsultCard />
             </View>
           </ScrollView>
+          <MembershipConsultCard />
         </SafeAreaView>
       </View>
     </>
