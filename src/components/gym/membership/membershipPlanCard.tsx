@@ -99,7 +99,7 @@ export default function PlanCard({
             <Text className="text-4xl font-bold text-accent">{price}</Text>
           </View>
           <View className="items-end gap-1">
-            <Text className="text-sm text-text-warm">Masa berlaku</Text>
+            <Text className="text-sm text-text-warm">Masa penambahan</Text>
             <Text className="text-xl font-bold text-text-body">{duration}</Text>
           </View>
         </View>

@@ -124,7 +124,7 @@ export default function TransactionHistory() {
                 key={item.id}
                 item={item}
                 showDetail={() => {
-                  handleShowDetail(item.id)
+                  handleShowDetail(item.orderId)
                 }}
               />
             )

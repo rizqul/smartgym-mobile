@@ -1,7 +1,5 @@
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
-import { cancelTransaction, checkTransactionStatus } from "@/service/transaction.service"
-import { fetchTransactions } from "@/store/slice/transactionSlice"
-import { AppDispatch, RootState } from "@/store/store"
+import { cancelTransaction, checkTransactionStatus, getTransactionById } from "@/service/transaction.service"
 import { TransactionsResponse, TransactionStatus } from "@/type/Transaction.type"
 import { FormatRupiah } from "@/utils/FormaterHelper"
 import { getStatusUI } from "@/utils/transactionHelper"
@@ -11,7 +9,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { ActivityIndicator, Alert, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { useDispatch, useSelector } from "react-redux"
 
 type HeroConfig = {
   icon: React.ComponentProps<typeof Ionicons>["name"]
@@ -98,8 +95,7 @@ const ActionButton = ({
 export default function TransactionDetail() {
   const router = useRouter()
   const { id } = useLocalSearchParams<{ id: string }>()
-  const dispatch = useDispatch<AppDispatch>()
-  const { result } = useSelector((state: RootState) => state.transaction)
+  const [data, setData] = useState<TransactionsResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [checking, setChecking] = useState(false)
@@ -107,29 +103,25 @@ export default function TransactionDetail() {
   const [now, setNow] = useState(() => Date.now())
   const expiryChecked = useRef(false)
 
-  useEffect(() => {
-    void dispatch(fetchTransactions())
-  }, [])
-
-  const data = result?.data.find((item) => item.id === id)
   const isPending = data?.status === "PENDING"
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (): Promise<TransactionsResponse | null> => {
     try {
-      const payload = await dispatch(fetchTransactions()).unwrap()
+      const res = await getTransactionById(id)
+      setData(res.data)
       setError(null)
-      return payload.data.find((t: TransactionsResponse) => t.id === id) ?? null
+      return res.data
     } catch (e: any) {
-      setError(e.message || "Gagal memuat transaksi.")
+      setError(e.response?.data?.message || "Gagal memuat transaksi.")
       return null
     } finally {
       setLoading(false)
     }
-  }, [dispatch, id])
+  }, [id])
 
   useFocusEffect(
     useCallback(() => {
-      void load()
+      load()
     }, [load])
   )
 
@@ -197,7 +189,7 @@ export default function TransactionDetail() {
           try {
             setCancelling(true)
             console.log(data?.orderId)
-            await cancelTransaction(data?.orderId!)
+            await cancelTransaction(data?.orderId!, data?.token!)
             Toast.show({ type: ALERT_TYPE.SUCCESS, title: "Berhasil", textBody: "Transaksi dibatalkan.", autoClose: 3000 })
             await load()
           } catch (e: any) {
