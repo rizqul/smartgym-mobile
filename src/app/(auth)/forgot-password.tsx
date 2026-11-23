@@ -31,7 +31,10 @@ export default function ForgotPassword() {
   const onSubmit = async (data: FormValues) => {
     try {
       await forgotPassword(data.email)
-      router.push("/(auth)/otp")
+      router.push({
+        pathname: "/(auth)/otp",
+        params: { email: data.email }
+      })
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
         title: "Kode OTP Terkirim",

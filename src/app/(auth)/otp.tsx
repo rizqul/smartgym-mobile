@@ -1,11 +1,11 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { OrangeGlowBackground } from "@/components/auth/OrangeGlowBackground"
-import { OtpVerification } from "@/service/auth.service"
+import { ForgotPassword, OtpVerification } from "@/service/auth.service"
 import { MaterialIcons } from "@expo/vector-icons"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 import React, { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Pressable, Text, View } from "react-native"
@@ -27,9 +27,11 @@ const formatTime = (totalSeconds: number) => {
 
 const RESEND_SECONDS = 60
 
-const otpAndResetPassword = () => {
-  const [otp, setOtp] = useState("")
+const otpResetPassword = () => {
+  const { email } = useLocalSearchParams<{ email: string }>()
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS)
+  const [isResending, setIsResending] = useState(false)
+
   const {
     control,
     handleSubmit,
@@ -47,14 +49,33 @@ const otpAndResetPassword = () => {
 
   const canResend = secondsLeft === 0
 
-  const handleResend = () => {
-    if (!canResend) return
-    setSecondsLeft(RESEND_SECONDS)
+  const handleResend = async () => {
+    if (!canResend || isResending || !email) return
+    setIsResending(true)
+    try {
+      await ForgotPassword(email)
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: "Kode Terkirim Ulang",
+        textBody: `Kode OTP baru telah dikirim ke ${email}.`
+      })
+      setSecondsLeft(RESEND_SECONDS) // Reset timer
+    } catch (error: any) {
+      const message = error.response?.data?.message || "Gagal mengirim ulang kode. Coba lagi."
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Gagal",
+        textBody: message,
+        autoClose: 3000
+      })
+    } finally {
+      setIsResending(false)
+    }
   }
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const test = await OtpVerification(data.otp)
+      await OtpVerification(data.otp)
       router.push("/(auth)/reset-password")
     } catch (error: any) {
       if (error.response) {
@@ -94,6 +115,7 @@ const otpAndResetPassword = () => {
           <View className="flex w-[340] items-center justify-center gap-3">
             <View className="flex w-[340] items-center justify-center gap-3">
               <Text className="text-3xl font-bold text-text-body">OTP Verification</Text>
+              {email && <Text className="text-sm text-[#E2BFB0]">Dikirim ke: {email}</Text>}
             </View>
           </View>
         </View>
@@ -103,6 +125,7 @@ const otpAndResetPassword = () => {
           {canResend ? (
             <Pressable
               onPress={handleResend}
+              disabled={isResending}
               className="flex-row items-center gap-2 rounded-full bg-white/10 px-4 py-2"
               accessibilityRole="button"
               accessibilityLabel="Kirim ulang kode"
@@ -187,4 +210,4 @@ const otpAndResetPassword = () => {
   )
 }
 
-export default otpAndResetPassword
+export default otpResetPassword
