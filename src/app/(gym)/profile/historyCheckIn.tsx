@@ -1,8 +1,8 @@
+import CardHistoryCheckin from "@/components/gym/profile/CardHistoryCheckin"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { getMyCheckin } from "@/service/scan.service"
 import { CheckinResponse } from "@/type/checkin.type"
-import { formatDate, FormatTime } from "@/utils/FormaterHelper"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
+import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import React, { useCallback, useEffect, useState } from "react"
 import { ActivityIndicator, FlatList, StatusBar, Text, View } from "react-native"
@@ -64,69 +64,6 @@ export default function HistoryCheckIn() {
   }, [isLoadingMore, hasMore, isLoading, page])
 
 
-  const calculateDuration = (inAt: string, outAt: string | null) => {
-    if (!outAt) return "Sedang Latihan"
-
-    const start = new Date(inAt).getTime()
-    const end = new Date(outAt).getTime()
-    const diffMs = end - start
-
-    const diffMins = Math.floor(diffMs / 60000)
-    const hours = Math.floor(diffMins / 60)
-    const mins = diffMins % 60
-
-    if (hours > 0) return `${hours}j ${mins}m`
-    return `${mins}m`
-  }
-
-  const renderItem = ({ item }: { item: CheckinResponse }) => {
-    const time = FormatTime(item.checkInAt)
-    const isDenied = item.status === "DENIED"
-
-    return (
-      <View className="mb-4 flex-row items-center gap-4 rounded-xl border border-border/50 bg-surface p-4">
-        {/* Icon / Tanggal */}
-        <View className="h-12 w-12 items-center justify-center rounded-xl border border-border bg-background">
-          <Text className={`text-xs font-bold ${isDenied ? 'text-danger' : 'text-primary'}`}>{time.hour}</Text>
-          <Text className="text-[10px] text-text-secondary">{time.minute}</Text>
-        </View>
-
-        {/* Detail */}
-        <View className="flex-1">
-          <Text className="mb-0.5 text-sm font-bold text-text-primary">
-            SmartGym Central Base
-          </Text>
-          <Text className="mb-1.5 text-xs text-text-secondary">
-            {formatDate(item.checkInAt)}
-          </Text>
-          <View className="flex-row items-center gap-2">
-            {/* Status Badge */}
-            <View className={`flex-row items-center gap-1 rounded px-2 py-0.5 ${isDenied ? 'bg-danger/15' : 'bg-success/15'}`}>
-              <View className={`h-1.5 w-1.5 rounded-full ${isDenied ? 'bg-danger' : 'bg-success'}`} />
-              <Text className={`text-[10px] font-bold ${isDenied ? 'text-danger' : 'text-success'}`}>
-                {isDenied ? "Ditolak" : "Berhasil"}
-              </Text>
-            </View>
-
-            {/* Duration / Reason */}
-            {isDenied ? (
-              <Text className="text-[10px] text-danger" numberOfLines={1}>
-                • {item.denialReason || "Akses Ditolak"}
-              </Text>
-            ) : (
-              <Text className="text-[10px] text-text-secondary">
-                • Durasi: {calculateDuration(item.checkInAt, item.checkOutAt)}
-              </Text>
-            )}
-          </View>
-        </View>
-
-        {/* Chevron */}
-        <Ionicons name="chevron-forward" size={16} color="#B8BDC7" />
-      </View>
-    )
-  }
-
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -137,9 +74,9 @@ export default function HistoryCheckIn() {
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
-        renderItem={renderItem}
+        renderItem={({ item }) => <CardHistoryCheckin item={item} />}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 24, paddingBottom: 40 }}
+        className="px-5 pb-4"
         ListHeaderComponent={
           <View className="mb-6 flex-row items-center justify-between rounded-2xl border border-border bg-card p-5">
             <View>
