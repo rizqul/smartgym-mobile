@@ -39,6 +39,8 @@ export default function EditProfile() {
     // 1. Pilih gambar dari galeri
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [1, 1],
       quality: 0.7
     })
 
