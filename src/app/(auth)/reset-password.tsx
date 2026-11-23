@@ -146,7 +146,7 @@ const resetPassword = () => {
                 onChangeText={onChange}
                 onBlur={onBlur}
                 placeholder="Ulangi Kata Sandi"
-                secureTextEntry={!showPassword}
+                secureTextEntry={!showConfirmPassword}
                 accessory={
                   <Pressable
                     className="p-2"
