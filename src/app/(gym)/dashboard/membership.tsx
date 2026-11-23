@@ -35,11 +35,16 @@ const membership = () => {
               <MembershipPaymentInfo
                 provider="Powered by Midtrans"
                 methods={[
-                  { label: "GoPay", tone: "info" },
                   { label: "QRIS", tone: "primary" },
                   { label: "BCA", tone: "info" },
-                  { label: "MANDIRI", tone: "primary" },
-                  { label: "VISA", tone: "primary" }
+                  { label: "BNI", tone: "secondary" },
+                  { label: "BRI", tone: "info" },
+                  { label: "BSI", tone: "primary" },
+                  { label: "MANDIRI", tone: "secondary" },
+                  { label: "GOPAY", tone: "success" },
+                  { label: "DANA", tone: "info" },
+                  { label: "SHOPEEPAY", tone: "primary" },
+                  { label: "SEABANK", tone: "danger" }
                 ]}
               />
               <View className="items-center gap-4">
