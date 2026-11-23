@@ -72,6 +72,7 @@ const membershipConfirm = () => {
                 duration: `${data?.duration} hari`,
                 total: `${data?.price}`
               }}
+              label="Penambahan masa aktif"
               onSelectMethod={(id) => {
                 setPaymentId(id)
                 setBankId("")

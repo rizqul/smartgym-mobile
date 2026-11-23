@@ -10,7 +10,8 @@ export default function PaymentSection({
   selectedMethod,
   onSelectMethod,
   selectedBank,
-  onSelectBank
+  onSelectBank,
+  label
 }: Readonly<PaymentSectionProps>) {
   const [internalSelected, setInternalSelected] = useState<PaymentMethodId>("OTHER_QRIS")
   const [internalBank, setInternalBank] = useState<BankId | undefined>(undefined)
@@ -75,7 +76,7 @@ export default function PaymentSection({
           </View>
 
           <View className="flex-row items-center justify-between">
-            <Text className="text-sm text-text-secondary">Masa penambahan</Text>
+            <Text className="text-sm text-text-secondary">{label}</Text>
             <Text className="text-sm font-bold text-text-primary">{summary.duration}</Text>
           </View>
 
