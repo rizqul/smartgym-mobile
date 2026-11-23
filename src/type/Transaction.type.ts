@@ -64,6 +64,7 @@ export interface TransactionsResponse {
   member: UserTransactionResponse
   type: TransactionType
   paymentUrl: string
+  token: string
   paymentType: PaymentType
   amount: number
   status: TransactionStatus

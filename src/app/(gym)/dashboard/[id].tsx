@@ -1,5 +1,5 @@
 import { AuthButton } from "@/components/auth/authButton"
-import PlanCard from "@/components/gym/membership/membershipPlanCard"
+import PlanConfirmationCard from "@/components/gym/membership/membershhipPlanConfirmation"
 import PaymentSection from "@/components/gym/payment/paymentSection"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { buyMembership } from "@/service/membership.service"
@@ -32,10 +32,11 @@ const membershipConfirm = () => {
   const handlePay = async () => {
     try {
       const paymentType = paymentId !== "" ? paymentId : bankId
-      const paymentUrl = await buyMembership(id, paymentType)
+      const data = await buyMembership(id, paymentType)
+      const { redirectUrl } = data
       router.push({
         pathname: "/(gym)/dashboard/paymentScreen",
-        params: { paymentUrl, type: "membership" }
+        params: { paymentUrl: redirectUrl, type: "membership" }
       })
     } catch (err: any) {
       console.log(err.response?.status, err.response?.data)
@@ -47,27 +48,21 @@ const membershipConfirm = () => {
       <SafeAreaView>
         <HeaderNavigation label="Kembali" />
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View className="gap-6 px-6 py-4">
+          <View className="gap-4 px-6 py-4">
             <View className="gap-3">
               <Text className="font-inter text-3xl font-bold text-text-primary">Konfirmasi Paket</Text>
               <Text className="font-inter text-xs font-normal text-text-secondary">
                 Satu langkah lagi menuju rutinitas latihanmu. Periksa pilihanmu sebelum membayar.
               </Text>
             </View>
-            <View className="flex-row justify-between">
-              <Text className="text-[11px] font-semibold text-[#FFAE77]">01 Konfirmasi</Text>
-              <Text className="text- text-[11px] font-semibold text-[#A59F9B]">02 Pembayaran</Text>
-            </View>
             <View className="gap-5">
               <Text className="text-text-primary ">Paket Pilihanmu</Text>
-              <PlanCard
+              <PlanConfirmationCard
                 badge={data?.type!}
-                status="Aktif"
                 name={data?.name!}
                 description={data?.description!}
                 price={`Rp ${data?.price}`}
                 duration={`${data?.duration} hari`}
-                buttonLabel="Pilih Paket"
               />
             </View>
             <PaymentSection

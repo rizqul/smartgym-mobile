@@ -18,10 +18,11 @@ export default function BookingConfirm() {
   const handleConfirm = async () => {
     try {
       const paymentType = paymentId !== "" ? paymentId : bankId
-      const paymentUrl = await bookingTrainer(slotId, paymentType)
+      const data = await bookingTrainer(slotId, paymentType)
+      const { redirectUrl } = data
       router.push({
         pathname: "/(gym)/dashboard/paymentScreen",
-        params: { paymentUrl: paymentUrl, type: "pt-booking" }
+        params: { paymentUrl: redirectUrl, type: "pt-booking" }
       })
     } catch (err: any) {
       console.log(err.response?.status, err.response?.data)

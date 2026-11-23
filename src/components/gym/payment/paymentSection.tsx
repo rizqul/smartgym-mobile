@@ -1,9 +1,9 @@
+import { PAYMENT_METHODS } from "@/data/helperPayment/paymentMethods"
+import { BankId, PaymentMethodId, PaymentSectionProps } from "@/type/payment.type"
 import { useState } from "react"
-import { View, Text } from "react-native"
+import { Text, View } from "react-native"
 import BankList from "./bankList"
 import MethodOption from "./methodOption"
-import { BankId, PaymentMethodId, PaymentSectionProps } from "@/type/payment.type"
-import { PAYMENT_METHODS } from "@/data/helperPayment/paymentMethods"
 
 export default function PaymentSection({
   summary,
@@ -75,7 +75,7 @@ export default function PaymentSection({
           </View>
 
           <View className="flex-row items-center justify-between">
-            <Text className="text-sm text-text-secondary">Masa berlaku</Text>
+            <Text className="text-sm text-text-secondary">Masa penambahan</Text>
             <Text className="text-sm font-bold text-text-primary">{summary.duration}</Text>
           </View>
 
