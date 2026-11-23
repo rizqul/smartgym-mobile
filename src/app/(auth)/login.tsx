@@ -41,25 +41,25 @@ export default function Login() {
       console.log("=== LOGIN GAGAL ===")
 
       if (error.request && !error.response) {
-        Toast.show({
-          type: ALERT_TYPE.DANGER,
-          title: "Gagal",
-          textBody: `Koneksi Bermasalah, Tidak dapat terhubung ke server. Pastikan internet Anda menyala dan server dapat diakses.`
-        })
-      }
+        let errorMessage = "Terjadi kesalahan yang tidak diketahui"
+        let errorTitle = "Login Gagal"
 
-      if (error.response) {
-        const errorMessage = error.response.data?.message || "Terjadi kesalahan pada server"
+        if (error.request && !error.response) {
+          errorTitle = "Koneksi Bermasalah"
+          errorMessage = "Tidak dapat terhubung ke server. Pastikan internet Anda menyala dan server dapat diakses."
+        }
+        else if (error.response) {
+          errorMessage = error.response.data?.message || "Terjadi kesalahan pada server"
+        }
+        else {
+          errorMessage = error.message
+        }
+
         Toast.show({
           type: ALERT_TYPE.DANGER,
-          title: "Login Gagal",
-          textBody: errorMessage
-        })
-      } else {
-        Toast.show({
-          type: ALERT_TYPE.DANGER,
-          title: "Login Gagal",
-          textBody: error.message
+          title: errorTitle,
+          textBody: errorMessage,
+          autoClose: 3000
         })
       }
     }
