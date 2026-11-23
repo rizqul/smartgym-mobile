@@ -1,6 +1,7 @@
-import PaymentSection, { BankId, PaymentMethodId } from "@/components/gym/membership/membershipPaymentSection"
+import PaymentSection from "@/components/gym/payment/paymentSection"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { bookingTrainer } from "@/service/trainer.service"
+import { BankId, PaymentMethodId } from "@/type/payment.type"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import React, { useState } from "react"
@@ -144,43 +145,6 @@ export default function BookingConfirm() {
               </View>
             </View>
           </View>
-          {/* CATATAN UNTUK TRAINER */}
-          {/* <View className="mb-6 rounded-2xl border border-border/50 bg-card p-4">
-            <View className="mb-2 flex-row items-center justify-between">
-              <View className="flex-row items-center gap-2">
-                <MaterialCommunityIcons
-                  name="text-box-edit-outline"
-                  size={18}
-                  color="#FF6B00"
-                />
-                <Text className="text-sm font-bold text-text-primary">Catatan untuk Trainer</Text>
-              </View>
-              <Text className="text-[10px] text-text-secondary">Opsional</Text>
-            </View>
-            <Text className="mb-3 text-[11px] text-text-secondary">Tuliskan fokus latihan atau kondisi fisik tekini untuk coach.</Text>
-
-            {/* Chips */}
-          {/* <View className="mb-3 flex-row flex-wrap gap-2">
-            {["+ Fokus Upper Body", "+ Form Correction", "+ Recovery / Mobility"].map((chip, idx) => (
-              <TouchableOpacity
-                key={idx}
-                className="rounded-md border border-border/50 bg-surface px-2 py-1.5"
-              >
-                <Text className="text-[10px] font-semibold text-text-primary">{chip}</Text>
-              </TouchableOpacity>
-            ))}
-          </View> */}
-          {/* Text Area */}
-          {/* <TextInput
-            multiline
-            numberOfLines={4}
-            placeholder="Contoh: Fokus latihan otot dada dan perbaikan teknik bench press, bahu kanan sempat sedikit pegal..."
-            placeholderTextColor="#6B7280"
-            className="text-top rounded-xl border border-border/50 bg-surface p-3 text-xs text-text-primary"
-            style={{ minHeight: 80 }}
-          /> */}
-          {/* </View> */}
-          {/* Payment Section */}
           <PaymentSection
             summary={{
               planName: "tes",
