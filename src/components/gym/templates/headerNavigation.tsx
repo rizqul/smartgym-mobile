@@ -3,7 +3,7 @@ import { router } from "expo-router"
 import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 
-const headerNavigation = ({ label }: { label: string }) => {
+const HeaderNavigation = ({ label }: { label: string }) => {
   return (
     <View className="w-full flex-row items-center gap-4 border-b border-border/40 px-3 py-3">
       <TouchableOpacity
@@ -21,4 +21,4 @@ const headerNavigation = ({ label }: { label: string }) => {
   )
 }
 
-export default headerNavigation
+export default HeaderNavigation

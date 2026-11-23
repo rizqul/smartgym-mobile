@@ -1,4 +1,4 @@
-import CardHistoryCheckin from "@/components/gym/profile/CardHistoryCheckin"
+import CardHistoryCheckin from "@/components/gym/profile/cardHistoryCheckin"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { getMyCheckin } from "@/service/scan.service"
 import { CheckinResponse } from "@/type/checkin.type"

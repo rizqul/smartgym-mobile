@@ -1,4 +1,4 @@
-import { AuthProvider, useAuth } from "@/context/AuthContext"
+import { AuthProvider, useAuth } from "@/context/authContext"
 import { useFonts } from "expo-font"
 import { Stack } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"

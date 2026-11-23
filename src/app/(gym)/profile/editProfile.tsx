@@ -1,6 +1,6 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthTextField } from "@/components/auth/authTextField"
-import { useAuth } from "@/context/AuthContext"
+import { useAuth } from "@/context/authContext"
 import { updateProfile } from "@/service/user.service"
 import { Ionicons } from "@expo/vector-icons"
 import { zodResolver } from "@hookform/resolvers/zod"

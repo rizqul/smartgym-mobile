@@ -12,7 +12,7 @@ import { ScrollView, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
 
-const membership = () => {
+const Membership = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { result } = useSelector((state: RootState) => state.membership)
   const weekly = result?.WEEKLY
@@ -20,99 +20,96 @@ const membership = () => {
   const yearly = result?.YEARLY
 
   useEffect(() => {
-    dispatch(fetchMemberships())
+    void dispatch(fetchMemberships())
   }, [])
 
   return (
-    <>
-      <View className="flex-1 items-center bg-background pt-3">
-        <SafeAreaView>
-          <HeaderNavigation label="Berlangganan" />
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View className="gap-5  px-6 py-4">
-              <MembershipHeader />
+    <SafeAreaView className="flex-1 bg-background">
+      <HeaderNavigation label="Berlangganan" />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="gap-5  px-6 py-4">
+          <MembershipHeader />
 
-              <MembershipPaymentInfo
-                provider="Powered by Midtrans"
-                methods={[
-                  { label: "QRIS", tone: "primary" },
-                  { label: "BCA", tone: "info" },
-                  { label: "BNI", tone: "secondary" },
-                  { label: "BRI", tone: "info" },
-                  { label: "BSI", tone: "primary" },
-                  { label: "MANDIRI", tone: "secondary" },
-                  { label: "GOPAY", tone: "success" },
-                  { label: "DANA", tone: "info" },
-                  { label: "SHOPEEPAY", tone: "primary" },
-                  { label: "SEABANK", tone: "danger" }
-                ]}
+          <MembershipPaymentInfo
+            provider="Powered by Midtrans"
+            methods={[
+              { label: "QRIS", tone: "primary" },
+              { label: "BCA", tone: "info" },
+              { label: "BNI", tone: "secondary" },
+              { label: "BRI", tone: "info" },
+              { label: "BSI", tone: "primary" },
+              { label: "MANDIRI", tone: "secondary" },
+              { label: "GOPAY", tone: "success" },
+              { label: "DANA", tone: "info" },
+              { label: "SHOPEEPAY", tone: "primary" },
+              { label: "SEABANK", tone: "danger" }
+            ]}
+          />
+          <View className="items-center gap-4">
+            {weekly?.map((val) => {
+              return (
+                <PlanCard
+                  variant="popular"
+                  key={val.id}
+                  badge={val.type}
+                  status="Aktif"
+                  name={val.name}
+                  description={val.description}
+                  price={`Rp ${val.price.toString()}`}
+                  duration={`${val.duration} hari`}
+                  buttonLabel="Pilih Paket"
+                  onPress={() =>
+                    router.push({
+                      pathname: "/(gym)/dashboard/membershipComfirm",
+                      params: { id: val.id }
+                    })
+                  }
+                />
+              )
+            })}
+            {monthly?.map((val) => (
+              <PlanCard
+                key={val.id}
+                badge={val.type}
+                status="Aktif"
+                name={val.name}
+                description={val.description}
+                price={`Rp ${val.price.toString()}`}
+                duration={`${val.duration} hari`}
+                buttonLabel="Pilih Paket"
+                onPress={() =>
+                  router.push({
+                    pathname: "/(gym)/dashboard/membershipComfirm",
+                    params: { id: val.id }
+                  })
+                }
               />
-              <View className="items-center gap-4">
-                {weekly?.map((val) => {
-                  return (
-                    <PlanCard
-                      variant="popular"
-                      key={val.id}
-                      badge={val.type}
-                      status="Aktif"
-                      name={val.name}
-                      description={val.description}
-                      price={`Rp ${val.price.toString()}`}
-                      duration={`${val.duration} hari`}
-                      buttonLabel="Pilih Paket"
-                      onPress={() =>
-                        router.push({
-                          pathname: "/(gym)/dashboard/[id]",
-                          params: { id: val.id }
-                        })
-                      }
-                    />
-                  )
-                })}
-                {monthly?.map((val) => (
-                  <PlanCard
-                    key={val.id}
-                    badge={val.type}
-                    status="Aktif"
-                    name={val.name}
-                    description={val.description}
-                    price={`Rp ${val.price.toString()}`}
-                    duration={`${val.duration} hari`}
-                    buttonLabel="Pilih Paket"
-                    onPress={() =>
-                      router.push({
-                        pathname: "/(gym)/dashboard/[id]",
-                        params: { id: val.id }
-                      })
-                    }
-                  />
-                ))}
-                {yearly?.map((val) => (
-                  <PlanCard
-                    key={val.id}
-                    badge={val.type}
-                    status="Aktif"
-                    name={val.name}
-                    description={val.description}
-                    price={`Rp ${val.price.toString()}`}
-                    duration={`${val.duration} hari`}
-                    buttonLabel="Pilih Paket"
-                    onPress={() =>
-                      router.push({
-                        pathname: "/(gym)/dashboard/[id]",
-                        params: { id: val.id }
-                      })
-                    }
-                  />
-                ))}
-              </View>
-            </View>
-          </ScrollView>
-          <MembershipConsultCard />
-        </SafeAreaView>
-      </View>
-    </>
+            ))}
+            {yearly?.map((val) => (
+              <PlanCard
+                key={val.id}
+                badge={val.type}
+                status="Aktif"
+                name={val.name}
+                description={val.description}
+                price={`Rp ${val.price.toString()}`}
+                duration={`${val.duration} hari`}
+                buttonLabel="Pilih Paket"
+                onPress={() =>
+                  router.push({
+                    pathname: "/(gym)/dashboard/membershipComfirm",
+                    params: { id: val.id }
+                  })
+                }
+              />
+            ))}
+          </View>
+        </View>
+      </ScrollView>
+      <MembershipConsultCard />
+    </SafeAreaView>
+
   )
 }
 
-export default membership
+export default Membership

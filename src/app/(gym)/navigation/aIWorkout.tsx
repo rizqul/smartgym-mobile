@@ -1,12 +1,12 @@
 import { getSavedPlans } from "@/service/ai.service"
-import { WorkoutPlan } from "@/type/Ai.type"
+import { WorkoutPlan } from "@/type/ai.type"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { useFocusEffect, useRouter } from "expo-router"
 import React, { useCallback, useState } from "react"
 import { ActivityIndicator, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
-export default function AIHome() {
+export default function aIWorkout() {
   const router = useRouter()
   const [plans, setPlans] = useState<WorkoutPlan[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -96,8 +96,8 @@ export default function AIHome() {
               <TouchableOpacity
                 key={plan.id}
                 className="rounded-2xl border border-border/50 bg-card p-4"
-                // Anda bisa arahkan ke screen detail workout di sini
-                // onPress={() => router.push(`/(gym)/ai/detail/${plan.id}`)}
+              // Anda bisa arahkan ke screen detail workout di sini
+              // onPress={() => router.push(`/(gym)/ai/detail/${plan.id}`)}
               >
                 <View className="mb-2 flex-row items-start justify-between">
                   <View className="flex-1">

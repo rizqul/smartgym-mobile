@@ -16,27 +16,27 @@ export async function login(email: string, password: string) {
   return data
 }
 
-export async function ForgotPassword(email: string) {
+export async function forgotPassword(email: string) {
   const response = await api.post("/auth/forgot-password", { email })
   return response.data
 }
 
-export async function ResetPassword(password: string) {
+export async function resetPassword(password: string) {
   const response = await api.post("/auth/reset-password", { password })
   return response.data
 }
 
-export async function OtpVerification(code: string) {
+export async function otpVerification(code: string) {
   const response = await api.post("/auth/reset-verify", { code })
   console.log(response)
   return response
 }
 
-export async function LogoutAPI() {
+export async function logoutAPI() {
   await api.post("/auth/logout")
 }
 
-export async function Profile() {
+export async function profile() {
   const response = await api.get("/user")
   return response.data
 }
