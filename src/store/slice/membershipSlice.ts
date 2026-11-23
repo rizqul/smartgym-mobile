@@ -1,5 +1,5 @@
 import { getAllMemberships } from "@/service/membership.service"
-import { Package, TypePackage } from "@/type/membership.type"
+import { TypePackage } from "@/type/membership.type"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
 interface MemberhipState {

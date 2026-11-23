@@ -1,5 +1,5 @@
 import { TransactionsResponse } from "@/type/Transaction.type"
-import { formatDate, FormatRupiah } from "@/utils/FormaterHelper"
+import { formatDate, formatRupiah } from "@/utils/FormaterHelper"
 import { getStatusUI } from "@/utils/transactionHelper"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -42,7 +42,7 @@ export const TransactionCard = ({ item, showDetail }: { item: TransactionsRespon
 
       {/* Footer Card */}
       <View className="flex-row items-center justify-between border-t border-border/30 pt-3">
-        <Text className="text-sm font-bold text-text-primary">{FormatRupiah(item.amount)}</Text>
+        <Text className="text-sm font-bold text-text-primary">{formatRupiah(item.amount)}</Text>
 
         <TouchableOpacity
           className="flex-row items-center gap-1"

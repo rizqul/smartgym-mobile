@@ -1,4 +1,4 @@
-import { WorkoutConfig, WorkoutPlan } from "@/type/Ai.type"
+import { WorkoutConfig, WorkoutPlan } from "@/type/ai.type"
 import * as SecureStore from "expo-secure-store"
 
 const STORAGE_KEY = "ai_workout_plans"

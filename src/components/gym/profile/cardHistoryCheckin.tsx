@@ -1,11 +1,11 @@
 import { CheckinResponse } from '@/type/checkin.type'
-import { formatDate, FormatTime } from '@/utils/FormaterHelper'
+import { formatDate, formatTime } from '@/utils/FormaterHelper'
 import { Ionicons } from '@expo/vector-icons'
 import React from 'react'
 import { Text, View } from 'react-native'
 
 export default function CardHistoryCheckin({ item }: Readonly<{ item: CheckinResponse }>) {
-    const time = FormatTime(item.checkInAt)
+    const time = formatTime(item.checkInAt)
     const isDenied = item.status === "DENIED"
     // dumy
     const centralGym = " SmartGym Central Base"
@@ -25,14 +25,13 @@ export default function CardHistoryCheckin({ item }: Readonly<{ item: CheckinRes
         return `${mins}m`
     }
 
-    // Helper untuk menampilkan rentang waktu (Masuk - Keluar)
     const formatTimeRange = (inAt: string, outAt: string | null) => {
-        const start = FormatTime(inAt)
+        const start = formatTime(inAt)
         const startStr = `${start.hour}:${start.minute}`
 
         if (!outAt) return `${startStr} - (Aktif)`
 
-        const end = FormatTime(outAt)
+        const end = formatTime(outAt)
         return `${startStr} - ${end.hour}:${end.minute}`
     }
 

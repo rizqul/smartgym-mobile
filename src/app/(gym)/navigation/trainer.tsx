@@ -1,9 +1,8 @@
-import { TrainerCard } from "@/components/gym/trainer/TrainerCard"
+import { TrainerCard } from "@/components/gym/trainer/trainerCard"
 import { fetchTrainers } from "@/store/slice/trainerSlice"
 import { AppDispatch, RootState } from "@/store/store"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
-import { useRouter } from "expo-router"
 import React, { useEffect, useMemo, useState } from "react"
 import { ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -32,7 +31,6 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 ]
 
 export default function TrainerScreen() {
-  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const { result } = useSelector((state: RootState) => state.trainer)
   const [search, setSearch] = useState<string>("")
@@ -42,16 +40,8 @@ export default function TrainerScreen() {
   const [sortDir, setSortDir] = useState<SortDir>("desc")
   const [searchFocused, setSearchFocused] = useState(false)
 
-  const activeFilterCount = (selectedSpec !== "ALL" ? 1 : 0) + (sortKey !== "none" ? 1 : 0)
-
-  const resetFilters = () => {
-    setSelectedSpec("ALL")
-    setSortKey("none")
-    setSortDir("desc")
-  }
-
   useEffect(() => {
-    dispatch(fetchTrainers())
+    void dispatch(fetchTrainers())
   }, [])
 
   useEffect(() => {
@@ -113,9 +103,8 @@ export default function TrainerScreen() {
         {/* ================= STICKY HEADER: SEARCH ================= */}
         <View className="bg-background px-4 pb-3 pt-4">
           <View
-            className={`flex-row items-center gap-2 rounded-2xl border bg-surface px-4 py-1 ${
-              searchFocused ? "border-primary" : "border-border"
-            }`}
+            className={`flex-row items-center gap-2 rounded-2xl border bg-surface px-4 py-1 ${searchFocused ? "border-primary" : "border-border"
+              }`}
           >
             <Ionicons
               name="search"
@@ -202,9 +191,8 @@ export default function TrainerScreen() {
                       key={opt.key}
                       activeOpacity={0.8}
                       onPress={() => handleSort(opt.key)}
-                      className={`flex-1 flex-row items-center justify-center gap-1 rounded-lg py-2.5 ${
-                        active ? "border border-primary/40 bg-primary/15" : "border border-transparent"
-                      }`}
+                      className={`flex-1 flex-row items-center justify-center gap-1 rounded-lg py-2.5 ${active ? "border border-primary/40 bg-primary/15" : "border border-transparent"
+                        }`}
                     >
                       <Text className={`text-xs ${active ? "font-bold text-primary" : "font-semibold text-text-secondary"}`}>
                         {opt.label}

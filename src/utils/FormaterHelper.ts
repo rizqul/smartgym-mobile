@@ -1,4 +1,4 @@
-export const FormatRupiah = (amount: number) => {
+export const formatRupiah = (amount: number) => {
   if (amount === 0) return "Rp 0 - Voucher"
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(amount)
 }
@@ -8,7 +8,16 @@ export const formatDate = (dateString: string) => {
   return date.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
 }
 
-export const FormatTime = (dateString: string) => {
+export const formatDateTime = (iso: string) =>
+  new Date(iso).toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  })
+
+export const formatTime = (dateString: string) => {
   const date = new Date(dateString)
   return {
     hour: date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }).split(".")[0],

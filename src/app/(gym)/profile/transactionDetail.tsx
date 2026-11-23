@@ -1,7 +1,9 @@
+import { TransactionActionButton } from "@/components/gym/payment/transactionActionButton"
+import { TransactionInfoRow } from "@/components/gym/payment/transactionInfoRow"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { cancelTransaction, checkTransactionStatus, getTransactionById } from "@/service/transaction.service"
 import { TransactionsResponse, TransactionStatus } from "@/type/Transaction.type"
-import { FormatRupiah } from "@/utils/FormaterHelper"
+import { formatDateTime, formatRupiah } from "@/utils/FormaterHelper"
 import { getStatusUI } from "@/utils/transactionHelper"
 import { Ionicons } from "@expo/vector-icons"
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
@@ -34,61 +36,12 @@ const HERO: Record<TransactionStatus, HeroConfig> = {
   CANCELLED: { icon: "close", title: "Transaksi Dibatalkan", outer: "bg-text-muted/5", mid: "bg-text-muted/20", inner: "bg-text-muted" }
 }
 
-const VARIANTS = {
-  secondary: { box: "bg-secondary", text: "text-[#111317]", spinner: "#111317" },
-  outline: { box: "border border-border bg-surface", text: "text-text-primary", spinner: "#FFFFFF" },
-  danger: { box: "border border-danger/40 bg-danger/10", text: "text-danger", spinner: "#EF4444" }
-}
-
-const formatDateTime = (iso: string) =>
-  new Date(iso).toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  })
 
 const formatCountdown = (totalSeconds: number) => {
   const h = Math.floor(totalSeconds / 3600)
   const m = Math.floor((totalSeconds % 3600) / 60)
   const s = totalSeconds % 60
   return [h, m, s].map((n) => String(n).padStart(2, "0")).join(":")
-}
-
-// ================= KOMPONEN KECIL =================
-const InfoRow = ({ label, value, valueClassName = "text-text-primary" }: { label: string; value: string; valueClassName?: string }) => (
-  <View className="flex-row items-center justify-between">
-    <Text className="text-xs text-text-secondary">{label}</Text>
-    <Text className={`text-xs font-bold ${valueClassName}`}>{value}</Text>
-  </View>
-)
-
-const ActionButton = ({
-  label,
-  variant,
-  onPress,
-  loading = false,
-  disabled = false
-}: {
-  label: string
-  variant: keyof typeof VARIANTS
-  onPress: () => void
-  loading?: boolean
-  disabled?: boolean
-}) => {
-  const style = VARIANTS[variant]
-  return (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      onPress={onPress}
-      disabled={disabled || loading}
-      className={`w-full flex-row items-center justify-center gap-2 rounded-xl py-4 ${style.box} ${disabled ? "opacity-50" : ""}`}
-    >
-      {loading ? <ActivityIndicator color={style.spinner} /> : null}
-      <Text className={`text-sm font-bold ${style.text}`}>{label}</Text>
-    </TouchableOpacity>
-  )
 }
 
 // ================= SCREEN =================
@@ -222,7 +175,7 @@ export default function TransactionDetail() {
         <HeaderNavigation label="Detail Transaksi" />
         <View className="flex-1 items-center justify-center gap-4 px-8">
           <Text className="text-center text-sm text-text-secondary">{error ?? "Transaksi tidak ditemukan."}</Text>
-          <ActionButton
+          <TransactionActionButton
             label="Coba lagi"
             variant="outline"
             onPress={() => {
@@ -235,7 +188,6 @@ export default function TransactionDetail() {
     )
   }
 
-  // ---------- Turunan tampilan ----------
   const hero = HERO[data.status]
   const statusUI = getStatusUI(data.status)
   const isSuccess = data.status === "SUCCESS"
@@ -295,7 +247,7 @@ export default function TransactionDetail() {
             {typeLabel} • {statusUI.label}
           </Text>
           <Text className="mb-4 text-2xl font-bold text-text-primary">{data.name}</Text>
-          <Text className="text-3xl font-extrabold text-primary">{FormatRupiah(data.amount)}</Text>
+          <Text className="text-3xl font-extrabold text-primary">{formatRupiah(data.amount)}</Text>
         </View>
 
         {/* INFORMASI TRANSAKSI */}
@@ -303,25 +255,25 @@ export default function TransactionDetail() {
           <Text className="mb-4 text-sm font-bold text-text-primary">Informasi transaksi</Text>
 
           <View className="gap-3">
-            <InfoRow
+            <TransactionInfoRow
               label="ID transaksi"
               value={data.orderId}
             />
-            <InfoRow
+            <TransactionInfoRow
               label="Tanggal transaksi"
               value={formatDateTime(data.createdAt)}
             />
             {data.paidAt ? (
-              <InfoRow
+              <TransactionInfoRow
                 label="Tanggal dibayar"
                 value={formatDateTime(data.paidAt)}
               />
             ) : null}
-            <InfoRow
+            <TransactionInfoRow
               label="Metode pembayaran"
               value={data.paymentType ? String(data.paymentType) : "-"}
             />
-            <InfoRow
+            <TransactionInfoRow
               label="Status"
               value={statusUI.label}
               valueClassName={statusUI.textColor}
@@ -336,11 +288,11 @@ export default function TransactionDetail() {
           <View className="gap-2">
             <View className="flex-row items-center justify-between">
               <Text className="text-xs text-text-secondary">Harga paket</Text>
-              <Text className="text-xs font-bold text-text-primary">{FormatRupiah(data.amount)}</Text>
+              <Text className="text-xs font-bold text-text-primary">{formatRupiah(data.amount)}</Text>
             </View>
             <View className="mt-2 flex-row items-center justify-between border-t border-border/30 pt-3">
               <Text className="text-sm font-bold text-text-primary">Total pembayaran</Text>
-              <Text className="text-sm font-bold text-text-primary">{FormatRupiah(data.amount)}</Text>
+              <Text className="text-sm font-bold text-text-primary">{formatRupiah(data.amount)}</Text>
             </View>
           </View>
         </View>
@@ -370,14 +322,14 @@ export default function TransactionDetail() {
           {isSuccess ? (
             <TouchableOpacity
               className="w-full items-center justify-center rounded-xl bg-primary py-4"
-              // onPress={() => router.push("/(gym)/navigation/pass")} // TODO: arahkan ke halaman Digital Pass
+            // onPress={() => router.push("/(gym)/navigation/pass")} // TODO: arahkan ke halaman Digital Pass
             >
               <Text className="text-sm font-bold text-[#111317]">Lihat Digital Pass</Text>
             </TouchableOpacity>
           ) : null}
 
           {canContinue ? (
-            <ActionButton
+            <TransactionActionButton
               label="Lanjutkan Pembayaran"
               variant="secondary"
               onPress={handlePay}
@@ -386,7 +338,7 @@ export default function TransactionDetail() {
           ) : null}
 
           {canCheck ? (
-            <ActionButton
+            <TransactionActionButton
               label="Cek Status"
               variant="outline"
               onPress={() => handleCheckStatus()}
@@ -396,7 +348,7 @@ export default function TransactionDetail() {
           ) : null}
 
           {isPending ? (
-            <ActionButton
+            <TransactionActionButton
               label="Batalkan Transaksi"
               variant="danger"
               onPress={handleCancel}
@@ -404,7 +356,7 @@ export default function TransactionDetail() {
               disabled={checking}
             />
           ) : (
-            <ActionButton
+            <TransactionActionButton
               label="Kembali ke riwayat transaksi"
               variant="outline"
               onPress={() => router.back()}

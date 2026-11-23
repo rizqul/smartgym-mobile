@@ -1,7 +1,7 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
-import { OrangeGlowBackground } from "@/components/auth/OrangeGlowBackground"
-import { ForgotPassword, OtpVerification } from "@/service/auth.service"
+import { OrangeGlowBackground } from "@/components/auth/orangeGlowBackground"
+import { forgotPassword, otpVerification } from "@/service/auth.service"
 import { MaterialIcons } from "@expo/vector-icons"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -27,7 +27,7 @@ const formatTime = (totalSeconds: number) => {
 
 const RESEND_SECONDS = 60
 
-const otpResetPassword = () => {
+const OtpResetPassword = () => {
   const { email } = useLocalSearchParams<{ email: string }>()
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS)
   const [isResending, setIsResending] = useState(false)
@@ -53,7 +53,7 @@ const otpResetPassword = () => {
     if (!canResend || isResending || !email) return
     setIsResending(true)
     try {
-      await ForgotPassword(email)
+      await forgotPassword(email)
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
         title: "Kode Terkirim Ulang",
@@ -75,7 +75,7 @@ const otpResetPassword = () => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      await OtpVerification(data.otp)
+      await otpVerification(data.otp)
       router.push("/(auth)/reset-password")
     } catch (error: any) {
       if (error.response) {
@@ -210,4 +210,4 @@ const otpResetPassword = () => {
   )
 }
 
-export default otpResetPassword
+export default OtpResetPassword

@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/AuthContext"
+import { useAuth } from "@/context/authContext"
 import { Ionicons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { Text, View } from "react-native"

@@ -1,7 +1,7 @@
 import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
-import { OrangeGlowBackground } from "@/components/auth/OrangeGlowBackground"
+import { OrangeGlowBackground } from "@/components/auth/orangeGlowBackground"
 import { ResetPassword } from "@/service/auth.service"
 import { AntDesign, Entypo } from "@expo/vector-icons"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"

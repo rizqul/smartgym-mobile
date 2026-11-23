@@ -1,5 +1,5 @@
 import MembershipActiveCard from "@/components/gym/membership/membershipActiveCard"
-import { useAuth } from "@/context/AuthContext"
+import { useAuth } from "@/context/authContext"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { useRouter } from "expo-router"
@@ -143,7 +143,7 @@ export default function Profile() {
                 tone: "info"
               }
             ]}
-            onRenewPress={() => {}}
+            onRenewPress={() => { }}
           />
           {/*  */}
 

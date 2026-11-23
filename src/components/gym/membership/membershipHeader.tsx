@@ -11,7 +11,7 @@ export default function MembershipHeader({
   badge = "Pusat Langganan",
   title = "Langganan & Paket",
   subtitle = "Kelola status langganan dan pilih paket terbaik untuk capai target kebugaranmu."
-}: MembershipHeaderProps) {
+}: Readonly<MembershipHeaderProps>) {
   return (
     <View className=" gap-3">
       {/* Badge */}

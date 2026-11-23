@@ -1,4 +1,4 @@
-import { TransactionCard } from "@/components/gym/profile/TransactionCard"
+import { TransactionCard } from "@/components/gym/profile/transactionCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { fetchTransactions } from "@/store/slice/transactionSlice"
 import { AppDispatch, RootState } from "@/store/store"

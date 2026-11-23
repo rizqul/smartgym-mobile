@@ -1,3 +1,4 @@
+import { formatRupiah } from "@/utils/FormaterHelper"
 import { Ionicons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { router } from "expo-router"
@@ -28,7 +29,6 @@ const formatLabel = (value: string) =>
     .toLowerCase()
     .replace(/\b\w/g, (c) => c.toUpperCase())
 
-const formatRupiah = (value: number) => `Rp ${String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`
 
 const getInitials = (name: string) =>
   name

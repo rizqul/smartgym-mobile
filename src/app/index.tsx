@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/AuthContext"
+import { useAuth } from "@/context/authContext"
 import { Redirect } from "expo-router"
 import React from "react"
 
