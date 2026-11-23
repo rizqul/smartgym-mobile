@@ -29,4 +29,5 @@ export type PaymentSectionProps = {
   onSelectMethod?: (id: PaymentMethodId) => void
   selectedBank?: BankId
   onSelectBank?: (id: BankId) => void
+  label: string
 }

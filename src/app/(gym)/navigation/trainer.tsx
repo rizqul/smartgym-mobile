@@ -26,7 +26,7 @@ type SortKey = "none" | "experience" | "price"
 type SortDir = "asc" | "desc"
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: "none", label: "Default" },
+  { key: "none", label: "Standar" },
   { key: "experience", label: "Pengalaman" },
   { key: "price", label: "Harga" }
 ]
@@ -40,6 +40,15 @@ export default function TrainerScreen() {
   const [selectedSpec, setSelectedSpec] = useState<string>("ALL")
   const [sortKey, setSortKey] = useState<SortKey>("none")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
+  const [searchFocused, setSearchFocused] = useState(false)
+
+  const activeFilterCount = (selectedSpec !== "ALL" ? 1 : 0) + (sortKey !== "none" ? 1 : 0)
+
+  const resetFilters = () => {
+    setSelectedSpec("ALL")
+    setSortKey("none")
+    setSortDir("desc")
+  }
 
   useEffect(() => {
     dispatch(fetchTrainers())
@@ -101,94 +110,118 @@ export default function TrainerScreen() {
         keyboardShouldPersistTaps="handled"
         stickyHeaderIndices={[0]}
       >
-        {/* ================= STICKY HEADER: SEARCH + FILTER + SORT ================= */}
-        <View className="gap-3 bg-background pb-3 pt-4">
-          {/* SEARCH BAR */}
-          <View className="px-4">
-            <View className="flex-row items-center rounded-xl border border-border/50 bg-card px-4 py-1">
-              <Ionicons
-                name="search"
-                size={20}
-                color="#B8BDC7"
-              />
-              <TextInput
-                value={search}
-                onChangeText={setSearch}
-                placeholder="Cari nama trainer, spesialisasi..."
-                placeholderTextColor="#B8BDC7"
-                className="ml-2 flex-1 text-sm text-text-primary"
-              />
-              {search !== "" && (
-                <TouchableOpacity
-                  onPress={() => setSearch("")}
-                  hitSlop={8}
-                >
-                  <Ionicons
-                    name="close-circle"
-                    size={18}
-                    color="#B8BDC7"
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-
-          {/* FILTER CHIPS (SPESIALISASI) */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerClassName="gap-2 px-4"
-            keyboardShouldPersistTaps="handled"
+        {/* ================= STICKY HEADER: SEARCH ================= */}
+        <View className="bg-background px-4 pb-3 pt-4">
+          <View
+            className={`flex-row items-center gap-2 rounded-2xl border bg-surface px-4 py-1 ${
+              searchFocused ? "border-primary" : "border-border"
+            }`}
           >
-            {SPECIALIZATION_OPTIONS.map((opt) => {
-              const active = selectedSpec === opt.value
-              return (
-                <TouchableOpacity
-                  key={opt.value}
-                  activeOpacity={0.8}
-                  onPress={() => setSelectedSpec(opt.value)}
-                  className={`rounded-full px-4 py-2 ${active ? "bg-primary" : "border border-border bg-card"}`}
-                >
-                  <Text className={`text-xs ${active ? "font-bold text-background" : "font-semibold text-text-primary"}`}>{opt.label}</Text>
-                </TouchableOpacity>
-              )
-            })}
-          </ScrollView>
-
-          {/* SORT */}
-          <View className="flex-row items-center gap-2 px-4">
             <Ionicons
-              name="swap-vertical"
-              size={16}
-              color="#B8BDC7"
+              name="search"
+              size={20}
+              color={searchFocused ? "#FF6B00" : "#B8BDC7"}
             />
-            <Text className="text-xs font-semibold text-text-secondary">Urutkan</Text>
-            {SORT_OPTIONS.map((opt) => {
-              const active = sortKey === opt.key
-              return (
-                <TouchableOpacity
-                  key={opt.key}
-                  activeOpacity={0.8}
-                  onPress={() => handleSort(opt.key)}
-                  className={`flex-row items-center gap-1 rounded-full px-3 py-1.5 ${
-                    active ? "border border-primary/40 bg-primary/10" : "border border-border bg-card"
-                  }`}
-                >
-                  <Text className={`text-xs ${active ? "font-bold text-primary" : "font-semibold text-text-primary"}`}>{opt.label}</Text>
-                  {active && opt.key !== "none" && (
-                    <Ionicons
-                      name={sortDir === "asc" ? "arrow-up" : "arrow-down"}
-                      size={12}
-                      color="#FF6B00"
-                    />
-                  )}
-                </TouchableOpacity>
-              )
-            })}
+            <TextInput
+              value={search}
+              onChangeText={setSearch}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+              placeholder="Cari nama trainer, spesialisasi..."
+              placeholderTextColor="#6B7280"
+              className="flex-1 py-3 text-sm text-text-primary"
+            />
+            {search !== "" && (
+              <TouchableOpacity
+                onPress={() => setSearch("")}
+                hitSlop={8}
+              >
+                <Ionicons
+                  name="close-circle"
+                  size={18}
+                  color="#B8BDC7"
+                />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
         <View className="gap-5 px-4 pt-2">
+          {/* ================= FILTER & SORT CONTAINER ================= */}
+          <View className="gap-4 rounded-2xl border border-border bg-surface p-4">
+            {/* Header wadah */}
+            <View className="flex-row items-center">
+              <View className="flex-row items-center gap-2">
+                <Ionicons
+                  name="options-outline"
+                  size={18}
+                  color="#FFB693"
+                />
+                <Text className="text-sm font-bold text-text-primary">Filter & Urutkan</Text>
+              </View>
+            </View>
+
+            {/* Spesialisasi */}
+            <View className="gap-2">
+              <Text className="text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Spesialisasi</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                className="-mx-4"
+                contentContainerClassName="gap-2 px-4"
+                keyboardShouldPersistTaps="handled"
+              >
+                {SPECIALIZATION_OPTIONS.map((opt) => {
+                  const active = selectedSpec === opt.value
+                  return (
+                    <TouchableOpacity
+                      key={opt.value}
+                      activeOpacity={0.8}
+                      onPress={() => setSelectedSpec(opt.value)}
+                      className={`rounded-full border px-4 py-2 ${active ? "border-primary bg-primary" : "border-border bg-card"}`}
+                    >
+                      <Text className={`text-xs ${active ? "font-bold text-background" : "font-semibold text-text-body"}`}>
+                        {opt.label}
+                      </Text>
+                    </TouchableOpacity>
+                  )
+                })}
+              </ScrollView>
+            </View>
+
+            <View className="h-px bg-border" />
+
+            {/* Urutkan */}
+            <View className="gap-2">
+              <Text className="text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Urutkan</Text>
+              <View className="flex-row gap-1 rounded-xl border border-border bg-card p-1">
+                {SORT_OPTIONS.map((opt) => {
+                  const active = sortKey === opt.key
+                  return (
+                    <TouchableOpacity
+                      key={opt.key}
+                      activeOpacity={0.8}
+                      onPress={() => handleSort(opt.key)}
+                      className={`flex-1 flex-row items-center justify-center gap-1 rounded-lg py-2.5 ${
+                        active ? "border border-primary/40 bg-primary/15" : "border border-transparent"
+                      }`}
+                    >
+                      <Text className={`text-xs ${active ? "font-bold text-primary" : "font-semibold text-text-secondary"}`}>
+                        {opt.label}
+                      </Text>
+                      {active && opt.key !== "none" && (
+                        <Ionicons
+                          name={sortDir === "asc" ? "arrow-up" : "arrow-down"}
+                          size={12}
+                          color="#FF6B00"
+                        />
+                      )}
+                    </TouchableOpacity>
+                  )
+                })}
+              </View>
+            </View>
+          </View>
           {/* ================= BENEFIT BANNER ================= */}
           <View className="overflow-hidden rounded-2xl border border-primary/20">
             <LinearGradient

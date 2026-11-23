@@ -1,5 +1,7 @@
 import { getTrainerSlot } from "@/service/trainer.service"
-import { TrainerSlot } from "@/type/Trainer.type"
+import { fetchTrainers } from "@/store/slice/trainerSlice"
+import { AppDispatch, RootState } from "@/store/store"
+import { Trainer, TrainerSlot } from "@/type/Trainer.type"
 import { generateUpcomingDates } from "@/utils/dateHelper"
 import { getTimezoneLabel } from "@/utils/timeZoneHelper"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
@@ -9,6 +11,15 @@ import React, { useEffect, useMemo, useState } from "react"
 import { Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useDispatch, useSelector } from "react-redux"
+
+const STATUS_LEWAT = "Lewat"
+
+const getSlotStatus = (slot: TrainerSlot, now: number): string => {
+  const start = new Date(slot.startTime).getTime()
+  if (!Number.isNaN(start) && start <= now) return STATUS_LEWAT
+  return slot.status
+}
 
 export default function TrainerProfile() {
   const { id }: { id: string } = useLocalSearchParams()
@@ -18,6 +29,23 @@ export default function TrainerProfile() {
   const dates = useMemo(() => generateUpcomingDates(14), [])
   const [selectedDate, setSelectedDate] = useState<string>(dates[0].fullDate)
   const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch<AppDispatch>()
+  const { result } = useSelector((state: RootState) => state.trainer)
+  const data = result?.find((item: Trainer) => item.id === id)
+  const [now, setNow] = useState(() => Date.now())
+  const firstDate = new Date(dates[0].fullDate).toLocaleDateString("id-ID", { month: "short" })
+  const lastDate = new Date(dates[13].fullDate).toLocaleDateString("id-ID", { month: "short" })
+  const lastYear = new Date(dates[13].fullDate).getFullYear()
+  const month = firstDate === lastDate ? `${firstDate}` : `${firstDate} - ${lastDate} ${lastYear}`
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 60_000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const slots = useMemo(() => timeSlots.map((slot) => ({ ...slot, status: getSlotStatus(slot, now) })), [timeSlots, now])
+
+  const isSelectedValid = !!selectedTime && getSlotStatus(selectedTime, now) === "AVAILABLE"
 
   const fetchSlots = async (ignore: boolean) => {
     try {
@@ -34,6 +62,12 @@ export default function TrainerProfile() {
   }
 
   useEffect(() => {
+    if (!result?.length) {
+      dispatch(fetchTrainers())
+    }
+  }, [])
+
+  useEffect(() => {
     let ignore = false
     void fetchSlots(ignore)
 
@@ -48,6 +82,8 @@ export default function TrainerProfile() {
     year: "numeric"
   })
 
+  const availableCount = slots.filter((s) => s.status === "AVAILABLE").length
+
   const onNext = () => {
     if (!selectedTime?.id) {
       Toast.show({
@@ -58,9 +94,27 @@ export default function TrainerProfile() {
       })
       return
     }
+
+    if (!isSelectedValid) {
+      setSelectedTime(null)
+      Toast.show({
+        type: ALERT_TYPE.WARNING,
+        title: "Slot Tidak Tersedia",
+        textBody: "Waktu slot ini sudah lewat, silakan pilih slot lain.",
+        autoClose: 3000
+      })
+      return
+    }
     router.push({
       pathname: "/trainer/booking-confirm",
-      params: { trainerId: id, slotId: String(selectedTime?.id) }
+      params: {
+        trainerId: id,
+        slotId: String(selectedTime.id),
+        date: selectedDate,
+        startTime: selectedTime.startTime,
+        endTime: selectedTime.endTime,
+        description: selectedTime.description ?? ""
+      }
     })
   }
 
@@ -80,7 +134,7 @@ export default function TrainerProfile() {
               color="white"
             />
           </TouchableOpacity>
-          <Text className="font-inter text-lg font-bold text-text-primary">Trainer Slot</Text>
+          <Text className="font-inter text-lg font-bold text-text-primary">Jadwal Trainer</Text>
         </View>
       </View>
 
@@ -90,69 +144,82 @@ export default function TrainerProfile() {
       >
         {/* ================= HERO SECTION ================= */}
         <View className="mb-6 px-5">
-          <View className="overflow-hidden rounded-3xl bg-surface">
-            {/* Image Area */}
-            <View className="relative h-[320px] w-full bg-border/30">
+          <View className="overflow-hidden rounded-3xl border border-border bg-surface">
+            {/* Foto */}
+            <View className="h-[240px] w-full bg-border/30">
               <Image
-                source={{ uri: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=600&auto=format&fit=crop" }}
+                source={{
+                  uri: data?.profileUrl ?? "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=600&auto=format&fit=crop"
+                }}
                 className="h-full w-full"
                 resizeMode="cover"
               />
 
-              {/* Top Badges */}
-              <View className="absolute left-4 right-4 top-4 flex-row justify-between">
-                <View className="flex-row items-center gap-1.5 rounded-full border border-border/50 bg-background/80 px-3 py-1.5">
-                  <View className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  <Text className="text-[10px] font-bold text-text-primary">Siap Booking</Text>
-                </View>
-              </View>
-
-              {/* Text Overlay (Bottom) */}
+              {/* Fade tipis di bawah foto agar menyatu dengan kartu */}
               <LinearGradient
-                colors={["transparent", "rgba(17, 19, 23, 0.9)", "#111317"]}
-                className="absolute bottom-0 left-0 right-0 px-5 pb-4 pt-20"
-              >
-                <Text className="mb-1 text-2xl font-bold text-text-primary">Coach Rio Pratama, CSCS</Text>
-                <View className="mb-3 flex-row items-center gap-1.5">
-                  <MaterialCommunityIcons
-                    name="arm-flex"
-                    size={14}
-                    color="#FF6B00"
-                  />
-                  <Text className="flex-1 text-xs text-text-secondary">Senior Strength & Conditioning Coach • CSCS & NASM</Text>
-                </View>
-                <Text className="text-xs leading-5 text-text-secondary">
-                  Spesialis program Hyperthrophy, Biomechanics Form Correction, dan peningkatan kekuatan fungsional tanpa risiko cedera.
-                </Text>
-              </LinearGradient>
-            </View>
-          </View>
+                colors={["transparent", "#1A1D24"]}
+                pointerEvents="none"
+                style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 80 }}
+              />
 
-          {/* Stats Box (Overlapping) */}
-          <View className="z-10 mx-2 -mt-6 flex-row justify-between rounded-2xl border border-border/50 bg-card p-4 shadow-lg shadow-black/50">
-            <View className="my-1 w-px bg-border/50" />
-            <View className="flex-1 items-center">
-              <View className="mb-1 flex-row items-center gap-1">
-                <Ionicons
-                  name="people"
-                  size={16}
-                  color="#FF6B00"
-                />
-                <Text className="text-base font-bold text-text-primary">140+</Text>
+              {/* Badge */}
+              <View className="absolute left-4 top-4 flex-row items-center gap-1.5 rounded-full border border-success/40 bg-background/80 px-3 py-1.5">
+                <View className="h-1.5 w-1.5 rounded-full bg-success" />
+                <Text className="text-[10px] font-bold text-text-primary">Siap Booking</Text>
               </View>
-              <Text className="text-[10px] text-text-secondary">Member Aktif</Text>
             </View>
-            <View className="my-1 w-px bg-border/50" />
-            <View className="flex-1 items-center">
-              <View className="mb-1 flex-row items-center gap-1">
-                <Ionicons
-                  name="time"
-                  size={16}
-                  color="#60A5FA"
+
+            {/* Info trainer */}
+            <View className="gap-3 px-5 pb-5 pt-2">
+              <Text className="text-2xl font-bold text-text-primary">Coach {data?.name}</Text>
+
+              <View className="flex-row items-center gap-1.5 self-start rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5">
+                <MaterialCommunityIcons
+                  name="arm-flex"
+                  size={14}
+                  color="#FF8A33"
                 />
-                <Text className="text-base font-bold text-text-primary">6+ Thn</Text>
+                <Text className="text-xs font-semibold text-primary-hover">{data?.specialization}</Text>
               </View>
-              <Text className="text-[10px] text-text-secondary">Pengalaman</Text>
+
+              <Text className="text-sm leading-5 text-text-secondary">
+                Spesialis program Hyperthrophy, Biomechanics Form Correction, dan peningkatan kekuatan fungsional tanpa risiko cedera.
+              </Text>
+
+              <View className="h-px bg-border" />
+
+              {/* Statistik */}
+              <View className="flex-row">
+                <View className="flex-1 flex-row items-center gap-3">
+                  <View className="h-10 w-10 items-center justify-center rounded-full bg-success/15">
+                    <Ionicons
+                      name="calendar"
+                      size={18}
+                      color="#22C55E"
+                    />
+                  </View>
+                  <View>
+                    <Text className="text-base font-bold text-text-primary">{loading ? "-" : availableCount}</Text>
+                    <Text className="text-[10px] text-text-secondary">Slot Tersedia</Text>
+                  </View>
+                </View>
+
+                <View className="my-1 w-px bg-border" />
+
+                <View className="flex-1 flex-row items-center gap-3 pl-4">
+                  <View className="h-10 w-10 items-center justify-center rounded-full bg-info/15">
+                    <Ionicons
+                      name="time"
+                      size={18}
+                      color="#60A5FA"
+                    />
+                  </View>
+                  <View>
+                    <Text className="text-base font-bold text-text-primary">{data?.experience} Thn</Text>
+                    <Text className="text-[10px] text-text-secondary">Pengalaman</Text>
+                  </View>
+                </View>
+              </View>
             </View>
           </View>
         </View>
@@ -164,7 +231,7 @@ export default function TrainerProfile() {
               <Text className="mb-1 text-xl font-bold text-text-primary">Available Schedule</Text>
               <Text className="text-xs text-text-secondary">Pilih tanggal sesi latihan minggu ini</Text>
             </View>
-            <Text className="text-[10px] font-bold tracking-widest text-primary">MEI - JUN 2024</Text>
+            <Text className="text-xs font-bold tracking-widest text-primary">{month}</Text>
           </View>
 
           {/* Date Picker */}
@@ -181,12 +248,13 @@ export default function TrainerProfile() {
                   key={item.fullDate}
                   disabled={item.disabled}
                   onPress={() => setSelectedDate(item.fullDate)}
-                  className={`h-20 w-14 items-center justify-center rounded-2xl border ${isActive
-                    ? "border-primary bg-primary"
-                    : item.disabled
-                      ? "border-border/30 bg-card/50 opacity-50"
-                      : "border-border bg-card"
-                    }`}
+                  className={`h-20 w-14 items-center justify-center rounded-2xl border ${
+                    isActive
+                      ? "border-primary bg-primary"
+                      : item.disabled
+                        ? "border-border/30 bg-card/50 opacity-50"
+                        : "border-border bg-card"
+                  }`}
                 >
                   <Text className={`mb-1 text-[10px] ${isActive ? "text-white" : "text-text-secondary"}`}>{item.day}</Text>
                   <Text className={`text-xl font-bold ${isActive ? "text-white" : "text-text-primary"}`}>{item.date}</Text>
@@ -199,16 +267,6 @@ export default function TrainerProfile() {
             })}
           </ScrollView>
 
-          {/* Info Text */}
-          <View className="mb-6 flex-row items-center gap-2">
-            <Ionicons
-              name="information-circle-outline"
-              size={16}
-              color="#FF6B00"
-            />
-            <Text className="text-[11px] text-text-secondary">Hari aktif di-highlight oranye/hijau, trainer libur di-nonaktifkan.</Text>
-          </View>
-
           <View className="mb-3 flex-row items-center justify-between">
             <Text className="text-base font-bold text-text-primary">Slot Latihan ({dateText})</Text>
             <Text className="text-[10px] font-bold text-text-secondary">{getTimezoneLabel()}</Text>
@@ -216,44 +274,45 @@ export default function TrainerProfile() {
 
           {/* Time Slots List */}
           <View className="gap-3">
-            {timeSlots.map((slot) => {
+            {slots.map((slot) => {
               const time = `${slot.startTime.substring(11, 16)} - ${slot.endTime.substring(11, 16)}`
+              const isAvailable = slot.status === "AVAILABLE"
+              const isSelected = selectedTime?.id === slot.id && isAvailable
+
               return (
                 <TouchableOpacity
                   key={slot.id}
+                  disabled={!isAvailable}
                   onPress={() => setSelectedTime(slot)}
-                  className={`flex-row items-center rounded-2xl border p-4 
-                  ${selectedTime?.id === slot.id && slot.status === "AVAILABLE" ? "border-primary bg-surface" : "border-border bg-card"}`}
+                  className={`flex-row items-center rounded-2xl border p-4 ${
+                    isSelected ? "border-primary bg-surface" : "border-border bg-card"
+                  } ${!isAvailable ? "opacity-50" : ""}`}
                 >
                   {/* Icon */}
                   <View
-                    className={`mr-3 h-10 w-10 items-center justify-center rounded-full ${selectedTime?.id === slot.id && slot.status === "AVAILABLE" ? "bg-primary" : "bg-background"
-                      }`}
+                    className={`mr-3 h-10 w-10 items-center justify-center rounded-full ${isSelected ? "bg-primary" : "bg-background"}`}
                   >
                     <Ionicons
                       name="time-outline"
                       size={20}
-                      color={selectedTime?.id === slot.id ? "white" : "#B8BDC7"}
+                      color={isSelected ? "white" : "#B8BDC7"}
                     />
                   </View>
 
                   {/* Time & Title */}
                   <View className="flex-1">
-                    <Text className={`mb-0.5 text-sm font-bold text-text-primary`}>{time}</Text>
-                    <Text className="text-[11px] text-text-secondary">{slot.description}</Text>
+                    <Text className="mb-0.5 text-sm font-bold text-text-primary">{time}</Text>
+                    {slot.description ? <Text className="text-[11px] text-text-secondary">{slot.description}</Text> : null}
                   </View>
 
                   {/* Status Badge */}
-                  <View className={`items-end rounded-md px-2 py-1.5 ${slot.status === "AVAILABLE" ? "bg-success/15" : "bg-border/50"}`}>
+                  <View className={`items-end rounded-md px-2 py-1.5 ${isAvailable ? "bg-success/15" : "bg-border/50"}`}>
                     <Text
-                      className={`mb-0.5 text-[10px] font-bold ${slot.status === "AVAILABLE"
-                        ? "text-success"
-                        : slot.status === "Limited Slot"
-                          ? "text-warning"
-                          : "text-text-secondary"
-                        }`}
+                      className={`mb-0.5 text-[10px] font-bold ${
+                        isAvailable ? "text-success" : slot.status === "BOOKED" ? "text-warning" : "text-text-secondary"
+                      }`}
                     >
-                      {slot.status}
+                      {slot.status === "AVAILABLE" ? "TERSEDIA" : slot.status === "BOOKED" ? "DIPESAN" : slot.status}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -264,21 +323,13 @@ export default function TrainerProfile() {
       </ScrollView>
 
       {/* ================= STICKY BOTTOM BAR ================= */}
-      {selectedTime?.status === "AVAILABLE" ? (
+      {isSelectedValid && selectedTime ? (
         <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between border-t border-border bg-surface p-5 pb-8">
           <View>
             <Text className="mb-1 text-[9px] font-bold uppercase tracking-widest text-text-secondary">Sesi Dipilih</Text>
             <Text className="mb-0.5 text-sm font-bold text-text-primary">
               {dateText} • {`${selectedTime.startTime.substring(11, 16)} - ${selectedTime.endTime.substring(11, 16)}`}
             </Text>
-            <View className="flex-row items-center gap-1">
-              <Ionicons
-                name="checkmark-circle"
-                size={12}
-                color="#B8BDC7"
-              />
-              <Text className="text-[10px] text-text-secondary">Kupon Terpasang</Text>
-            </View>
           </View>
           <TouchableOpacity
             onPress={onNext}
