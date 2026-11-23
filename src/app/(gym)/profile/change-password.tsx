@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "expo-router"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Pressable, Text, View } from "react-native"
+import { Pressable, ScrollView, StatusBar, Text, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { z } from "zod"
@@ -100,100 +100,102 @@ export default function ChangePassword() {
   ]
 
   return (
-    <>
-      <SafeAreaView className="flex-1 bg-background">
-        <View className="flex-1 bg-background">
-          <HeaderNavigation label="Ubah Kata Sandi" />
-          <View className="flex items-center justify-start gap-8">
-            {/* Header */}
-            <View className="mt-5 w-[345] flex-row items-center gap-6">
-              <View className="flex h-[76] w-[76] items-center justify-center rounded-2xl bg-white/10 shadow-xl">
-                <View className="flex h-[56] w-[56] items-center justify-center rounded-full border border-dashed border-[#FF6B00]">
-                  <MaterialIcons
-                    name="lock"
-                    size={25}
-                    color="#FF6B00"
-                  />
-                </View>
-              </View>
-              <View className="flex w-[340]  gap-1">
-                <Text className="text-3xl font-bold text-text-body">Lindungi akunmu</Text>
-                <Text className="w-[240] text-sm leading-6 text-[#E2BFB0]">
-                  Masukkan kata sandi lama kamu, lalu buat kata sandi baru yang lebih aman.
-                </Text>
-              </View>
-            </View>
+    <SafeAreaView className="flex-1 bg-background">
+      <StatusBar barStyle="light-content" />
+      <HeaderNavigation label="Ubah Kata Sandi" />
 
-            {/* Input Part */}
-            <View className="flex">
-              {fields.map(({ name, label, placeholder }) => (
-                <View key={name}>
-                  <Controller
-                    control={control}
-                    name={name}
-                    render={({ field: { value, onChange, onBlur } }) => (
-                      <AuthTextField
-                        label={label}
-                        value={value}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        error={
-                          errors[name]?.message === "Kata sandi lama wajib diisi" ||
-                          errors[name]?.message === "Konfirmasi Kata Sandi wajib diisi"
-                            ? errors[name]?.message
-                            : ""
-                        }
-                        placeholder={placeholder}
-                        secureTextEntry={!visible[name]}
-                        autoCapitalize="none"
-                        accessory={
-                          <Pressable
-                            className="p-2"
-                            onPress={() => toggleVisible(name)}
-                            accessibilityLabel={visible[name] ? "Hide password" : "Show password"}
-                          >
-                            <Entypo
-                              name={visible[name] ? "eye-with-line" : "eye"}
-                              size={20}
-                              color="#E2BFB0"
-                            />
-                          </Pressable>
-                        }
-                      />
-                    )}
-                  />
-                </View>
-              ))}
-            </View>
-
-            {/* Label */}
-
-            <View className="flex  w-[340] gap-2 rounded-xl bg-surface px-4 py-4 ">
-              {rules.map(({ label, ok }) => (
-                <View
-                  key={label}
-                  className="flex-row items-center gap-2"
-                >
-                  <AntDesign
-                    name={ok ? "check-circle" : "close-circle"}
-                    size={18}
-                    color={ok ? "#FF6B00" : "#EF4444"}
-                  />
-                  <Text className="text-xs font-semibold text-[#A98A7D]">{label}</Text>
-                </View>
-              ))}
-            </View>
-
-            {/* Submit */}
-            <View>
-              <AuthButton
-                onPress={handleSubmit(onSubmit)}
-                label="Simpan Password Baru"
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerClassName="px-5 pb-10 gap-6"
+      >
+        {/* Header */}
+        <View className=" flex-row items-center gap-6">
+          <View className="flex h-[76] w-[76] items-center justify-center rounded-2xl bg-white/10 shadow-xl">
+            <View className="flex h-[56] w-[56] items-center justify-center rounded-full border border-dashed border-[#FF6B00]">
+              <MaterialIcons
+                name="lock"
+                size={25}
+                color="#FF6B00"
               />
             </View>
           </View>
+          <View className="flex w-[340]  gap-1">
+            <Text className="text-3xl font-bold text-text-body">Lindungi akunmu</Text>
+            <Text className="w-[240] text-sm leading-6 text-[#E2BFB0]">
+              Masukkan kata sandi lama kamu, lalu buat kata sandi baru yang lebih aman.
+            </Text>
+          </View>
         </View>
-      </SafeAreaView>
-    </>
+
+        {/* Input Part */}
+        <View className="flex">
+          {fields.map(({ name, label, placeholder }) => (
+            <View key={name}>
+              <Controller
+                control={control}
+                name={name}
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <AuthTextField
+                    label={label}
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    error={
+                      errors[name]?.message === "Kata sandi lama wajib diisi" ||
+                        errors[name]?.message === "Konfirmasi Kata Sandi wajib diisi"
+                        ? errors[name]?.message
+                        : ""
+                    }
+                    placeholder={placeholder}
+                    secureTextEntry={!visible[name]}
+                    autoCapitalize="none"
+                    accessory={
+                      <Pressable
+                        className="p-2"
+                        onPress={() => toggleVisible(name)}
+                        accessibilityLabel={visible[name] ? "Hide password" : "Show password"}
+                      >
+                        <Entypo
+                          name={visible[name] ? "eye-with-line" : "eye"}
+                          size={20}
+                          color="#E2BFB0"
+                        />
+                      </Pressable>
+                    }
+                  />
+                )}
+              />
+            </View>
+          ))}
+        </View>
+
+        {/* Label */}
+
+        <View className="flex  w-[340] gap-2 rounded-xl bg-surface px-4 py-4 ">
+          {rules.map(({ label, ok }) => (
+            <View
+              key={label}
+              className="flex-row items-center gap-2"
+            >
+              <AntDesign
+                name={ok ? "check-circle" : "close-circle"}
+                size={18}
+                color={ok ? "#FF6B00" : "#EF4444"}
+              />
+              <Text className="text-xs font-semibold text-[#A98A7D]">{label}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Submit */}
+        <View>
+          <AuthButton
+            onPress={handleSubmit(onSubmit)}
+            label="Simpan Password Baru"
+          />
+        </View>
+      </ScrollView>
+
+    </SafeAreaView>
   )
 }
