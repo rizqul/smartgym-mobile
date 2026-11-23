@@ -80,7 +80,7 @@ export default function MembershipPaymentInfo({
         </View>
 
         {/* Payment methods */}
-        <View className="flex-row flex-wrap gap-2">
+        <View className="w-[280px] flex-row flex-wrap gap-2">
           {methods.map((method) => {
             const tone = methodStyles[method.tone ?? "neutral"]
             return (
