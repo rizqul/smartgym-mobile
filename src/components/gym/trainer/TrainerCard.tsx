@@ -85,17 +85,6 @@ export const TrainerCard = ({ data }: Props) => {
       {/* Divider */}
       <View className="h-px bg-border/40" />
 
-      {/* Status & Schedule */}
-      {/* <View className="flex-row items-center justify-between border-t border-border/30">
-    <View className="flex-row items-center gap-1.5">
-      <View className={`h-2 w-2 rounded-full  bg-success `} />
-      <Text className={`text-xs font-bold text-success`}>
-        {available ? "AVAILABLE" : "UNAVAILABLE"}
-      </Text>
-    </View>
-    <Text className="text-xs text-text-secondary">{schedule}</Text>
-  </View> */}
-
       {/* Action Button */}
       <TouchableOpacity
         className={`flex-row items-center justify-center gap-2 rounded-xl bg-primary py-3.5`}

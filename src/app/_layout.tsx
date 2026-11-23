@@ -63,7 +63,7 @@ export default function RootLayout() {
         },
         {
           label: "#FF6B00",
-          card: "#1A1D24",
+          card: "#242833",
           overlay: "#000000",
           success: "#34D399",
           danger: "#EF4444",
@@ -80,8 +80,11 @@ export default function RootLayout() {
       <Provider store={store}>
         <PersistGate
           loading={
-            <View className="flex-1 bg-background justify-center items-center">
-              <ActivityIndicator size="large" color="#FF6B00" />
+            <View className="flex-1 items-center justify-center bg-background">
+              <ActivityIndicator
+                size="large"
+                color="#FF6B00"
+              />
             </View>
           }
           persistor={persistor}
