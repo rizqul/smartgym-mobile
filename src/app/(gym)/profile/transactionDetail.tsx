@@ -36,7 +36,6 @@ const HERO: Record<TransactionStatus, HeroConfig> = {
   CANCELLED: { icon: "close", title: "Transaksi Dibatalkan", outer: "bg-text-muted/5", mid: "bg-text-muted/20", inner: "bg-text-muted" }
 }
 
-
 const formatCountdown = (totalSeconds: number) => {
   const h = Math.floor(totalSeconds / 3600)
   const m = Math.floor((totalSeconds % 3600) / 60)
@@ -320,10 +319,7 @@ export default function TransactionDetail() {
         {/* TOMBOL AKSI */}
         <View className="w-full gap-3">
           {isSuccess ? (
-            <TouchableOpacity
-              className="w-full items-center justify-center rounded-xl bg-primary py-4"
-            // onPress={() => router.push("/(gym)/navigation/pass")} // TODO: arahkan ke halaman Digital Pass
-            >
+            <TouchableOpacity className="w-full items-center justify-center rounded-xl bg-primary py-4">
               <Text className="text-sm font-bold text-[#111317]">Lihat Digital Pass</Text>
             </TouchableOpacity>
           ) : null}
@@ -359,7 +355,7 @@ export default function TransactionDetail() {
             <TransactionActionButton
               label="Kembali ke riwayat transaksi"
               variant="outline"
-              onPress={() => router.back()}
+              onPress={() => router.push("/(gym)/profile/historyTransaction")}
             />
           )}
         </View>

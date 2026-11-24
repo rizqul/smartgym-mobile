@@ -20,23 +20,8 @@ export default function TransactionHistory() {
 
   const transaction = result?.data
 
-  // map by date
-  // const groupedTransactions = DUMMYTRANSACTIONS.reduce(
-  //   (acc, curr) => {
-  //     const date = new Date(curr.created_at)
-  //     const monthYear = date.toLocaleDateString("id-ID", { month: "long", year: "numeric" }).toUpperCase()
-
-  //     if (!acc[monthYear]) {
-  //       acc[monthYear] = []
-  //     }
-  //     acc[monthYear].push(curr)
-  //     return acc
-  //   },
-  //   {} as Record<string, TransactionData[]>
-  // )
-
   const handleShowDetail = (id: string) => {
-    router.push({ pathname: "/(gym)/profile/detailHistory", params: { id } })
+    router.push({ pathname: "/(gym)/profile/transactionDetail", params: { id } })
   }
 
   return (
@@ -95,29 +80,6 @@ export default function TransactionHistory() {
 
         {/* TRANSACTION LIST (BERDASARKAN HASIL GROUPING) */}
         <View className="gap-4">
-          {/* {Object.entries(groupedTransactions).map(([monthYear, items], index) => (
-            <View
-              key={index}
-              className="mb-6 gap-3"
-            >
-              {/* Group Header */}
-          {/* <View className="flex-row items-center justify-between">
-                <Text className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{monthYear}</Text>
-                <Text className="text-[10px] text-text-secondary">{items.length} transaksi</Text>
-              </View> */}
-
-          {/* Group Items */}
-          {/* {items.map((item) => (
-                <TransactionCard
-                  key={item.id}
-                  item={item}
-                  showDetail={() => {
-                    handleShowDetail(String(item.id))
-                  }}
-                />
-              ))}
-            </View> */}
-          {/* ))}} */}
           {transaction?.map((item) => {
             return (
               <TransactionCard

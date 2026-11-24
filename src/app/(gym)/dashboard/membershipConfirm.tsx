@@ -34,10 +34,10 @@ const MembershipConfirm = () => {
     try {
       const paymentType = paymentId !== "" ? paymentId : bankId
       const data = await buyMembership(id, paymentType)
-      const { redirectUrl } = data
+      const { redirectUrl, orderId } = data
       router.push({
         pathname: "/(gym)/dashboard/paymentScreen",
-        params: { paymentUrl: redirectUrl, type: "membership" }
+        params: { paymentUrl: redirectUrl, type: "membership", orderId: orderId }
       })
     } catch (err: any) {
       console.log(err.response?.status, err.response?.data)
