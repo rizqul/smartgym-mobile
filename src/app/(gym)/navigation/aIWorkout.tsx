@@ -1,33 +1,25 @@
-import { getSavedPlans } from "@/service/ai.service"
-import { WorkoutPlan } from "@/type/ai.type"
+import { RootState } from "@/store/store"
+import { SavedWorkoutPlan, SplitType } from "@/type/ai.type"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-import { useFocusEffect, useRouter } from "expo-router"
-import React, { useCallback, useState } from "react"
-import { ActivityIndicator, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { useRouter } from "expo-router"
+import React, { useState } from "react"
+import { ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useSelector } from "react-redux"
 
-export default function aIWorkout() {
+const SPLIT_LABEL: Record<SplitType, string> = {
+  PUSH: "Push",
+  PULL: "Pull",
+  UPPER: "Upper",
+  LOWER: "Lower",
+  FULL_BODY: "Full Body"
+}
+
+export default function AIWorkout() {
   const router = useRouter()
-  const [plans, setPlans] = useState<WorkoutPlan[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useFocusEffect(
-    useCallback(() => {
-      let isActive = true
-      const fetchPlans = async () => {
-        setIsLoading(true)
-        const data = await getSavedPlans()
-        if (isActive) {
-          setPlans(data)
-          setIsLoading(false)
-        }
-      }
-      fetchPlans()
-      return () => {
-        isActive = false
-      }
-    }, [])
-  )
+  const [plans, setPlans] = useState<SavedWorkoutPlan[]>([])
+  const [hasError, setHasError] = useState(false)
+  const plan = useSelector((state: RootState) => state.aiWorkout.currentPlan)
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -53,9 +45,9 @@ export default function aIWorkout() {
         {/* BANNER */}
         <View className="mb-6 flex-row items-center justify-between rounded-xl border border-border/50 bg-surface p-4">
           <View className="mr-4 flex-1">
-            <Text className="mb-1 text-sm font-bold text-text-primary">Neural Copilot v3.2</Text>
+            <Text className="mb-1 text-sm font-bold text-text-primary">Buat Plan Baru</Text>
             <Text className="text-[11px] text-text-secondary">
-              Sistem siap. Buat jadwal latihan baru yang disesuaikan dengan kondisi gym hari ini.
+              Susun jadwal latihan yang disesuaikan dengan target dan kondisi alat gym hari ini.
             </Text>
           </View>
           <TouchableOpacity
@@ -67,72 +59,47 @@ export default function aIWorkout() {
               size={16}
               color="#111317"
             />
-            <Text className="text-xs font-bold text-[#111317]">Buat / Reschedule</Text>
+            <Text className="text-xs font-bold text-background">Buat Plan</Text>
           </TouchableOpacity>
         </View>
 
-        {/* LIST JADWAL */}
-        <Text className="mb-4 text-sm font-bold text-text-primary">Jadwal Tersimpan Anda</Text>
+        <Text className="mb-4 text-sm font-bold text-text-primary">Plan Terakhir</Text>
 
-        {isLoading ? (
-          <ActivityIndicator
-            size="large"
-            color="#FF6B00"
-            className="mt-10"
-          />
-        ) : plans.length === 0 ? (
-          <View className="items-center justify-center py-10 opacity-50">
+        {plan ? (
+          <TouchableOpacity
+            activeOpacity={0.85}
+            className="gap-3 rounded-2xl border border-border bg-card p-4"
+            onPress={() => router.push("/(gym)/aIWorkout/result")}
+          >
+            <Text
+              className="text-base font-bold text-text-primary"
+              numberOfLines={2}
+            >
+              {plan.title}
+            </Text>
+            <Text
+              className="text-xs text-text-secondary"
+              numberOfLines={2}
+            >
+              {plan.goal}
+            </Text>
+            <View className="flex-row items-center justify-end gap-1 border-t border-border pt-3">
+              <Text className="text-xs font-bold text-primary-hover">Lihat Detail</Text>
+              <Ionicons
+                name="arrow-forward"
+                size={12}
+                color="#FF8A33"
+              />
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <View className="items-center gap-3 py-10">
             <MaterialCommunityIcons
               name="calendar-blank-outline"
               size={48}
-              color="#B8BDC7"
-              className="mb-4"
+              color="#6B7280"
             />
-            <Text className="text-sm text-text-secondary">Belum ada jadwal. Buat jadwal pertama Anda!</Text>
-          </View>
-        ) : (
-          <View className="gap-4">
-            {plans.map((plan) => (
-              <TouchableOpacity
-                key={plan.id}
-                className="rounded-2xl border border-border/50 bg-card p-4"
-              // Anda bisa arahkan ke screen detail workout di sini
-              // onPress={() => router.push(`/(gym)/ai/detail/${plan.id}`)}
-              >
-                <View className="mb-2 flex-row items-start justify-between">
-                  <View className="flex-1">
-                    <Text className="mb-1 text-base font-bold text-text-primary">{plan.title}</Text>
-                    <Text className="text-[11px] text-text-secondary">Goal: {plan.goal}</Text>
-                  </View>
-                  <View className="rounded-md border border-border/50 bg-surface px-2 py-1">
-                    <Text className="text-[9px] text-text-secondary">
-                      {new Date(plan.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
-                    </Text>
-                  </View>
-                </View>
-
-                <View className="mt-2 flex-row gap-2">
-                  <View className="rounded border border-primary/20 bg-primary/10 px-2 py-1">
-                    <Text className="text-[10px] font-bold text-primary">{plan.config.primaryTarget}</Text>
-                  </View>
-                  <View className="rounded border border-border/50 bg-surface px-2 py-1">
-                    <Text className="text-[10px] font-bold text-text-secondary">{plan.exercises.length} Exercises</Text>
-                  </View>
-                </View>
-
-                <View className="mt-4 flex-row items-center justify-between border-t border-border/30 pt-3">
-                  <Text className="text-[10px] text-text-secondary">Split: {plan.config.weeklySplit}</Text>
-                  <View className="flex-row items-center gap-1">
-                    <Text className="text-xs font-bold text-primary">Lihat Detail</Text>
-                    <Ionicons
-                      name="arrow-forward"
-                      size={12}
-                      color="#FF6B00"
-                    />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ))}
+            <Text className="text-sm text-text-secondary">Belum ada plan. Buat plan pertama kamu!</Text>
           </View>
         )}
       </ScrollView>
