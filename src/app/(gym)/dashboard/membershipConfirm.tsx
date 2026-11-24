@@ -47,33 +47,33 @@ const MembershipConfirm = () => {
   return (
     <View className="items-center bg-background">
       <SafeAreaView>
-        <HeaderNavigation label="Kembali" />
+        <HeaderNavigation label="Back" />
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className="gap-4 px-6 py-4">
             <View className="gap-3">
-              <Text className="font-inter text-3xl font-bold text-text-primary">Konfirmasi Paket</Text>
-              <Text className="font-inter text-xs font-normal text-text-secondary">
-                Satu langkah lagi menuju rutinitas latihanmu. Periksa pilihanmu sebelum membayar.
+              <Text className="font-inter text-3xl font-bold text-text-primary">Package Confirmation</Text>
+              <Text className="font-inter text-sm font-normal text-text-secondary">
+                One more step toward your workout routine. Review your choice before making a payment.
               </Text>
             </View>
             <View className="gap-5">
-              <Text className="text-text-primary ">Paket Pilihanmu</Text>
+              <Text className="font-inter text-lg text-text-primary">Your Selected Package</Text>
               <PlanConfirmationCard
                 badge={data?.type!}
                 name={data?.name!}
                 description={data?.description!}
                 price={`Rp ${data?.price}`}
-                duration={`${data?.duration} hari`}
+                duration={`${data?.duration} days`}
               />
             </View>
             <PaymentSection
               summary={{
                 planName: data?.name!,
                 price: `Rp ${data?.price}`,
-                duration: `${data?.duration} hari`,
+                duration: `${data?.duration} days`,
                 total: `${data?.price}`
               }}
-              label="Penambahan masa aktif"
+              label="Active period extension"
               onSelectMethod={(id) => {
                 setPaymentId(id)
                 setBankId("")
@@ -86,7 +86,7 @@ const MembershipConfirm = () => {
             <View className="items-center">
               <AuthButton
                 onPress={handlePay}
-                label="Lanjutkan Pembayaran"
+                label="Continue to Payment"
               />
             </View>
           </View>

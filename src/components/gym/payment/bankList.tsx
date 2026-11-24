@@ -29,7 +29,7 @@ export default function BankList({ selectedBank, onSelect }: Readonly<{ selected
               />
             </View>
 
-            <Text className={`flex-1 text-sm ${isSelected ? "font-bold text-text-primary" : "font-semibold text-text-body"}`}>
+            <Text className={`flex-1 font-inter text-sm ${isSelected ? "font-bold text-text-primary" : "font-semibold text-text-body"}`}>
               {bank.name}
             </Text>
 

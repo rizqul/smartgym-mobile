@@ -13,9 +13,9 @@ type MembershipConsultCardProps = {
 const ICON_COLOR = "#FFD166"
 
 export default function MembershipConsultCard({
-  title = "Butuh Konsultasi Paket?",
-  description = "Hubungi tim Concierge SmartGym 24/7",
-  buttonLabel = "Chat Admin",
+  title = "Need Help Choosing a Membership?",
+  description = "Contact the SmartGym Concierge team 24/7",
+  buttonLabel = "Chat with Support",
   onPress,
   bottomOffset = 24
 }: Readonly<MembershipConsultCardProps>) {
@@ -32,14 +32,14 @@ export default function MembershipConsultCard({
         <View className="w-72 gap-3 rounded-2xl border border-secondary/30 bg-surface p-4 shadow-lg shadow-black/50">
           <View className="flex-row items-start justify-between gap-2">
             <View className="flex-1 gap-0.5">
-              <Text className="text-sm font-bold text-text-primary">{title}</Text>
-              <Text className="text-xs leading-5 text-text-secondary">{description}</Text>
+              <Text className="font-inter text-sm font-bold text-text-primary">{title}</Text>
+              <Text className="font-inter text-xs leading-5 text-text-secondary">{description}</Text>
             </View>
 
             <Pressable
               onPress={() => setExpanded(false)}
               accessibilityRole="button"
-              accessibilityLabel="Tutup"
+              accessibilityLabel="Close"
               hitSlop={8}
               className="active:opacity-70"
             >
@@ -62,7 +62,7 @@ export default function MembershipConsultCard({
               size={16}
               color="#111317"
             />
-            <Text className="text-xs font-bold text-background">{buttonLabel}</Text>
+            <Text className="font-inter text-xs font-bold text-background">{buttonLabel}</Text>
           </Pressable>
         </View>
       ) : null}
@@ -71,7 +71,7 @@ export default function MembershipConsultCard({
       <Pressable
         onPress={() => setExpanded((prev) => !prev)}
         accessibilityRole="button"
-        accessibilityLabel="Butuh konsultasi paket"
+        accessibilityLabel="Membership consultation"
         accessibilityState={{ expanded }}
         className="h-14 w-14 items-center justify-center rounded-full border border-secondary/40 bg-card shadow-lg shadow-black/50 active:opacity-80"
       >

@@ -26,8 +26,8 @@ export default function MethodOption({
 
       {/* Title + description */}
       <View className="flex-1 gap-0.5">
-        <Text className="text-sm font-bold text-text-primary">{method.title}</Text>
-        <Text className="text-xs text-text-subdued">{method.description}</Text>
+        <Text className="font-inter text-sm font-bold text-text-primary">{method.title}</Text>
+        <Text className="font-inter text-sm text-text-subdued">{method.description}</Text>
       </View>
 
       {/* Radio */}

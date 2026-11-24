@@ -3,7 +3,7 @@ import { fetchTrainers } from "@/store/slice/trainerSlice"
 import { AppDispatch, RootState } from "@/store/store"
 import { Trainer, TrainerSlot } from "@/type/Trainer.type"
 import { generateUpcomingDates } from "@/utils/dateHelper"
-import { getTimezoneLabel } from "@/utils/timeZoneHelper"
+import { formatRange } from "@/utils/FormaterHelper"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -13,9 +13,7 @@ import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
 
-// Date text uses en-US (e.g. "November 24, 2026"), time uses en-GB for a 24-hour "08:00" format
 const DATE_LOCALE = "en-US"
-const TIME_LOCALE = "en-GB"
 
 const STATUS_PASSED = "PASSED"
 
@@ -24,19 +22,6 @@ const getSlotStatus = (slot: TrainerSlot, now: number): string => {
   if (!Number.isNaN(start) && start <= now) return STATUS_PASSED
   return slot.status
 }
-
-const formatTime = (iso: string): string => {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return iso.substring(11, 16)
-  return d.toLocaleTimeString(TIME_LOCALE, {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "Asia/Jakarta"
-  })
-}
-
-const formatRange = (start: string, end: string) => `${formatTime(start)} - ${formatTime(end)}`
 
 export default function TrainerProfile() {
   const { id }: { id: string } = useLocalSearchParams()
@@ -247,9 +232,9 @@ export default function TrainerProfile() {
           <View className="mb-4 flex-row items-end justify-between">
             <View>
               <Text className="mb-1 font-inter text-xl font-bold text-text-primary">Available Schedule</Text>
-              <Text className="font-inter text-xs text-text-secondary">Pick a date for your training session</Text>
+              <Text className="font-inter text-sm text-text-secondary">Pick a date for your training session</Text>
             </View>
-            <Text className="font-inter text-xs font-bold tracking-widest text-primary">{month}</Text>
+            <Text className="font-inter text-sm font-bold tracking-widest text-primary">{month}</Text>
           </View>
 
           {/* Date Picker */}
@@ -287,7 +272,7 @@ export default function TrainerProfile() {
 
           <View className="mb-3 flex-row items-center justify-between">
             <Text className="font-inter text-base font-bold text-text-primary">Training Slots ({dateText})</Text>
-            <Text className="font-inter text-[10px] font-bold text-text-secondary">{getTimezoneLabel()}</Text>
+            <Text className="font-inter text-sm font-bold text-text-secondary">WIB (UTC+7)</Text>
           </View>
 
           {/* Time Slots List */}

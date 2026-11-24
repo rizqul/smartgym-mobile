@@ -8,22 +8,22 @@ type MembershipHeaderProps = {
 }
 
 export default function MembershipHeader({
-  badge = "Pusat Langganan",
-  title = "Langganan & Paket",
-  subtitle = "Kelola status langganan dan pilih paket terbaik untuk capai target kebugaranmu."
+  badge = "Membership Hub",
+  title = "Membership & Plans",
+  subtitle = "Manage your membership status and choose the best plan to reach your fitness goals."
 }: Readonly<MembershipHeaderProps>) {
   return (
-    <View className=" gap-3">
+    <View className="gap-3">
       {/* Badge */}
       <View className="flex-row items-center gap-2 self-start rounded-full border border-primary/30 bg-primary/15 px-3 py-1.5">
         <View className="h-1.5 w-1.5 rounded-full bg-primary" />
-        <Text className="text-[10px] font-bold tracking-widest text-primary">{badge}</Text>
+        <Text className="font-inter text-[10px] font-bold tracking-widest text-primary">{badge}</Text>
       </View>
 
       {/* Title + subtitle */}
       <View className="gap-2">
-        <Text className="text-3xl font-bold text-text-primary">{title}</Text>
-        <Text className="text-sm leading-6 text-text-warm">{subtitle}</Text>
+        <Text className="font-inter text-3xl font-bold text-text-primary">{title}</Text>
+        <Text className="font-inter text-[14px] leading-6 text-text-warm">{subtitle}</Text>
       </View>
     </View>
   )
