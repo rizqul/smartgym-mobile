@@ -1,3 +1,4 @@
+import aiWorkoutReducer from "@/store/slice/aiWorkoutSlice"
 import checkinReducer from "@/store/slice/checkinSlice"
 import membershipReducer from "@/store/slice/membershipSlice"
 import trainerReducer from "@/store/slice/trainerSlice"
@@ -10,7 +11,8 @@ const rootReducer = combineReducers({
   trainer: trainerReducer,
   membership: membershipReducer,
   transaction: transactionReducer,
-  checkin: checkinReducer
+  checkin: checkinReducer,
+  aiWorkout: aiWorkoutReducer
 })
 
 const persistConfig = {
