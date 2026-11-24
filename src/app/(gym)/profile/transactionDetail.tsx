@@ -355,7 +355,7 @@ export default function TransactionDetail() {
             <TransactionActionButton
               label="Kembali ke riwayat transaksi"
               variant="outline"
-              onPress={() => router.push("/(gym)/profile/historyTransaction")}
+              onPress={() => router.dismissTo("/(gym)/profile/historyTransaction")}
             />
           )}
         </View>
