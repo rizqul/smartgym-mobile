@@ -17,8 +17,22 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function TransactionDetail() {
   const router = useRouter()
-  const { data, loading, error, checking, cancelling, isPending, remaining, isTimeUp, retry, handleCheckStatus, handlePay, handleCancel } =
-    useTransactionDetail()
+  const {
+    data,
+    loading,
+    error,
+    checking,
+    cancelling,
+    isPending,
+    remaining,
+    isTimeUp,
+    retry,
+    handleCheckStatus,
+    handlePay,
+    handleCancel,
+    downloading,
+    handleDownload
+  } = useTransactionDetail()
 
   if (loading) {
     return (
@@ -101,7 +115,9 @@ export default function TransactionDetail() {
           cancelling={cancelling}
           onPay={handlePay}
           onCheck={() => handleCheckStatus()}
+          downloading={downloading}
           onCancel={handleCancel}
+          onDownload={handleDownload}
           onBack={() => router.dismissTo("/(gym)/profile/historyTransaction")}
         />
       </ScrollView>

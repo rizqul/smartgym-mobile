@@ -1,5 +1,8 @@
 import { cancelTransaction, checkTransactionStatus, getTransactionById } from "@/service/transaction.service"
 import { TransactionsResponse } from "@/type/Transaction.type"
+import { getStatusUI } from "@/utils/transactionHelper"
+import { buildReceiptHtml } from "@/utils/transactionReceipt"
+import * as Print from "expo-print"
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Alert } from "react-native"
@@ -16,6 +19,7 @@ export function useTransactionDetail() {
   const [cancelling, setCancelling] = useState(false)
   const [now, setNow] = useState(() => Date.now())
   const expiryChecked = useRef(false)
+  const [downloading, setDownloading] = useState(false)
 
   const isPending = data?.status === "PENDING"
 
@@ -126,6 +130,30 @@ export function useTransactionDetail() {
     ])
   }
 
+  const handleDownload = async () => {
+    if (!data || downloading) return
+    setDownloading(true)
+    try {
+      const html = buildReceiptHtml({
+        id: data.id,
+        name: data.name,
+        amount: data.amount,
+        status: data.status,
+        typeLabel: data.type === "PT_BOOKING" ? "Trainer Booking" : "Membership",
+        statusLabel: getStatusUI(data.status).label,
+        createdAt: data.createdAt,
+        paymentMethod: data.paymentType
+      })
+
+      await Print.printAsync({ html })
+    } catch (e: any) {
+      const message = "Failed to download receipt. Please try again."
+      Toast.show({ type: ALERT_TYPE.DANGER, title: "Failed", textBody: message, autoClose: 3000 })
+    } finally {
+      setDownloading(false)
+    }
+  }
+
   return {
     data,
     loading,
@@ -138,6 +166,8 @@ export function useTransactionDetail() {
     retry,
     handleCheckStatus,
     handlePay,
-    handleCancel
+    handleCancel,
+    downloading,
+    handleDownload
   }
 }

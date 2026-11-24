@@ -1,6 +1,7 @@
 import { ActivityIndicator, Text, TouchableOpacity } from "react-native"
 
 const VARIANTS = {
+  primary: { box: "bg-primary", text: "text-[#111317]", spinner: "#111317" },
   secondary: { box: "bg-secondary", text: "text-[#111317]", spinner: "#111317" },
   outline: { box: "border border-border bg-surface", text: "text-text-primary", spinner: "#FFFFFF" },
   danger: { box: "border border-danger/40 bg-danger/10", text: "text-danger", spinner: "#EF4444" }

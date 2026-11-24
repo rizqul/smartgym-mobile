@@ -1,6 +1,6 @@
 import { TransactionActionButton } from "@/components/gym/payment/transactionActionButton"
 import React from "react"
-import { Text, TouchableOpacity, View } from "react-native"
+import { View } from "react-native"
 
 type Props = {
   isSuccess: boolean
@@ -9,9 +9,11 @@ type Props = {
   canCheck: boolean
   checking: boolean
   cancelling: boolean
+  downloading: boolean
   onPay: () => void
   onCheck: () => void
   onCancel: () => void
+  onDownload: () => void
   onBack: () => void
 }
 
@@ -22,23 +24,28 @@ export function TransactionActions({
   canCheck,
   checking,
   cancelling,
+  downloading,
   onPay,
   onCheck,
   onCancel,
+  onDownload,
   onBack
 }: Props) {
   return (
     <View className="w-full gap-3">
       {isSuccess ? (
-        <TouchableOpacity className="w-full items-center justify-center rounded-xl bg-primary py-4">
-          <Text className="font-inter text-sm font-bold text-[#111317]">View Digital Pass</Text>
-        </TouchableOpacity>
+        <TransactionActionButton
+          label="Download Receipt"
+          variant="primary"
+          onPress={onDownload}
+          disabled={downloading}
+        />
       ) : null}
 
       {canContinue ? (
         <TransactionActionButton
           label="Continue Payment"
-          variant="secondary"
+          variant="primary"
           onPress={onPay}
           disabled={cancelling}
         />
