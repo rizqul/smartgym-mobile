@@ -1,5 +1,5 @@
 import { getAllTransactions } from "@/service/transaction.service"
-import { PaginationTransactionResponse } from "@/type/Transaction.type"
+import { PaginationTransactionResponse, TransactionStatus, TransactionType } from "@/type/Transaction.type"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
 interface TransactionState {
@@ -14,13 +14,22 @@ const initialState: TransactionState = {
   error: null
 }
 
-export const fetchTransactions = createAsyncThunk("transaction/fetchTransactions", async () => {
-  try {
-    return await getAllTransactions()
-  } catch (error) {
-    console.log("Error : ", error)
+export type FetchTransactionsParams = {
+  type?: TransactionType
+  status?: TransactionStatus
+  size?: number
+}
+
+export const fetchTransactions = createAsyncThunk(
+  "transaction/fetchTransactions",
+  async (params: FetchTransactionsParams | undefined, { rejectWithValue }) => {
+    try {
+      return await getAllTransactions(params)
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message ?? "Failed to fetch transactions")
+    }
   }
-})
+)
 
 const transactionSlice = createSlice({
   name: "transaction",
@@ -38,7 +47,7 @@ const transactionSlice = createSlice({
       })
       .addCase(fetchTransactions.rejected, (state, action) => {
         state.isLoading = false
-        state.error = action.error.message!
+        state.error = (action.payload as string) ?? action.error.message ?? "Failed to fetch transactions"
       })
   }
 })

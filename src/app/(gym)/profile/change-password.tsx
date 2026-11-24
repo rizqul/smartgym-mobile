@@ -15,22 +15,22 @@ import { z } from "zod"
 
 const changePasswordSchema = z
   .object({
-    oldPassword: z.string().min(1, "Kata sandi lama wajib diisi"),
+    oldPassword: z.string().min(1, "Old password is required"),
     newPassword: z
       .string()
-      .min(8, "Panjang minimal 8 karakter")
-      .regex(/[A-Z]/, "Minimal ada 1 huruf kapital")
-      .regex(/[a-z]/, "Minimal ada 1 huruf kecil")
-      .regex(/[0-9]/, "Minimal ada 1 angka")
-      .regex(/[!@#$%^&*()_+]/, "Minimal memiliki 1 karakter dari !@#$%^&*()_+"),
-    confirmPassword: z.string().min(1, "Konfirmasi Kata Sandi wajib diisi")
+      .min(8, "Minimum length is 8 characters")
+      .regex(/[A-Z]/, "Minimum 1 uppercase letter")
+      .regex(/[a-z]/, "Minimum 1 lowercase letter")
+      .regex(/[0-9]/, "Minimum 1 number")
+      .regex(/[!@#$%^&*()_+]/, "Minimum 1 character from !@#$%^&*()_+"),
+    confirmPassword: z.string().min(1, "Password confirmation is required")
   })
   .refine((data) => data.newPassword !== data.oldPassword, {
-    message: "Kata sandi baru tidak boleh sama dengan Kata sandi lama",
+    message: "New password must not be the same as the old password",
     path: ["newPassword"]
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Kata sandi dan konfirmasi kata sandi tidak sama",
+    message: "Password and confirmation password do not match",
     path: ["confirmPassword"]
   })
 
@@ -39,9 +39,9 @@ type FormValues = z.infer<typeof changePasswordSchema>
 type FieldName = keyof FormValues
 
 const fields: { name: FieldName; label: string; placeholder: string }[] = [
-  { name: "oldPassword", label: "Kata Sandi Lama", placeholder: "Masukkan Kata Sandi lama" },
-  { name: "newPassword", label: "Kata Sandi Baru", placeholder: "Masukkan Kata Sandi baru" },
-  { name: "confirmPassword", label: "Konfirmasi Kata Sandi Baru", placeholder: "Ulangi Kata Sandi baru" }
+  { name: "oldPassword", label: "Old Password", placeholder: "Enter your old password" },
+  { name: "newPassword", label: "New Password", placeholder: "Enter your new password" },
+  { name: "confirmPassword", label: "Confirm New Password", placeholder: "Repeat your new password" }
 ]
 
 export default function ChangePassword() {
@@ -56,7 +56,7 @@ export default function ChangePassword() {
     control,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting }
+    formState: { errors }
   } = useForm<FormValues>({
     resolver: zodResolver(changePasswordSchema),
     mode: "onChange",
@@ -70,15 +70,15 @@ export default function ChangePassword() {
       await changePassword(data.oldPassword, data.newPassword)
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
-        title: "Berhasil",
-        textBody: `Kata Sandi berhasil diperbaharui.`
+        title: "Success",
+        textBody: "Password updated successfully."
       })
       router.back()
     } catch (error: any) {
-      const message = error.response?.data?.message || "Gagal mengirim kode. Coba lagi."
+      const message = error.response?.data?.message || "Failed to update password. Please try again."
       Toast.show({
         type: ALERT_TYPE.DANGER,
-        title: "Gagal",
+        title: "Failed",
         textBody: message,
         autoClose: 3000
       })
@@ -90,23 +90,23 @@ export default function ChangePassword() {
   const confirmPassword = watch("confirmPassword")
 
   const rules = [
-    { label: "Panjang minimal 8 karakter", ok: newPassword.length >= 8 },
-    { label: "Minimal ada 1 huruf kapital", ok: /[A-Z]/.test(newPassword) },
-    { label: "Minimal ada 1 huruf kecil", ok: /[a-z]/.test(newPassword) },
-    { label: "Minimal ada 1 angka", ok: /[0-9]/.test(newPassword) },
-    { label: "Minimal ada 1 karakter dari !@#$%^&*()_+", ok: /[!@#$%^&*()_+]/.test(newPassword) },
-    { label: "Kata sandi baru tidak boleh sama dengan kata sandi lama", ok: oldPassword !== newPassword },
-    { label: "Kata sandi baru harus sama dengan konfirmasi kata sandi", ok: newPassword === confirmPassword }
+    { label: "Minimum length is 8 characters", ok: newPassword.length >= 8 },
+    { label: "Minimum 1 uppercase letter", ok: /[A-Z]/.test(newPassword) },
+    { label: "Minimum 1 lowercase letter", ok: /[a-z]/.test(newPassword) },
+    { label: "Minimum 1 number", ok: /[0-9]/.test(newPassword) },
+    { label: "Minimum 1 character from !@#$%^&*()_+", ok: /[!@#$%^&*()_+]/.test(newPassword) },
+    { label: "New password must not be the same as the old password", ok: oldPassword !== newPassword },
+    { label: "New password must match the confirmation password", ok: newPassword === confirmPassword }
   ]
 
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
-      <HeaderNavigation label="Ubah Kata Sandi" />
+      <HeaderNavigation label="Change Password" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="px-5 pb-10 gap-6"
+        contentContainerClassName="px-5 mt-5 pb-10 gap-6"
       >
         {/* Header */}
         <View className=" flex-row items-center gap-6">
@@ -119,16 +119,16 @@ export default function ChangePassword() {
               />
             </View>
           </View>
-          <View className="flex w-[340]  gap-1">
-            <Text className="text-3xl font-bold text-text-body">Lindungi akunmu</Text>
-            <Text className="w-[240] text-sm leading-6 text-[#E2BFB0]">
-              Masukkan kata sandi lama kamu, lalu buat kata sandi baru yang lebih aman.
+          <View className=" flex w-[340]  gap-1">
+            <Text className="font-inter text-3xl font-bold text-text-body">Protect your account</Text>
+            <Text className="w-[240] font-inter text-sm leading-6 text-[#E2BFB0]">
+              Enter your old password, then create a stronger new password.
             </Text>
           </View>
         </View>
 
         {/* Input Part */}
-        <View className="flex">
+        <View className="flex gap-4">
           {fields.map(({ name, label, placeholder }) => (
             <View key={name}>
               <Controller
@@ -141,8 +141,7 @@ export default function ChangePassword() {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     error={
-                      errors[name]?.message === "Kata sandi lama wajib diisi" ||
-                        errors[name]?.message === "Konfirmasi Kata Sandi wajib diisi"
+                      errors[name]?.message === "Old password is required" || errors[name]?.message === "Password confirmation is required"
                         ? errors[name]?.message
                         : ""
                     }
@@ -171,7 +170,7 @@ export default function ChangePassword() {
 
         {/* Label */}
 
-        <View className="flex  w-[340] gap-2 rounded-xl bg-surface px-4 py-4 ">
+        <View className="flex gap-2 rounded-xl bg-surface px-4 py-4 ">
           {rules.map(({ label, ok }) => (
             <View
               key={label}
@@ -182,7 +181,7 @@ export default function ChangePassword() {
                 size={18}
                 color={ok ? "#FF6B00" : "#EF4444"}
               />
-              <Text className="text-xs font-semibold text-[#A98A7D]">{label}</Text>
+              <Text className="font-inter text-xs font-semibold text-[#A98A7D]">{label}</Text>
             </View>
           ))}
         </View>
@@ -191,11 +190,10 @@ export default function ChangePassword() {
         <View>
           <AuthButton
             onPress={handleSubmit(onSubmit)}
-            label="Simpan Password Baru"
+            label="Save New Password"
           />
         </View>
       </ScrollView>
-
     </SafeAreaView>
   )
 }

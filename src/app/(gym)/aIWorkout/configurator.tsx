@@ -44,7 +44,7 @@ function Chip({ label, selected, onPress }: Readonly<{ label: string; selected: 
           color="white"
         />
       )}
-      <Text className={`text-xs font-semibold ${selected ? "text-white" : "text-text-secondary"}`}>{label}</Text>
+      <Text className={`font-inter text-xs font-semibold ${selected ? "text-white" : "text-text-secondary"}`}>{label}</Text>
     </TouchableOpacity>
   )
 }
@@ -64,7 +64,7 @@ function SegmentRow<T extends string | number>({
             onPress={() => onChange(opt.value)}
             className={`flex-1 items-center justify-center rounded-xl py-2.5 ${active ? "bg-primary" : "border border-border/50 bg-surface"}`}
           >
-            <Text className={`text-xs font-semibold ${active ? "text-white" : "text-text-secondary"}`}>{opt.label}</Text>
+            <Text className={`font-inter text-xs font-semibold ${active ? "text-white" : "text-text-secondary"}`}>{opt.label}</Text>
           </TouchableOpacity>
         )
       })}
@@ -141,7 +141,7 @@ export default function AIConfigurator() {
             size={16}
             color="#FF6B00"
           />
-          <Text className="text-base font-bold text-text-primary">Neural Routine Configurator</Text>
+          <Text className="font-inter text-base font-bold text-text-primary">Neural Routine Configurator</Text>
         </View>
         <View className="h-8 w-8" />
       </View>
@@ -153,8 +153,8 @@ export default function AIConfigurator() {
         {/* 1. PRIMARY TARGET */}
         <View className="mb-4 rounded-2xl border border-border/50 bg-card p-4">
           <View className="mb-3 flex-row items-center justify-between">
-            <Text className="text-xs font-bold text-text-primary">1. PRIMARY TARGET</Text>
-            <Text className="text-[10px] text-text-secondary">Biometric Optimization</Text>
+            <Text className="font-inter text-xs font-bold text-text-primary">1. PRIMARY TARGET</Text>
+            <Text className="font-inter text-[10px] text-text-secondary">Biometric Optimization</Text>
           </View>
           <View className="flex-row flex-wrap gap-2">
             {TARGET_OPTIONS.map((opt) => (
@@ -170,7 +170,7 @@ export default function AIConfigurator() {
 
         {/* 2. TRAINING AGE */}
         <View className="mb-4 rounded-2xl border border-border/50 bg-card p-4">
-          <Text className="mb-3 text-xs font-bold text-text-primary">2. TRAINING AGE</Text>
+          <Text className="mb-3 font-inter text-xs font-bold text-text-primary">2. TRAINING AGE</Text>
           <SegmentRow
             options={TRAINING_AGE_OPTIONS}
             value={config.trainingAge}
@@ -180,7 +180,7 @@ export default function AIConfigurator() {
 
         {/* 3. WEEKLY SPLIT */}
         <View className="mb-4 rounded-2xl border border-border/50 bg-card p-4">
-          <Text className="mb-3 text-xs font-bold text-text-primary">3. WEEKLY SPLIT</Text>
+          <Text className="mb-3 font-inter text-xs font-bold text-text-primary">3. WEEKLY SPLIT</Text>
           <SegmentRow
             options={SPLIT_OPTIONS}
             value={config.weeklySplitInDays}
@@ -191,8 +191,8 @@ export default function AIConfigurator() {
         {/* 4. TARGET SESSION DURATION */}
         <View className="mb-4 rounded-2xl border border-border/50 bg-card p-4">
           <View className="mb-3 flex-row items-center justify-between">
-            <Text className="text-xs font-bold text-text-primary">4. TARGET SESSION DURATION</Text>
-            <Text className="text-[10px] font-bold text-primary">45 Minutes optimal</Text>
+            <Text className="font-inter text-xs font-bold text-text-primary">4. TARGET SESSION DURATION</Text>
+            <Text className="font-inter text-[10px] font-bold text-primary">45 Minutes optimal</Text>
           </View>
           <SegmentRow
             options={DURATION_OPTIONS}
@@ -204,8 +204,8 @@ export default function AIConfigurator() {
         {/* 5. FOCUS ANATOMY */}
         <View className="mb-4 rounded-2xl border border-border/50 bg-card p-4">
           <View className="mb-3 flex-row items-center justify-between">
-            <Text className="text-xs font-bold text-text-primary">5. FOCUS ANATOMY</Text>
-            <Text className="text-[10px] text-text-secondary">Multi-Select Enabled</Text>
+            <Text className="font-inter text-xs font-bold text-text-primary">5. FOCUS ANATOMY</Text>
+            <Text className="font-inter text-[10px] text-text-secondary">Multi-Select Enabled</Text>
           </View>
           <View className="flex-row flex-wrap gap-2">
             {MUSCLE_OPTIONS.map((opt) => (
@@ -221,7 +221,9 @@ export default function AIConfigurator() {
               </View>
             ))}
           </View>
-          {config.focusAnatomy.length === 0 ? <Text className="mt-3 text-[11px] text-danger">Pilih minimal satu bagian otot.</Text> : null}
+          {config.focusAnatomy.length === 0 ? (
+            <Text className="mt-3 font-inter text-[11px] text-danger">Select at least one muscle group.</Text>
+          ) : null}
         </View>
 
         {/* 6. EQUIPMENT PREFERENCES */}
@@ -232,14 +234,16 @@ export default function AIConfigurator() {
               size={16}
               color="#FF6B00"
             />
-            <Text className="text-xs font-bold text-text-primary">6. CLUB TELEMETRY SYNC</Text>
+            <Text className="font-inter text-xs font-bold text-text-primary">6. CLUB TELEMETRY SYNC</Text>
           </View>
 
           <View className="gap-4">
             <View className="flex-row items-center justify-between">
               <View className="mr-4 flex-1">
-                <Text className="mb-0.5 text-xs font-bold text-text-primary">Prioritize Available Machines</Text>
-                <Text className="text-[10px] text-text-secondary">Utamakan alat yang sedang tersedia di gym kamu</Text>
+                <Text className="mb-0.5 font-inter text-xs font-bold text-text-primary">Prioritize Available Machines</Text>
+                <Text className="font-inter text-[10px] text-text-secondary">
+                  Prioritize equipment that is currently available in your gym
+                </Text>
               </View>
               <Switch
                 value={config.prioritizeMachines}
@@ -251,8 +255,8 @@ export default function AIConfigurator() {
 
             <View className="flex-row items-center justify-between">
               <View className="mr-4 flex-1">
-                <Text className="mb-0.5 text-xs font-bold text-text-primary">Avoid Maintenance Equipment</Text>
-                <Text className="text-[10px] text-text-secondary">Hindari alat yang sedang dalam perbaikan</Text>
+                <Text className="mb-0.5 font-inter text-xs font-bold text-text-primary">Avoid Maintenance Equipment</Text>
+                <Text className="font-inter text-[10px] text-text-secondary">Avoid equipment that is currently under maintenance</Text>
               </View>
               <Switch
                 value={config.avoidMaintenance}
@@ -281,14 +285,14 @@ export default function AIConfigurator() {
                 size={20}
                 color="#111317"
               />
-              <Text className="text-sm font-bold text-[#111317]">Generate AI Workout Plan</Text>
+              <Text className="font-inter text-sm font-bold text-[#111317]">Generate AI Workout Plan</Text>
             </>
           )}
         </TouchableOpacity>
 
         {isLoading ? (
-          <Text className="mt-3 text-center text-[11px] text-text-secondary">
-            AI sedang menyusun plan kamu, ini bisa memakan waktu sampai satu menit.
+          <Text className="mt-3 text-center font-inter text-[11px] text-text-secondary">
+            AI is creating your plan. This may take up to one minute.
           </Text>
         ) : null}
       </ScrollView>

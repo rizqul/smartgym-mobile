@@ -1,7 +1,20 @@
+import { TransactionStatus, TransactionType } from "@/type/Transaction.type"
 import api from "./api"
 
-export const getAllTransactions = async () => {
-  const response = await api.get("/member/transactions")
+export type GetTransactionsParams = {
+  type?: TransactionType
+  status?: TransactionStatus
+  size?: number
+}
+
+export const getAllTransactions = async (params?: GetTransactionsParams) => {
+  const response = await api.get("/member/transactions", {
+    params: {
+      type: params?.type,
+      status: params?.status,
+      size: params?.size
+    }
+  })
   return response.data
 }
 
