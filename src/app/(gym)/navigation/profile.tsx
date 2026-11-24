@@ -12,7 +12,7 @@ export default function Profile() {
   const { logout, user } = useAuth()
   const [showAlert, setShowAlert] = useState(false)
   const accountCreatedDate = new Date(user?.createdAt!)
-  const month = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+  const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
   const accountCreatedMonth = month[accountCreatedDate.getMonth()]
   const accountCreatedYear = accountCreatedDate.getFullYear()
 
@@ -56,14 +56,6 @@ export default function Profile() {
               <View className="items-center gap-2">
                 <View className="flex-row items-center justify-center gap-2">
                   <Text className="font-inter text-2xl font-bold text-text-primary">{user?.name}</Text>
-                  {/* <View className="flex-row items-center gap-1 rounded-full bg-secondary/20 px-2 py-0.5">
-                  <MaterialCommunityIcons
-                    name="crown"
-                    size={10}
-                    color="#FFD166"
-                  />
-                  <Text className="text-[10px] font-bold text-secondary">GOLD TIER</Text>
-                </View> */}
                 </View>
                 <Text className="font-inter text-lg text-text-secondary">{user?.email}</Text>
                 <View className="flex-row items-center justify-between gap-2">
@@ -71,79 +63,34 @@ export default function Profile() {
                     <Text className="font-inter text-xs text-[#FFC178]">MEMBER</Text>
                   </View>
                   <View className="h-[7px] w-[7px] rounded-full bg-[#777E8A]"></View>
-                  <Text className="font-inter text-sm text-[#777E8A]">{`Sejak ${accountCreatedMonth} ${accountCreatedYear}`}</Text>
+                  <Text className="font-inter text-sm text-[#777E8A]">{`Since ${accountCreatedMonth} ${accountCreatedYear}`}</Text>
                 </View>
               </View>
             </View>
-
-            {/* Stats Row (Tinggi, Berat, Body Fat) */}
-            {/* <View className="mb-4 flex-row justify-between">
-            <View className="mr-2 flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
-              <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Tinggi</Text>
-              <Text className="text-lg font-bold text-text-primary">
-                178 <Text className="text-xs font-normal">cm</Text>
-              </Text>
-            </View>
-            <View className="mr-2 flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
-              <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Berat</Text>
-              <Text className="text-lg font-bold text-text-primary">
-                74.5 <Text className="text-xs font-normal">kg</Text>
-              </Text>
-            </View>
-            <View className="flex-1 items-center rounded-xl border border-border/50 bg-background/50 p-3">
-              <Text className="mb-1 text-[10px] font-semibold uppercase text-text-secondary">Body Fat</Text>
-              <Text className="text-lg font-bold text-primary">
-                13.8<Text className="text-xs font-normal">%</Text>
-              </Text>
-            </View>
-          </View> */}
-
-            {/* Action Buttons */}
-            {/* <View className="flex-row gap-3">
-            <TouchableOpacity
-              className="flex-1 flex-row items-center justify-center gap-2 rounded-xl border border-border bg-card py-3"
-              onPress={() => router.push("/(gym)/profile/editProfile")}
-            >
-              <Ionicons
-                name="options-outline"
-                size={16}
-                color="white"
-              />
-              <Text className="text-xs font-semibold text-text-primary">Edit Profil</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 rounded-xl bg-primary py-3">
-              <MaterialCommunityIcons
-                name="qrcode-scan"
-                size={16}
-                color="white"
-              />
-              <Text className="text-xs font-bold text-white">QR Turnstile</Text>
-            </TouchableOpacity>
-          </View> */}
           </LinearGradient>
 
           {/* ================= ACTIVE PLAN CARD ================= */}
           <MembershipActiveCard
             planName="SmartGym Elite Gold"
-            billingLabel="TAHUNAN"
+            billingLabel="ANNUAL"
             memberTier="Member"
-            validUntil="18 Des 2025"
+            validUntil="Dec 18, 2025"
             autoRenew={false}
             benefits={[
               {
                 icon: "meeting-room",
-                title: "Akses 24/7 Seluruh Cabang (All Clubs)",
-                description: "Fast-pass turnstile QR gate siap pakai",
+                title: "24/7 Access to All Clubs",
+                description: "Ready-to-use fast-pass QR turnstile",
                 tone: "primary"
               },
               {
                 icon: "smart-toy",
                 title: "AI Neural Trainer & Plan",
-                description: "Penyesuaian repetisi & target harian",
+                description: "Daily rep and goal adjustments",
                 tone: "info"
               }
             ]}
-            onRenewPress={() => { }}
+            onRenewPress={() => {}}
           />
           {/*  */}
 
@@ -155,7 +102,7 @@ export default function Profile() {
                 size={20}
                 color="#FF8A33"
               />
-              <Text className="text-lg font-bold text-text-primary">Riwayat</Text>
+              <Text className="font-inter text-lg font-bold text-text-primary">History</Text>
             </View>
 
             <View className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -174,8 +121,8 @@ export default function Profile() {
                   />
                 </View>
                 <View className="flex-1">
-                  <Text className="mb-1 text-sm font-semibold text-text-primary">Riwayat Check In</Text>
-                  <Text className="text-[11px] text-text-secondary">Lihat daftar kunjungan gym Anda</Text>
+                  <Text className="mb-1 font-inter text-sm font-semibold text-text-primary">Check-in History</Text>
+                  <Text className="font-inter text-[11px] text-text-secondary">View your gym visit history</Text>
                 </View>
                 <Ionicons
                   name="chevron-forward"
@@ -197,8 +144,8 @@ export default function Profile() {
                   />
                 </View>
                 <View className="flex-1">
-                  <Text className="mb-1 text-sm font-semibold text-text-primary">Riwayat Transaksi</Text>
-                  <Text className="text-[11px] text-text-secondary">Lihat riwayat pembayaran dan paket</Text>
+                  <Text className="mb-1 font-inter text-sm font-semibold text-text-primary">Transaction History</Text>
+                  <Text className="font-inter text-[11px] text-text-secondary">View your payment and membership history</Text>
                 </View>
                 <Ionicons
                   name="chevron-forward"
@@ -216,7 +163,7 @@ export default function Profile() {
                 size={20}
                 color="#FF8A33"
               />
-              <Text className="text-lg font-bold text-text-primary">Keamanan & Dukungan</Text>
+              <Text className="font-inter text-lg font-bold text-text-primary">Security & Support</Text>
             </View>
 
             <View className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -235,8 +182,8 @@ export default function Profile() {
                   />
                 </View>
                 <View className="flex-1">
-                  <Text className="mb-1 text-sm font-semibold text-text-primary">Ubah Kata Sandi</Text>
-                  <Text className="text-[11px] text-text-secondary">Autentikasi dua faktor aktif via SMS/Authenticator</Text>
+                  <Text className="mb-1 font-inter text-sm font-semibold text-text-primary">Change Password</Text>
+                  <Text className="font-inter text-[11px] text-text-secondary">Update your current password</Text>
                 </View>
                 <Ionicons
                   name="chevron-forward"
@@ -255,8 +202,8 @@ export default function Profile() {
                   />
                 </View>
                 <View className="flex-1">
-                  <Text className="mb-1 text-sm font-semibold text-text-primary">Concierge & Personal Trainer VIP 24/7</Text>
-                  <Text className="text-[11px] text-text-secondary">Hubungi admin cabang atau konsultasi program</Text>
+                  <Text className="mb-1 font-inter text-sm font-semibold text-text-primary">24/7 VIP Concierge & Personal Trainer</Text>
+                  <Text className="font-inter text-[11px] text-text-secondary">Contact your branch or get program advice</Text>
                 </View>
                 <Ionicons
                   name="chevron-forward"
@@ -277,7 +224,7 @@ export default function Profile() {
               size={20}
               color="#FF8A33"
             />
-            <Text className="text-sm font-semibold text-primary">Keluar dari Akun SmartGym</Text>
+            <Text className="font-inter text-sm font-semibold text-primary">Log Out Of SmartGym</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -292,19 +239,19 @@ export default function Profile() {
           onPress={() => setShowAlert(false)}
         >
           <Pressable className="flex h-[150] w-[300] items-center justify-center gap-8 rounded-xl border border-border bg-card p-5">
-            <Text className="mb-1 text-center text-xl font-bold text-text-primary">Yakin ingin keluar ?</Text>
+            <Text className="mb-1 text-center font-inter text-xl font-bold text-text-primary">Are you sure you want to log out?</Text>
             <View className="flex-row gap-3">
               <TouchableOpacity
                 className="flex-1 items-center rounded-xl border border-border bg-surface py-3"
                 onPress={() => setShowAlert(false)}
               >
-                <Text className="text-sm font-semibold text-text-secondary">Batal</Text>
+                <Text className="font-inter text-sm font-semibold text-text-secondary">Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 className="flex-1 items-center rounded-xl bg-primary py-3"
                 onPress={() => handleLogout()}
               >
-                <Text className="text-sm font-bold text-white">Keluar</Text>
+                <Text className="font-inter text-sm font-bold text-white">Log Out</Text>
               </TouchableOpacity>
             </View>
           </Pressable>
