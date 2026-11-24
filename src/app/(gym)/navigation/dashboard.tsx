@@ -1,4 +1,5 @@
 import { ActionButton } from "@/components/gym/dashboard/actionButton"
+import { AiSummaryCard } from "@/components/gym/dashboard/aiSummaryCard"
 import CheckinCard from "@/components/gym/dashboard/checkinCard"
 import { FitnessProgressCard } from "@/components/gym/dashboard/fitnessProgressCard"
 import { MembershipCard } from "@/components/gym/dashboard/membershipCard"
@@ -129,6 +130,8 @@ export default function Dashboard() {
               }
             />
           </View>
+          {/* AI SUMMERY */}
+          <AiSummaryCard />
 
           {/* TRAINER SECTION */}
           <TrainerCard onViewTrainer={() => router.push("/(gym)/navigation/trainer")} />

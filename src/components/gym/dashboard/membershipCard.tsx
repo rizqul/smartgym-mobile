@@ -19,6 +19,32 @@ export const MembershipCard = () => {
         year: "numeric"
     })
 
+    const spanStatus = () => {
+        const isActive =
+            user?.membershipExpiredAt != null &&
+            new Date(user.membershipExpiredAt) > new Date();
+
+        return (
+            <View
+                className={`flex-row items-center gap-1.5 rounded-xl border px-3 py-1 ${isActive
+                    ? 'border-success/30 bg-success/15'
+                    : 'border-text-secondary/30 bg-text-secondary/15'
+                    }`}
+            >
+                <View
+                    className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-success' : 'bg-text-secondary'
+                        }`}
+                />
+                <Text
+                    className={`text-[11px] font-bold ${isActive ? 'text-success' : 'text-text-secondary'
+                        }`}
+                >
+                    {isActive ? 'ACTIVE' : 'INACTIVE'}
+                </Text>
+            </View>
+        );
+    }
+
     return (
         <LinearGradient
             colors={["#2E1A14", "#1A1D24", "#1A1D24"]}
@@ -40,10 +66,7 @@ export const MembershipCard = () => {
                     <Text className="text-lg font-extrabold tracking-[0.5px] text-text-primary">SMARTGYM ELITE</Text>
                 </View>
 
-                <View className="flex-row items-center gap-1.5 rounded-xl border border-success/30 bg-success/15 px-3 py-1">
-                    <View className="h-1.5 w-1.5 rounded-full bg-success" />
-                    <Text className="text-[11px] font-bold text-success">ACTIVE</Text>
-                </View>
+                {spanStatus()}
             </View>
 
             {/* Card Body */}

@@ -2,7 +2,7 @@ import { AuthButton } from "@/components/auth/authButton"
 import { AuthScreenLayout } from "@/components/auth/authScreenLayout"
 import { AuthTextField } from "@/components/auth/authTextField"
 import { OrangeGlowBackground } from "@/components/auth/orangeGlowBackground"
-import { ResetPassword } from "@/service/auth.service"
+import { resetPassword } from "@/service/auth.service"
 import { AntDesign, Entypo } from "@expo/vector-icons"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -30,7 +30,7 @@ const resetPasswordSchema = z
 
 type FormValues = z.infer<typeof resetPasswordSchema>
 
-const resetPassword = () => {
+const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const {
@@ -57,7 +57,7 @@ const resetPassword = () => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      await ResetPassword(data.password)
+      await resetPassword(data.password)
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
         title: "Berhasil",
@@ -190,4 +190,4 @@ const resetPassword = () => {
   )
 }
 
-export default resetPassword
+export default ResetPassword
