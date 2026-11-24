@@ -3,7 +3,7 @@ import { fetchTrainers } from "@/store/slice/trainerSlice"
 import { AppDispatch, RootState } from "@/store/store"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
@@ -21,29 +21,18 @@ const SPECIALIZATION_OPTIONS = [
   { value: "SPORTS_PERFORMANCE", label: "Sports Performance" }
 ] as const
 
-type SortKey = "none" | "experience" | "price"
-type SortDir = "asc" | "desc"
-
-const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: "none", label: "Default" },
-  { key: "experience", label: "Experience" },
-  { key: "price", label: "Price" }
-]
-
 export default function TrainerScreen() {
   const dispatch = useDispatch<AppDispatch>()
   const { result } = useSelector((state: RootState) => state.trainer)
   const [search, setSearch] = useState<string>("")
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search)
   const [selectedSpec, setSelectedSpec] = useState<string>("ALL")
-  const [sortKey, setSortKey] = useState<SortKey>("none")
-  const [sortDir, setSortDir] = useState<SortDir>("desc")
   const [searchFocused, setSearchFocused] = useState(false)
-  const [openDropdown, setOpenDropdown] = useState<"specialization" | "sort" | null>(null)
 
   useEffect(() => {
-    void dispatch(fetchTrainers())
-  }, [])
+    const keyword = selectedSpec !== "ALL" ? selectedSpec : debouncedSearch.trim()
+    void dispatch(fetchTrainers({ search: keyword, size: 50 }))
+  }, [debouncedSearch, selectedSpec, dispatch])
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -55,41 +44,7 @@ export default function TrainerScreen() {
     }
   }, [search])
 
-  const handleSort = (key: SortKey) => {
-    if (key === "none") {
-      setSortKey("none")
-      return
-    }
-    if (key === sortKey) {
-      setSortDir((prev) => (prev === "asc" ? "desc" : "asc"))
-    } else {
-      setSortKey(key)
-      setSortDir(key === "experience" ? "desc" : "asc")
-    }
-  }
-
-  const trainers = useMemo(() => {
-    let list = [...(result ?? [])]
-
-    const keyword = search.trim() === "" ? "" : debouncedSearch.trim().toLowerCase()
-    if (keyword) {
-      list = list.filter(
-        (t) => t.name.toLowerCase().includes(keyword) || String(t.specialization).toLowerCase().replace(/_/g, " ").includes(keyword)
-      )
-    }
-
-    if (selectedSpec !== "ALL") {
-      list = list.filter((t) => t.specialization === selectedSpec)
-    }
-
-    if (sortKey !== "none") {
-      const dir = sortDir === "asc" ? 1 : -1
-      const getValue = (t: (typeof list)[number]) => (sortKey === "price" ? Number(t.rate) : Number(t.experience))
-      list.sort((a, b) => (getValue(a) - getValue(b)) * dir)
-    }
-
-    return list
-  }, [result, search, debouncedSearch, selectedSpec, sortKey, sortDir])
+  const trainers = result ?? []
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -101,186 +56,69 @@ export default function TrainerScreen() {
         keyboardShouldPersistTaps="handled"
         stickyHeaderIndices={[0]}
       >
-        {/* ================= STICKY HEADER: SEARCH ================= */}
-        <View className="bg-background px-4 pb-3 pt-4">
-          <View
-            className={`flex-row items-center gap-2 rounded-2xl border bg-surface px-4 py-1 ${
-              searchFocused ? "border-primary" : "border-border"
-            }`}
-          >
-            <Ionicons
-              name="search"
-              size={20}
-              color={searchFocused ? "#FF6B00" : "#B8BDC7"}
-            />
-            <TextInput
-              value={search}
-              onChangeText={setSearch}
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-              placeholder="Search trainer name or specialization..."
-              placeholderTextColor="#6B7280"
-              className="flex-1 py-3 font-inter text-sm text-text-primary"
-            />
-            {search !== "" && (
-              <TouchableOpacity
-                onPress={() => setSearch("")}
-                hitSlop={8}
-              >
-                <Ionicons
-                  name="close-circle"
-                  size={18}
-                  color="#B8BDC7"
-                />
-              </TouchableOpacity>
-            )}
+        {/* ================= STICKY HEADER: SEARCH + CHIPS ================= */}
+        <View className="gap-5 bg-background pb-3 pt-4">
+          <View className="px-4">
+            <View
+              className={`flex-row items-center gap-2 rounded-full border bg-surface px-4 ${
+                searchFocused ? "border-primary" : "border-border"
+              }`}
+            >
+              <Ionicons
+                name="search"
+                size={20}
+                color={searchFocused ? "#FF6B00" : "#B8BDC7"}
+              />
+              <TextInput
+                value={search}
+                onChangeText={setSearch}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+                placeholder="Search trainer name or specialization..."
+                placeholderTextColor="#6B7280"
+                className="flex-1 py-3 font-inter text-sm text-text-primary"
+              />
+              {search !== "" && (
+                <TouchableOpacity
+                  onPress={() => setSearch("")}
+                  hitSlop={8}
+                >
+                  <Ionicons
+                    name="close-circle"
+                    size={18}
+                    color="#B8BDC7"
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            contentContainerClassName="gap-2 px-4"
+          >
+            {SPECIALIZATION_OPTIONS.map((opt) => {
+              const active = selectedSpec === opt.value
+              return (
+                <TouchableOpacity
+                  key={opt.value}
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    setSelectedSpec(opt.value)
+                    if (opt.value !== "ALL") setSearch("")
+                  }}
+                  className={`rounded-full border px-4 py-2 ${active ? "border-primary bg-primary" : "border-border bg-surface"}`}
+                >
+                  <Text className={`font-inter text-xs font-semibold ${active ? "text-white" : "text-text-secondary"}`}>{opt.label}</Text>
+                </TouchableOpacity>
+              )
+            })}
+          </ScrollView>
         </View>
 
         <View className="gap-5 px-4 pt-2">
-          {/* ================= FILTER & SORT CONTAINER ================= */}
-          <View className="gap-4 rounded-2xl border border-border bg-surface p-4">
-            {/* Container header */}
-            <View className="flex-row items-center">
-              <View className="flex-row items-center gap-2">
-                <Ionicons
-                  name="options-outline"
-                  size={18}
-                  color="#FFB693"
-                />
-                <Text className="font-inter text-sm font-bold text-text-primary">Filter & Sort</Text>
-              </View>
-            </View>
-
-            {/* Two-column row: Specialization (left) | Sort by (right) */}
-            <View className="flex-row gap-3">
-              {/* Specialization dropdown trigger */}
-              <View className="flex-1 gap-2">
-                <Text className="font-inter text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Specialization</Text>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => setOpenDropdown((current) => (current === "specialization" ? null : "specialization"))}
-                  className={`flex-row items-center justify-between gap-2 rounded-xl border bg-card px-3 py-3 ${
-                    openDropdown === "specialization" ? "border-primary" : "border-border"
-                  }`}
-                >
-                  <Text
-                    numberOfLines={1}
-                    className="flex-1 font-inter text-sm font-semibold text-text-primary"
-                  >
-                    {SPECIALIZATION_OPTIONS.find((opt) => opt.value === selectedSpec)?.label ?? "All"}
-                  </Text>
-                  <Ionicons
-                    name={openDropdown === "specialization" ? "chevron-up" : "chevron-down"}
-                    size={16}
-                    color="#B8BDC7"
-                  />
-                </TouchableOpacity>
-              </View>
-
-              {/* Sort dropdown trigger */}
-              <View className="flex-1 gap-2">
-                <Text className="font-inter text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Sort by</Text>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => setOpenDropdown((current) => (current === "sort" ? null : "sort"))}
-                  className={`flex-row items-center justify-between gap-2 rounded-xl border bg-card px-3 py-3 ${
-                    openDropdown === "sort" ? "border-primary" : "border-border"
-                  }`}
-                >
-                  <View className="flex-1 flex-row items-center gap-2">
-                    <Text
-                      numberOfLines={1}
-                      className="flex-shrink font-inter text-sm font-semibold text-text-primary"
-                    >
-                      {SORT_OPTIONS.find((opt) => opt.key === sortKey)?.label ?? "Default"}
-                    </Text>
-                    {sortKey !== "none" && (
-                      <Ionicons
-                        name={sortDir === "asc" ? "arrow-up" : "arrow-down"}
-                        size={14}
-                        color="#FF6B00"
-                      />
-                    )}
-                  </View>
-                  <Ionicons
-                    name={openDropdown === "sort" ? "chevron-up" : "chevron-down"}
-                    size={16}
-                    color="#B8BDC7"
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* Expanded list: full width below the row */}
-            {openDropdown === "specialization" && (
-              <View className="overflow-hidden rounded-xl border border-border bg-card">
-                {SPECIALIZATION_OPTIONS.map((opt) => {
-                  const active = selectedSpec === opt.value
-                  return (
-                    <TouchableOpacity
-                      key={opt.value}
-                      activeOpacity={0.8}
-                      onPress={() => {
-                        setSelectedSpec(opt.value)
-                        setOpenDropdown(null)
-                      }}
-                      className={`flex-row items-center justify-between px-4 py-3 ${active ? "bg-primary/10" : ""}`}
-                    >
-                      <Text className={`font-inter text-sm ${active ? "font-bold text-primary" : "font-medium text-text-body"}`}>
-                        {opt.label}
-                      </Text>
-                      {active && (
-                        <Ionicons
-                          name="checkmark"
-                          size={16}
-                          color="#FF6B00"
-                        />
-                      )}
-                    </TouchableOpacity>
-                  )
-                })}
-              </View>
-            )}
-
-            {openDropdown === "sort" && (
-              <View className="overflow-hidden rounded-xl border border-border bg-card">
-                {SORT_OPTIONS.map((opt) => {
-                  const active = sortKey === opt.key
-                  return (
-                    <TouchableOpacity
-                      key={opt.key}
-                      activeOpacity={0.8}
-                      onPress={() => {
-                        handleSort(opt.key)
-                        setOpenDropdown(null)
-                      }}
-                      className={`flex-row items-center justify-between px-4 py-3 ${active ? "bg-primary/10" : ""}`}
-                    >
-                      <Text className={`font-inter text-sm ${active ? "font-bold text-primary" : "font-medium text-text-body"}`}>
-                        {opt.label}
-                      </Text>
-                      {active && opt.key !== "none" && (
-                        <Ionicons
-                          name={sortDir === "asc" ? "arrow-up" : "arrow-down"}
-                          size={14}
-                          color="#FF6B00"
-                        />
-                      )}
-                      {active && opt.key === "none" && (
-                        <Ionicons
-                          name="checkmark"
-                          size={16}
-                          color="#FF6B00"
-                        />
-                      )}
-                    </TouchableOpacity>
-                  )
-                })}
-              </View>
-            )}
-          </View>
-
           {/* ================= BENEFIT BANNER ================= */}
           <View className="overflow-hidden rounded-2xl border border-primary/20">
             <LinearGradient
@@ -288,7 +126,7 @@ export default function TrainerScreen() {
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <View className="flex-row items-start gap-4 p-4 ">
+              <View className="flex-row items-start gap-4 p-4">
                 <View className="mt-1 h-10 w-10 items-center justify-center rounded-full bg-primary/20">
                   <MaterialCommunityIcons
                     name="medal-outline"
@@ -297,10 +135,11 @@ export default function TrainerScreen() {
                   />
                 </View>
                 <View className="flex-1">
-                  <Text className="mb-1 font-inter text-[10px] font-bold tracking-widest text-text-primary">MEMBER BENEFIT • Pro Tier</Text>
+                  <Text className="mb-1 font-inter text-xs font-bold tracking-widest text-text-primary">PERSONAL TRAINER • Pro Tier</Text>
                   <Text className="font-inter text-xs leading-4 text-text-secondary">
-                    Your SmartGym Pro plan includes <Text className="font-inter font-bold text-text-primary">4 free PT sessions</Text>{" "}
-                    remaining! Your coupon is automatically applied at checkout.
+                    Browse our certified trainers,{" "}
+                    <Text className="font-inter text-xs font-bold text-text-primary">choose your preferred coach</Text>, and book your
+                    1-on-1 workout session in just a few taps.
                   </Text>
                 </View>
               </View>

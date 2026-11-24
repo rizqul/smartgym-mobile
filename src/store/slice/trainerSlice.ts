@@ -8,19 +8,29 @@ interface TrainerState {
   error: string | null
 }
 
+export type FetchTrainersParams = {
+  search?: string
+  page?: number
+  size?: number
+}
+
 const initialState: TrainerState = {
   result: null,
   isLoading: false,
   error: null
 }
 
-export const fetchTrainers = createAsyncThunk("trainers/fetchTrainers", async () => {
-  try {
-    return await getAllTrainers()
-  } catch (error) {
-    console.log("Error : ", error)
+export const fetchTrainers = createAsyncThunk(
+  "trainer/fetchTrainers",
+  async (params: FetchTrainersParams | undefined, { rejectWithValue }) => {
+    try {
+      const response = await getAllTrainers(params)
+      return response
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data ?? "Failed to fetch trainers")
+    }
   }
-})
+)
 
 const trainerSlice = createSlice({
   name: "trainers",
