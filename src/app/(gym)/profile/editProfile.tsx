@@ -8,35 +8,59 @@ import * as ImagePicker from "expo-image-picker"
 import { router } from "expo-router"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { z } from "zod"
 
 const updateProfileSchema = z.object({
-  fullname: z.string().min(4, "Panjang minimal 4 karakter"),
+  fullname: z.string().min(4, "Must be at least 4 characters"),
   phoneNumber: z
     .string()
-    .min(1, "Nomor HP wajib diisi")
-    .regex(/^(\+62|62|0)8[1-9][0-9]{6,10}$/, "Format nomor HP tidak valid (contoh: 081234567890 atau +6281234567890)")
+    .min(1, "Phone number is required")
+    .regex(/^(\+62|62|0)8[1-9][0-9]{6,10}$/, "Invalid phone number format (e.g. 081234567890 or +6281234567890)")
 })
 
 type FormValues = z.infer<typeof updateProfileSchema>
 
+// ================= SMALL LOCAL COMPONENT =================
+type SectionHeaderProps = {
+  icon: React.ComponentProps<typeof Ionicons>["name"]
+  title: string
+  subtitle: string
+}
+
+const SectionHeader = ({ icon, title, subtitle }: SectionHeaderProps) => (
+  <View className="mb-4 flex-row items-center gap-3">
+    <View className="h-10 w-10 items-center justify-center rounded-xl border border-primary/30 bg-primary/15">
+      <Ionicons
+        name={icon}
+        size={20}
+        color="#FF6B00"
+      />
+    </View>
+    <View className="flex-1">
+      <Text className="font-inter text-base font-bold text-text-primary">{title}</Text>
+      <Text className="font-inter text-sm text-text-subdued">{subtitle}</Text>
+    </View>
+  </View>
+)
+
+// ================= SCREEN =================
 export default function EditProfile() {
   const { user, refreshUser } = useAuth()
-  const [image, setImage] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting }
+    formState: { errors }
   } = useForm<FormValues>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: { fullname: user?.name, phoneNumber: user?.phoneNumber }
   })
 
   const uploadPhoto = async () => {
-    // 1. Pilih gambar dari galeri
+    // 1. Pick an image from the gallery
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
@@ -52,8 +76,8 @@ export default function EditProfile() {
     if (asset.fileSize && asset.fileSize > maxBytes) {
       Toast.show({
         type: ALERT_TYPE.DANGER,
-        title: "Ukuran Terlalu Besar",
-        textBody: "Ukuran file photo tidak boleh lebih dari 2MB!",
+        title: "File Too Large",
+        textBody: "The photo must not be larger than 2MB!",
         autoClose: 3000
       })
       return
@@ -70,14 +94,15 @@ export default function EditProfile() {
     else {
       Toast.show({
         type: ALERT_TYPE.DANGER,
-        title: "Format Tidak Valid",
-        textBody: "File photo harus berupa png, jpg, atau jpeg!",
+        title: "Invalid Format",
+        textBody: "The photo must be a png, jpg, or jpeg file!",
         autoClose: 3000
       })
       return
     }
 
     try {
+      setUploading(true)
       await updateProfile(user?.name!, user?.phoneNumber!, {
         uri: uri,
         name: fileName,
@@ -86,39 +111,40 @@ export default function EditProfile() {
 
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
-        title: "Berhasil",
-        textBody: `Foto profil berhasil diperbaharui`,
+        title: "Success",
+        textBody: "Profile photo updated successfully.",
         autoClose: 3000
       })
 
       await refreshUser()
     } catch (error: any) {
-      const message = error.response?.data?.message || "Gagal mengupload gambar. Coba lagi."
+      const message = error.response?.data?.message || "Failed to upload the image. Please try again."
       Toast.show({
         type: ALERT_TYPE.DANGER,
-        title: "Gagal",
+        title: "Failed",
         textBody: message,
         autoClose: 3000
       })
+    } finally {
+      setUploading(false)
     }
   }
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const response = await updateProfile(data.fullname, data.phoneNumber)
-      console.log("Data : ", response)
+      await updateProfile(data.fullname, data.phoneNumber)
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
-        title: "Berhasil",
-        textBody: `Data berhasil diperbaharui.`
+        title: "Success",
+        textBody: "Your profile has been updated.",
+        autoClose: 3000
       })
       await refreshUser()
     } catch (error: any) {
-      console.log("error :", error)
-      const message = error.response?.data?.message || "Gagal mengirim kode. Coba lagi."
+      const message = error.response?.data?.message || "Failed to update your profile. Please try again."
       Toast.show({
         type: ALERT_TYPE.DANGER,
-        title: "Gagal",
+        title: "Failed",
         textBody: message,
         autoClose: 3000
       })
@@ -133,9 +159,14 @@ export default function EditProfile() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Header */}
-        <View className=" border-b border-border bg-surface px-5 pb-8 pt-3 shadow-lg">
-          {/* Header: tombol back di kiri, judul tepat di tengah */}
+        {/* ================= HEADER ================= */}
+        <View className="overflow-hidden rounded-b-3xl border-b border-border bg-surface px-5 pb-8 pt-3 shadow-lg">
+          {/* Decorative glow */}
+          <View className="absolute -right-16 -top-16 h-52 w-52 rounded-full bg-primary/10" />
+          <View className="absolute -left-12 top-24 h-36 w-36 rounded-full bg-secondary/5" />
+          <View className="absolute right-6 top-40 h-16 w-16 rounded-full bg-info/10" />
+
+          {/* Back button on the left, title centered */}
           <View className="h-11 flex-row items-center justify-center">
             <TouchableOpacity
               onPress={() => router.back()}
@@ -148,24 +179,31 @@ export default function EditProfile() {
                 color="white"
               />
             </TouchableOpacity>
-            <Text className="font-inter text-lg font-bold tracking-wide text-text-primary">Profil</Text>
+            <Text className="font-inter text-lg font-bold tracking-wide text-text-primary">Edit Profile</Text>
           </View>
 
-          {/* Foto profil */}
+          {/* Profile photo */}
           <View className="mt-6 items-center gap-5">
             <View className="relative">
-              {/* Ring luar berwarna primary */}
-              <View className="rounded-full border-2 border-primary p-1 shadow-lg shadow-primary">
+              {/* Outer ring */}
+              <View className="rounded-full border-2 border-primary bg-primary/10 p-1 shadow-lg shadow-primary">
                 <Image
                   source={{ uri: user?.profileUrl }}
                   className="h-[108px] w-[108px] rounded-full bg-background"
                 />
+                {uploading ? (
+                  <View className="absolute inset-1 items-center justify-center rounded-full bg-background/70">
+                    <ActivityIndicator color="#FF6B00" />
+                  </View>
+                ) : null}
               </View>
-              {/* Camera Button Overlay */}
+
+              {/* Edit photo button */}
               <TouchableOpacity
-                onPress={() => uploadPhoto()}
+                onPress={uploadPhoto}
+                disabled={uploading}
                 activeOpacity={0.8}
-                className="absolute bottom-0 right-0 h-9 w-9 flex-row items-center justify-center rounded-full border-[3px] border-surface bg-primary shadow-md"
+                className="absolute bottom-0 right-0 h-9 w-9 items-center justify-center rounded-full border-[3px] border-surface bg-primary shadow-md"
               >
                 <Ionicons
                   name="pencil"
@@ -176,36 +214,51 @@ export default function EditProfile() {
             </View>
 
             <View className="items-center gap-2">
-              <Text className="text-2xl font-bold tracking-tight text-text-primary">{user?.name}</Text>
-              <View className="rounded-full border border-border bg-background px-4 py-1.5">
-                <Text className="font-inter text-xs text-text-secondary">{user?.email}</Text>
+              <Text className="font-inter text-2xl font-bold tracking-tight text-text-primary">{user?.name}</Text>
+              <View className="flex-row items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5">
+                <Ionicons
+                  name="mail-outline"
+                  size={14}
+                  color="#FFB693"
+                />
+                <Text className="font-inter text-sm text-accent">{user?.email}</Text>
               </View>
+              <Text className="font-inter text-xs text-text-muted">JPG, JPEG or PNG • Max 2MB</Text>
             </View>
           </View>
         </View>
 
-        {/* Body */}
-        <View className="mt-6 px-5 pb-6">
-          {/* ================= SECTION 1: INFORMASI DASAR ================= */}
-          <View className="mb-6">
-            <View className="mb-4 flex-row items-center gap-2">
-              <Ionicons
-                name="person-outline"
-                size={18}
-                color="#FF6B00"
-              />
-              <Text className="text-base font-bold text-text-primary">Informasi Dasar</Text>
-            </View>
+        {/* ================= BODY ================= */}
+        <View className="mt-6 gap-6 px-5 pb-10">
+          {/* ---------- SECTION: BASIC INFORMATION ---------- */}
+          <View>
+            <SectionHeader
+              icon="person-outline"
+              title="Basic Information"
+              subtitle="Your name and contact details"
+            />
 
             <View className="gap-4 rounded-2xl border border-border/50 bg-card p-4">
-              <View className="">
-                <View className="flex-row items-center justify-between">
-                  <View className="flex-row gap-2 px-2">
-                    <Text className="mb-2 font-inter text-sm font-semibold text-text-body">Email</Text>
+              {/* Email (read-only) */}
+              <View>
+                <View className="mb-2 flex-row items-center justify-between px-2">
+                  <Text className="font-inter text-sm font-semibold text-text-body">Email</Text>
+                  <View className="flex-row items-center gap-1 rounded-md bg-text-muted/15 px-2 py-0.5">
+                    <Ionicons
+                      name="lock-closed"
+                      size={10}
+                      color="#9CA3AF"
+                    />
+                    <Text className="font-inter text-xs font-semibold text-text-subdued">Locked</Text>
                   </View>
                 </View>
-                <View className="w-full flex-row items-center rounded-xl border border-border/80 bg-surface px-4 py-5 opacity-70">
-                  <Text className="font-inter text-base  text-text-primary ">{user?.email}</Text>
+                <View className="w-full flex-row items-center gap-3 rounded-xl border border-border/80 bg-surface px-4 py-5 opacity-70">
+                  <Ionicons
+                    name="mail-outline"
+                    size={18}
+                    color="#9CA3AF"
+                  />
+                  <Text className="flex-1 font-inter text-base text-text-subdued">{user?.email}</Text>
                 </View>
               </View>
 
@@ -214,11 +267,11 @@ export default function EditProfile() {
                 name="fullname"
                 render={({ field: { value, onChange, onBlur } }) => (
                   <AuthTextField
-                    label="Nama Lengkap"
+                    label="Full Name"
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
-                    placeholder="Masukkan Nama Anda"
+                    placeholder="Enter your name"
                     error={errors.fullname?.message}
                     autoCapitalize="words"
                   />
@@ -229,11 +282,11 @@ export default function EditProfile() {
                 name="phoneNumber"
                 render={({ field: { value, onChange, onBlur } }) => (
                   <AuthTextField
-                    label="Nomor Telepon"
+                    label="Phone Number"
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
-                    placeholder="Contoh: 081234567890"
+                    placeholder="e.g. 081234567890"
                     error={errors.phoneNumber?.message}
                     keyboardType="phone-pad"
                   />
@@ -242,17 +295,21 @@ export default function EditProfile() {
             </View>
           </View>
 
-          {/* ================= SUBMIT BUTTON & FOOTER ================= */}
-          <View className="">
-            <AuthButton
-              onPress={handleSubmit(onSubmit)}
-              label="Simpan Perubahan"
+          {/* ---------- INFO NOTE ---------- */}
+          <View className="flex-row items-start gap-3 rounded-2xl border border-info/20 bg-info/10 p-4">
+            <Ionicons
+              name="information-circle"
+              size={20}
+              color="#60A5FA"
             />
-
-            <Text className="mt-5 text-center text-[11px] leading-4 text-text-secondary">
-              Perubahan akan diterapkan pada profil member.
-            </Text>
+            <Text className="flex-1 font-inter text-sm leading-5 text-text-body">Changes will be applied to your member profile.</Text>
           </View>
+
+          {/* ---------- SUBMIT ---------- */}
+          <AuthButton
+            onPress={handleSubmit(onSubmit)}
+            label="Save Changes"
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -9,7 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
 
 const SPECIALIZATION_OPTIONS = [
-  { value: "ALL", label: "Semua" },
+  { value: "ALL", label: "All" },
   { value: "GENERAL_FITNESS", label: "General Fitness" },
   { value: "WEIGHT_LOSS", label: "Weight Loss" },
   { value: "BODYBUILDING", label: "Bodybuilding" },
@@ -25,9 +25,9 @@ type SortKey = "none" | "experience" | "price"
 type SortDir = "asc" | "desc"
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: "none", label: "Standar" },
-  { key: "experience", label: "Pengalaman" },
-  { key: "price", label: "Harga" }
+  { key: "none", label: "Default" },
+  { key: "experience", label: "Experience" },
+  { key: "price", label: "Price" }
 ]
 
 export default function TrainerScreen() {
@@ -39,6 +39,7 @@ export default function TrainerScreen() {
   const [sortKey, setSortKey] = useState<SortKey>("none")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
   const [searchFocused, setSearchFocused] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState<"specialization" | "sort" | null>(null)
 
   useEffect(() => {
     void dispatch(fetchTrainers())
@@ -103,8 +104,9 @@ export default function TrainerScreen() {
         {/* ================= STICKY HEADER: SEARCH ================= */}
         <View className="bg-background px-4 pb-3 pt-4">
           <View
-            className={`flex-row items-center gap-2 rounded-2xl border bg-surface px-4 py-1 ${searchFocused ? "border-primary" : "border-border"
-              }`}
+            className={`flex-row items-center gap-2 rounded-2xl border bg-surface px-4 py-1 ${
+              searchFocused ? "border-primary" : "border-border"
+            }`}
           >
             <Ionicons
               name="search"
@@ -116,9 +118,9 @@ export default function TrainerScreen() {
               onChangeText={setSearch}
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
-              placeholder="Cari nama trainer, spesialisasi..."
+              placeholder="Search trainer name or specialization..."
               placeholderTextColor="#6B7280"
-              className="flex-1 py-3 text-sm text-text-primary"
+              className="flex-1 py-3 font-inter text-sm text-text-primary"
             />
             {search !== "" && (
               <TouchableOpacity
@@ -138,7 +140,7 @@ export default function TrainerScreen() {
         <View className="gap-5 px-4 pt-2">
           {/* ================= FILTER & SORT CONTAINER ================= */}
           <View className="gap-4 rounded-2xl border border-border bg-surface p-4">
-            {/* Header wadah */}
+            {/* Container header */}
             <View className="flex-row items-center">
               <View className="flex-row items-center gap-2">
                 <Ionicons
@@ -146,61 +148,92 @@ export default function TrainerScreen() {
                   size={18}
                   color="#FFB693"
                 />
-                <Text className="text-sm font-bold text-text-primary">Filter & Urutkan</Text>
+                <Text className="font-inter text-sm font-bold text-text-primary">Filter & Sort</Text>
               </View>
             </View>
 
-            {/* Spesialisasi */}
-            <View className="gap-2">
-              <Text className="text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Spesialisasi</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                className="-mx-4"
-                contentContainerClassName="gap-2 px-4"
-                keyboardShouldPersistTaps="handled"
-              >
+            {/* Two-column row: Specialization (left) | Sort by (right) */}
+            <View className="flex-row gap-3">
+              {/* Specialization dropdown trigger */}
+              <View className="flex-1 gap-2">
+                <Text className="font-inter text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Specialization</Text>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => setOpenDropdown((current) => (current === "specialization" ? null : "specialization"))}
+                  className={`flex-row items-center justify-between gap-2 rounded-xl border bg-card px-3 py-3 ${
+                    openDropdown === "specialization" ? "border-primary" : "border-border"
+                  }`}
+                >
+                  <Text
+                    numberOfLines={1}
+                    className="flex-1 font-inter text-sm font-semibold text-text-primary"
+                  >
+                    {SPECIALIZATION_OPTIONS.find((opt) => opt.value === selectedSpec)?.label ?? "All"}
+                  </Text>
+                  <Ionicons
+                    name={openDropdown === "specialization" ? "chevron-up" : "chevron-down"}
+                    size={16}
+                    color="#B8BDC7"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              {/* Sort dropdown trigger */}
+              <View className="flex-1 gap-2">
+                <Text className="font-inter text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Sort by</Text>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => setOpenDropdown((current) => (current === "sort" ? null : "sort"))}
+                  className={`flex-row items-center justify-between gap-2 rounded-xl border bg-card px-3 py-3 ${
+                    openDropdown === "sort" ? "border-primary" : "border-border"
+                  }`}
+                >
+                  <View className="flex-1 flex-row items-center gap-2">
+                    <Text
+                      numberOfLines={1}
+                      className="flex-shrink font-inter text-sm font-semibold text-text-primary"
+                    >
+                      {SORT_OPTIONS.find((opt) => opt.key === sortKey)?.label ?? "Default"}
+                    </Text>
+                    {sortKey !== "none" && (
+                      <Ionicons
+                        name={sortDir === "asc" ? "arrow-up" : "arrow-down"}
+                        size={14}
+                        color="#FF6B00"
+                      />
+                    )}
+                  </View>
+                  <Ionicons
+                    name={openDropdown === "sort" ? "chevron-up" : "chevron-down"}
+                    size={16}
+                    color="#B8BDC7"
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Expanded list: full width below the row */}
+            {openDropdown === "specialization" && (
+              <View className="overflow-hidden rounded-xl border border-border bg-card">
                 {SPECIALIZATION_OPTIONS.map((opt) => {
                   const active = selectedSpec === opt.value
                   return (
                     <TouchableOpacity
                       key={opt.value}
                       activeOpacity={0.8}
-                      onPress={() => setSelectedSpec(opt.value)}
-                      className={`rounded-full border px-4 py-2 ${active ? "border-primary bg-primary" : "border-border bg-card"}`}
+                      onPress={() => {
+                        setSelectedSpec(opt.value)
+                        setOpenDropdown(null)
+                      }}
+                      className={`flex-row items-center justify-between px-4 py-3 ${active ? "bg-primary/10" : ""}`}
                     >
-                      <Text className={`text-xs ${active ? "font-bold text-background" : "font-semibold text-text-body"}`}>
+                      <Text className={`font-inter text-sm ${active ? "font-bold text-primary" : "font-medium text-text-body"}`}>
                         {opt.label}
                       </Text>
-                    </TouchableOpacity>
-                  )
-                })}
-              </ScrollView>
-            </View>
-
-            <View className="h-px bg-border" />
-
-            {/* Urutkan */}
-            <View className="gap-2">
-              <Text className="text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Urutkan</Text>
-              <View className="flex-row gap-1 rounded-xl border border-border bg-card p-1">
-                {SORT_OPTIONS.map((opt) => {
-                  const active = sortKey === opt.key
-                  return (
-                    <TouchableOpacity
-                      key={opt.key}
-                      activeOpacity={0.8}
-                      onPress={() => handleSort(opt.key)}
-                      className={`flex-1 flex-row items-center justify-center gap-1 rounded-lg py-2.5 ${active ? "border border-primary/40 bg-primary/15" : "border border-transparent"
-                        }`}
-                    >
-                      <Text className={`text-xs ${active ? "font-bold text-primary" : "font-semibold text-text-secondary"}`}>
-                        {opt.label}
-                      </Text>
-                      {active && opt.key !== "none" && (
+                      {active && (
                         <Ionicons
-                          name={sortDir === "asc" ? "arrow-up" : "arrow-down"}
-                          size={12}
+                          name="checkmark"
+                          size={16}
                           color="#FF6B00"
                         />
                       )}
@@ -208,8 +241,46 @@ export default function TrainerScreen() {
                   )
                 })}
               </View>
-            </View>
+            )}
+
+            {openDropdown === "sort" && (
+              <View className="overflow-hidden rounded-xl border border-border bg-card">
+                {SORT_OPTIONS.map((opt) => {
+                  const active = sortKey === opt.key
+                  return (
+                    <TouchableOpacity
+                      key={opt.key}
+                      activeOpacity={0.8}
+                      onPress={() => {
+                        handleSort(opt.key)
+                        setOpenDropdown(null)
+                      }}
+                      className={`flex-row items-center justify-between px-4 py-3 ${active ? "bg-primary/10" : ""}`}
+                    >
+                      <Text className={`font-inter text-sm ${active ? "font-bold text-primary" : "font-medium text-text-body"}`}>
+                        {opt.label}
+                      </Text>
+                      {active && opt.key !== "none" && (
+                        <Ionicons
+                          name={sortDir === "asc" ? "arrow-up" : "arrow-down"}
+                          size={14}
+                          color="#FF6B00"
+                        />
+                      )}
+                      {active && opt.key === "none" && (
+                        <Ionicons
+                          name="checkmark"
+                          size={16}
+                          color="#FF6B00"
+                        />
+                      )}
+                    </TouchableOpacity>
+                  )
+                })}
+              </View>
+            )}
           </View>
+
           {/* ================= BENEFIT BANNER ================= */}
           <View className="overflow-hidden rounded-2xl border border-primary/20">
             <LinearGradient
@@ -226,10 +297,10 @@ export default function TrainerScreen() {
                   />
                 </View>
                 <View className="flex-1">
-                  <Text className="mb-1 text-[10px] font-bold tracking-widest text-text-primary">BENEFIT ANGGOTA • Pro Tier</Text>
-                  <Text className="text-xs leading-4 text-text-secondary">
-                    Paket SmartGym Pro kamu menyertakan <Text className="font-bold text-text-primary">4x Sesi PT Gratis</Text> tersisa!
-                    Kupon otomatis diterapkan saat konfirmasi.
+                  <Text className="mb-1 font-inter text-[10px] font-bold tracking-widest text-text-primary">MEMBER BENEFIT • Pro Tier</Text>
+                  <Text className="font-inter text-xs leading-4 text-text-secondary">
+                    Your SmartGym Pro plan includes <Text className="font-inter font-bold text-text-primary">4 free PT sessions</Text>{" "}
+                    remaining! Your coupon is automatically applied at checkout.
                   </Text>
                 </View>
               </View>
@@ -245,7 +316,7 @@ export default function TrainerScreen() {
                   size={32}
                   color="#B8BDC7"
                 />
-                <Text className="text-sm text-text-secondary">Trainer tidak ditemukan</Text>
+                <Text className="font-inter text-sm text-text-secondary">No trainers found</Text>
               </View>
             ) : (
               trainers.map((trainer) => (

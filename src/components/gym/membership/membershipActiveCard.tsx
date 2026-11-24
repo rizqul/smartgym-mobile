@@ -91,35 +91,6 @@ export default function MembershipActiveCard({
         </View>
       </View>
 
-      {/* Cycle progress */}
-      {/* <View className="gap-3 rounded-xl border border-border bg-background p-3.5">
-        <View className="flex-row items-center justify-between">
-          <View className="flex-row items-center gap-1.5">
-            <MaterialIcons
-              name="timelapse"
-              size={14}
-              color={ICON_COLORS.info}
-            />
-            <Text className="text-[11px] font-semibold text-text-body">Siklus Keanggotaan</Text>
-          </View>
-          <Text className="text-[11px] font-bold text-text-primary">
-            {daysUsed} / {totalDays} Hari ({percent}%)
-          </Text>
-        </View>
-
-        <View className="h-1.5 w-full overflow-hidden rounded-full bg-card">
-          <View
-            className="h-full rounded-full bg-primary"
-            style={{ width: `${percent}%` }}
-          />
-        </View>
-
-        <View className="flex-row items-center justify-between">
-          <Text className="text-[11px] text-text-subdued">Mulai: {startDate}</Text>
-          <Text className="text-[11px] text-text-subdued">Perpanjangan Otomatis: {autoRenew ? "Aktif" : "Nonaktif"}</Text>
-        </View>
-      </View> */}
-
       {/* Benefits */}
       <View className="gap-3">
         <Text className="text-[10px] font-bold tracking-widest text-text-warm">KEUNTUNGAN AKTIF TERPASANG</Text>

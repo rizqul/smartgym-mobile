@@ -35,8 +35,8 @@ const formatDuration = (start: string, end: string) => {
   if (!Number.isFinite(minutes) || minutes <= 0) return "-"
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
-  if (h === 0) return `${m} menit`
-  return m === 0 ? `${h} jam` : `${h} jam ${m} menit`
+  if (h === 0) return `${m} minutes`
+  return m === 0 ? `${h} hours` : `${h} hours ${m} minutes`
 }
 
 const GENERATED_AVATAR = /ui-avatars|dicebear|initials|avatar\.iran|gravatar/i
@@ -69,7 +69,7 @@ export default function BookingConfirm() {
   }, [])
 
   const dateText = date
-    ? new Date(date).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+    ? new Date(date).toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
     : "-"
   const timeText = startTime && endTime ? `${startTime.substring(11, 16)} - ${endTime.substring(11, 16)}` : "-"
   const durationText = startTime && endTime ? formatDuration(startTime, endTime) : "-"
@@ -103,60 +103,60 @@ export default function BookingConfirm() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="flex-1 bg-background font-inter">
       <StatusBar barStyle="light-content" />
 
       {/* HEADER */}
-      <HeaderNavigation label="Konfirmasi Pemesanan" />
+      <HeaderNavigation label="Booking Confirmation" />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="px-5 pb-44 pt-4">
+        <View className="px-5 pb-44 pt-4 font-inter">
           {/* TRAINER CARD */}
-          <View className="mb-6 flex-row items-center gap-3 rounded-2xl border border-border bg-surface p-3">
+          <View className="mb-6 flex-row items-center gap-3 rounded-2xl border border-border bg-surface p-3 font-inter">
             {hasPhoto ? (
               <Image
                 source={{ uri: trainer?.profileUrl }}
                 onError={() => setImageFailed(true)}
-                className="h-16 w-16 rounded-xl bg-card"
+                className="h-16 w-16 rounded-xl bg-card font-inter"
                 resizeMode="cover"
               />
             ) : (
-              <View className="h-16 w-16 overflow-hidden rounded-xl border border-primary/20">
+              <View className="h-16 w-16 overflow-hidden rounded-xl border border-primary/20 font-inter">
                 <LinearGradient
                   colors={["#5A3320", "#242833"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
                 >
-                  <Text className="text-xl font-extrabold text-accent">{trainer ? getInitials(trainer.name) : "-"}</Text>
+                  <Text className="font-inter text-xl font-extrabold text-accent">{trainer ? getInitials(trainer.name) : "-"}</Text>
                 </LinearGradient>
               </View>
             )}
 
-            <View className="flex-1 gap-1.5">
+            <View className="flex-1 gap-1.5 font-inter">
               <Text
-                className="text-base font-bold text-text-primary"
+                className="font-inter text-base font-bold text-text-primary"
                 numberOfLines={1}
               >
-                {trainer?.name ?? "Memuat data trainer..."}
+                {trainer?.name ?? "Loading trainer data..."}
               </Text>
 
               {trainer ? (
                 <>
-                  <View className="flex-row items-center gap-1.5 self-start rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1">
+                  <View className="flex-row items-center gap-1.5 self-start rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 font-inter">
                     <View className="h-1.5 w-1.5 rounded-full bg-primary" />
-                    <Text className="text-[10px] font-bold uppercase tracking-wide text-primary-hover">
+                    <Text className="font-inter text-[10px] font-bold uppercase tracking-wide text-primary-hover">
                       {formatLabel(trainer.specialization)}
                     </Text>
                   </View>
 
-                  <View className="flex-row items-center gap-1">
+                  <View className="flex-row items-center gap-1 font-inter">
                     <Ionicons
                       name="time-outline"
                       size={12}
                       color="#B8BDC7"
                     />
-                    <Text className="text-[11px] text-text-secondary">{trainer.experience} tahun pengalaman</Text>
+                    <Text className="font-inter text-[11px] text-text-secondary">{trainer.experience} years of experience</Text>
                   </View>
                 </>
               ) : null}
@@ -164,51 +164,51 @@ export default function BookingConfirm() {
           </View>
 
           {/* RINGKASAN SESI */}
-          <View className="mb-6 rounded-2xl border border-border bg-card p-4">
-            <View className="mb-4 flex-row items-center justify-between">
-              <View className="flex-row items-center gap-2">
+          <View className="mb-6 rounded-2xl border border-border bg-card p-4 font-inter">
+            <View className="mb-4 flex-row items-center justify-between font-inter">
+              <View className="flex-row items-center gap-2 font-inter">
                 <Ionicons
                   name="calendar-clear-outline"
                   size={18}
                   color="#FF6B00"
                 />
-                <Text className="text-sm font-bold text-text-primary">Ringkasan Sesi</Text>
+                <Text className="font-inter text-sm font-bold text-text-primary">Session Summary</Text>
               </View>
-              <View className="flex-row items-center gap-1 rounded-md bg-secondary/15 px-2 py-1">
+              <View className="flex-row items-center gap-1 rounded-md bg-secondary/15 px-2 py-1 font-inter">
                 <View className="h-1.5 w-1.5 rounded-full bg-secondary" />
-                <Text className="text-[10px] font-bold text-secondary">Belum Dibayar</Text>
+                <Text className="font-inter text-[10px] font-bold text-secondary">Unpaid</Text>
               </View>
             </View>
 
-            <View className="gap-4">
+            <View className="gap-4 font-inter">
               {/* Tanggal */}
-              <View className="flex-row gap-3">
-                <View className="h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+              <View className="flex-row gap-3 font-inter">
+                <View className="h-9 w-9 items-center justify-center rounded-full bg-primary/10 font-inter">
                   <Ionicons
                     name="calendar-outline"
                     size={16}
                     color="#FFB693"
                   />
                 </View>
-                <View className="flex-1">
-                  <Text className="mb-0.5 text-[10px] font-bold uppercase tracking-wide text-text-subdued">Tanggal</Text>
-                  <Text className="text-sm font-semibold text-text-primary">{dateText}</Text>
+                <View className="flex-1 font-inter">
+                  <Text className="mb-0.5 font-inter text-[10px] font-bold uppercase tracking-wide text-text-subdued">Date</Text>
+                  <Text className="font-inter text-sm font-semibold text-text-primary">{dateText}</Text>
                 </View>
               </View>
 
               {/* Waktu */}
-              <View className="flex-row gap-3">
-                <View className="h-9 w-9 items-center justify-center rounded-full bg-info/10">
+              <View className="flex-row gap-3 font-inter">
+                <View className="h-9 w-9 items-center justify-center rounded-full bg-info/10 font-inter">
                   <Ionicons
                     name="time-outline"
                     size={16}
                     color="#60A5FA"
                   />
                 </View>
-                <View className="flex-1">
-                  <Text className="mb-0.5 text-[10px] font-bold uppercase tracking-wide text-text-subdued">Waktu & Durasi</Text>
-                  <Text className="text-sm font-semibold text-text-primary">{timeText}</Text>
-                  <Text className="text-[11px] text-text-secondary">
+                <View className="flex-1 font-inter">
+                  <Text className="mb-0.5 font-inter text-[10px] font-bold uppercase tracking-wide text-text-subdued">Time & Duration</Text>
+                  <Text className="font-inter text-sm font-semibold text-text-primary">{timeText}</Text>
+                  <Text className="font-inter text-[11px] text-text-secondary">
                     {getTimezoneLabel()} • {durationText}
                   </Text>
                 </View>
@@ -216,27 +216,27 @@ export default function BookingConfirm() {
 
               {/* Catatan sesi */}
               {description ? (
-                <View className="flex-row gap-3">
-                  <View className="h-9 w-9 items-center justify-center rounded-full bg-secondary/10">
+                <View className="flex-row gap-3 font-inter">
+                  <View className="h-9 w-9 items-center justify-center rounded-full bg-secondary/10 font-inter">
                     <MaterialCommunityIcons
                       name="text-box-outline"
                       size={16}
                       color="#FFD166"
                     />
                   </View>
-                  <View className="flex-1">
-                    <Text className="mb-0.5 text-[10px] font-bold uppercase tracking-wide text-text-subdued">Catatan Sesi</Text>
-                    <Text className="text-sm text-text-body">{description}</Text>
+                  <View className="flex-1 font-inter">
+                    <Text className="mb-0.5 font-inter text-[10px] font-bold uppercase tracking-wide text-text-subdued">Session Notes</Text>
+                    <Text className="font-inter text-sm text-text-body">{description}</Text>
                   </View>
                 </View>
               ) : null}
 
-              <View className="h-px bg-border" />
+              <View className="h-px bg-border font-inter" />
 
               {/* Biaya */}
-              <View className="flex-row items-center justify-between">
-                <Text className="text-sm text-text-secondary">Tarif per sesi</Text>
-                <Text className="text-base font-bold text-accent">{priceText}</Text>
+              <View className="flex-row items-center justify-between font-inter">
+                <Text className="font-inter text-sm text-text-secondary">Price per session</Text>
+                <Text className="font-inter text-base font-bold text-accent">{priceText}</Text>
               </View>
             </View>
           </View>
@@ -248,7 +248,7 @@ export default function BookingConfirm() {
               duration: durationText,
               total: priceText
             }}
-            label="Durasi Latihan"
+            label="Training Duration"
             onSelectMethod={(id) => {
               setPaymentId(id)
               setBankId("")
@@ -261,12 +261,12 @@ export default function BookingConfirm() {
 
           {/* CHECKBOX KETENTUAN */}
           <TouchableOpacity
-            className="mb-4 mt-4 flex-row items-start gap-3"
+            className="mb-4 mt-4 flex-row items-start gap-3 font-inter"
             onPress={() => setIsChecked(!isChecked)}
             activeOpacity={0.7}
           >
             <View
-              className={`mt-0.5 h-5 w-5 items-center justify-center rounded ${isChecked ? "bg-primary" : "border border-border bg-surface"}`}
+              className={`mt-0.5 h-5 w-5 items-center justify-center rounded font-inter ${isChecked ? "bg-primary" : "border border-border bg-surface"}`}
             >
               {isChecked && (
                 <Ionicons
@@ -276,11 +276,11 @@ export default function BookingConfirm() {
                 />
               )}
             </View>
-            <View className="flex-1">
-              <Text className="mb-1 text-xs font-bold text-text-primary">Saya menyetujui Kebijakan Booking & Pembatalan</Text>
-              <Text className="text-[10px] leading-4 text-text-secondary">
-                Pembatalan atau reschedule gratis maksimal 4 jam sebelum sesi dimulai. Turnstile gate akan memberikan akses otomatis 30
-                menit sebelum jadwal sesi.
+            <View className="flex-1 font-inter">
+              <Text className="mb-1 font-inter text-xs font-bold text-text-primary">I agree to the Booking & Cancellation Policy</Text>
+              <Text className="font-inter text-[10px] leading-4 text-text-secondary">
+                Cancellations or rescheduling are free up to 4 hours before the session. The turnstile gate will grant access automatically
+                30 minutes before the scheduled session.
               </Text>
             </View>
           </TouchableOpacity>
@@ -288,9 +288,9 @@ export default function BookingConfirm() {
       </ScrollView>
 
       {/* BOTTOM ACTION BUTTONS */}
-      <View className="absolute bottom-0 left-0 right-0 border-t border-border/40 bg-background px-5 py-4 pb-8">
+      <View className="absolute bottom-0 left-0 right-0 border-t border-border/40 bg-background px-5 py-4 pb-8 font-inter">
         <TouchableOpacity
-          className={`mb-3 w-full flex-row items-center justify-center gap-2 rounded-xl py-3.5 ${canSubmit ? "bg-primary" : "bg-primary/50"}`}
+          className={`mb-3 w-full flex-row items-center justify-center gap-2 rounded-xl py-3.5 font-inter ${canSubmit ? "bg-primary" : "bg-primary/50"}`}
           onPress={handleConfirm}
           disabled={!canSubmit}
         >
@@ -299,19 +299,19 @@ export default function BookingConfirm() {
             size={20}
             color="white"
           />
-          <Text className="text-sm font-bold text-white">{submitting ? "Memproses..." : "Konfirmasi Pemesanan"}</Text>
+          <Text className="font-inter text-sm font-bold text-white">{submitting ? "Processing..." : "Confirm Booking"}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={handleReschedule}
-          className="w-full flex-row items-center justify-center gap-2 rounded-xl border border-border bg-surface py-3.5"
+          className="w-full flex-row items-center justify-center gap-2 rounded-xl border border-border bg-surface py-3.5 font-inter"
         >
           <MaterialCommunityIcons
             name="calendar-refresh"
             size={18}
             color="#B8BDC7"
           />
-          <Text className="text-sm font-semibold text-text-primary">Pilih Ulang Slot Waktu</Text>
+          <Text className="font-inter text-sm font-semibold text-text-primary">Choose Another Time Slot</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

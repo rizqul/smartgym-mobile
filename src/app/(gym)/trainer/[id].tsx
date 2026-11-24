@@ -13,25 +13,27 @@ import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
 
-const STATUS_LEWAT = "Lewat"
+// Date text uses en-US (e.g. "November 24, 2026"), time uses en-GB for a 24-hour "08:00" format
+const DATE_LOCALE = "en-US"
+const TIME_LOCALE = "en-GB"
+
+const STATUS_PASSED = "PASSED"
 
 const getSlotStatus = (slot: TrainerSlot, now: number): string => {
   const start = new Date(slot.startTime).getTime()
-  if (!Number.isNaN(start) && start <= now) return STATUS_LEWAT
+  if (!Number.isNaN(start) && start <= now) return STATUS_PASSED
   return slot.status
 }
 
 const formatTime = (iso: string): string => {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return iso.substring(11, 16)
-  return d
-    .toLocaleTimeString("id-ID", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: "Asia/Jakarta"
-    })
-    .replace(".", ":")
+  return d.toLocaleTimeString(TIME_LOCALE, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Jakarta"
+  })
 }
 
 const formatRange = (start: string, end: string) => `${formatTime(start)} - ${formatTime(end)}`
@@ -48,8 +50,8 @@ export default function TrainerProfile() {
   const { result } = useSelector((state: RootState) => state.trainer)
   const data = result?.find((item: Trainer) => item.id === id)
   const [now, setNow] = useState(() => Date.now())
-  const firstDate = new Date(dates[0].fullDate).toLocaleDateString("id-ID", { month: "short" })
-  const lastDate = new Date(dates[13].fullDate).toLocaleDateString("id-ID", { month: "short" })
+  const firstDate = new Date(dates[0].fullDate).toLocaleDateString(DATE_LOCALE, { month: "short" })
+  const lastDate = new Date(dates[13].fullDate).toLocaleDateString(DATE_LOCALE, { month: "short" })
   const lastYear = new Date(dates[13].fullDate).getFullYear()
   const month = firstDate === lastDate ? `${firstDate}` : `${firstDate} - ${lastDate} ${lastYear}`
 
@@ -91,7 +93,7 @@ export default function TrainerProfile() {
     }
   }, [id, selectedDate])
 
-  const dateText = new Date(selectedDate).toLocaleDateString("id-ID", {
+  const dateText = new Date(selectedDate).toLocaleDateString(DATE_LOCALE, {
     day: "numeric",
     month: "long",
     year: "numeric"
@@ -103,8 +105,8 @@ export default function TrainerProfile() {
     if (!selectedTime?.id) {
       Toast.show({
         type: ALERT_TYPE.WARNING,
-        title: "Pilih Slot",
-        textBody: "Silakan pilih slot jadwal terlebih dahulu sebelum melanjutkan.",
+        title: "Select a Slot",
+        textBody: "Please select a schedule slot before continuing.",
         autoClose: 3000
       })
       return
@@ -114,8 +116,8 @@ export default function TrainerProfile() {
       setSelectedTime(null)
       Toast.show({
         type: ALERT_TYPE.WARNING,
-        title: "Slot Tidak Tersedia",
-        textBody: "Waktu slot ini sudah lewat, silakan pilih slot lain.",
+        title: "Slot Unavailable",
+        textBody: "This slot's time has already passed, please choose another slot.",
         autoClose: 3000
       })
       return
@@ -149,7 +151,7 @@ export default function TrainerProfile() {
               color="white"
             />
           </TouchableOpacity>
-          <Text className="font-inter text-lg font-bold text-text-primary">Jadwal Trainer</Text>
+          <Text className="font-inter text-lg font-bold text-text-primary">Trainer Schedule</Text>
         </View>
       </View>
 
@@ -160,7 +162,7 @@ export default function TrainerProfile() {
         {/* ================= HERO SECTION ================= */}
         <View className="mb-6 px-5">
           <View className="overflow-hidden rounded-3xl border border-border bg-surface">
-            {/* Foto */}
+            {/* Photo */}
             <View className="h-[240px] w-full bg-border/30">
               <Image
                 source={{
@@ -170,7 +172,7 @@ export default function TrainerProfile() {
                 resizeMode="cover"
               />
 
-              {/* Fade tipis di bawah foto agar menyatu dengan kartu */}
+              {/* Soft fade at the bottom of the photo to blend into the card */}
               <LinearGradient
                 colors={["transparent", "#1A1D24"]}
                 pointerEvents="none"
@@ -180,13 +182,13 @@ export default function TrainerProfile() {
               {/* Badge */}
               <View className="absolute left-4 top-4 flex-row items-center gap-1.5 rounded-full border border-success/40 bg-background/80 px-3 py-1.5">
                 <View className="h-1.5 w-1.5 rounded-full bg-success" />
-                <Text className="text-[10px] font-bold text-text-primary">Siap Booking</Text>
+                <Text className="font-inter text-[10px] font-bold text-text-primary">Ready to Book</Text>
               </View>
             </View>
 
-            {/* Info trainer */}
+            {/* Trainer info */}
             <View className="gap-3 px-5 pb-5 pt-2">
-              <Text className="text-2xl font-bold text-text-primary">Coach {data?.name}</Text>
+              <Text className="font-inter text-2xl font-bold text-text-primary">Coach {data?.name}</Text>
 
               <View className="flex-row items-center gap-1.5 self-start rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5">
                 <MaterialCommunityIcons
@@ -194,16 +196,17 @@ export default function TrainerProfile() {
                   size={14}
                   color="#FF8A33"
                 />
-                <Text className="text-xs font-semibold text-primary-hover">{data?.specialization}</Text>
+                <Text className="font-inter text-xs font-semibold text-primary-hover">{data?.specialization}</Text>
               </View>
 
-              <Text className="text-sm leading-5 text-text-secondary">
-                Spesialis program Hyperthrophy, Biomechanics Form Correction, dan peningkatan kekuatan fungsional tanpa risiko cedera.
+              <Text className="font-inter text-sm leading-5 text-text-secondary">
+                Specialist in hypertrophy programs, biomechanics form correction, and functional strength building without the risk of
+                injury.
               </Text>
 
               <View className="h-px bg-border" />
 
-              {/* Statistik */}
+              {/* Stats */}
               <View className="flex-row">
                 <View className="flex-1 flex-row items-center gap-3">
                   <View className="h-10 w-10 items-center justify-center rounded-full bg-success/15">
@@ -214,8 +217,8 @@ export default function TrainerProfile() {
                     />
                   </View>
                   <View>
-                    <Text className="text-base font-bold text-text-primary">{loading ? "-" : availableCount}</Text>
-                    <Text className="text-[10px] text-text-secondary">Slot Tersedia</Text>
+                    <Text className="font-inter text-base font-bold text-text-primary">{loading ? "-" : availableCount}</Text>
+                    <Text className="font-inter text-[10px] text-text-secondary">Available Slots</Text>
                   </View>
                 </View>
 
@@ -230,8 +233,8 @@ export default function TrainerProfile() {
                     />
                   </View>
                   <View>
-                    <Text className="text-base font-bold text-text-primary">{data?.experience} Thn</Text>
-                    <Text className="text-[10px] text-text-secondary">Pengalaman</Text>
+                    <Text className="font-inter text-base font-bold text-text-primary">{data?.experience} Yrs</Text>
+                    <Text className="font-inter text-[10px] text-text-secondary">Experience</Text>
                   </View>
                 </View>
               </View>
@@ -243,10 +246,10 @@ export default function TrainerProfile() {
         <View className="px-5">
           <View className="mb-4 flex-row items-end justify-between">
             <View>
-              <Text className="mb-1 text-xl font-bold text-text-primary">Available Schedule</Text>
-              <Text className="text-xs text-text-secondary">Pilih tanggal sesi latihan minggu ini</Text>
+              <Text className="mb-1 font-inter text-xl font-bold text-text-primary">Available Schedule</Text>
+              <Text className="font-inter text-xs text-text-secondary">Pick a date for your training session</Text>
             </View>
-            <Text className="text-xs font-bold tracking-widest text-primary">{month}</Text>
+            <Text className="font-inter text-xs font-bold tracking-widest text-primary">{month}</Text>
           </View>
 
           {/* Date Picker */}
@@ -271,8 +274,8 @@ export default function TrainerProfile() {
                         : "border-border bg-card"
                   }`}
                 >
-                  <Text className={`mb-1 text-[10px] ${isActive ? "text-white" : "text-text-secondary"}`}>{item.day}</Text>
-                  <Text className={`text-xl font-bold ${isActive ? "text-white" : "text-text-primary"}`}>{item.date}</Text>
+                  <Text className={`mb-1 font-inter text-[10px] ${isActive ? "text-white" : "text-text-secondary"}`}>{item.day}</Text>
+                  <Text className={`font-inter text-xl font-bold ${isActive ? "text-white" : "text-text-primary"}`}>{item.date}</Text>
                   {/* Dot Indicator */}
                   <View
                     className={`mt-1 h-1.5 w-1.5 rounded-full ${isActive ? "bg-white" : item.hasDot ? "bg-success" : "bg-transparent"}`}
@@ -283,8 +286,8 @@ export default function TrainerProfile() {
           </ScrollView>
 
           <View className="mb-3 flex-row items-center justify-between">
-            <Text className="text-base font-bold text-text-primary">Slot Latihan ({dateText})</Text>
-            <Text className="text-[10px] font-bold text-text-secondary">{getTimezoneLabel()}</Text>
+            <Text className="font-inter text-base font-bold text-text-primary">Training Slots ({dateText})</Text>
+            <Text className="font-inter text-[10px] font-bold text-text-secondary">{getTimezoneLabel()}</Text>
           </View>
 
           {/* Time Slots List */}
@@ -316,18 +319,18 @@ export default function TrainerProfile() {
 
                   {/* Time & Title */}
                   <View className="flex-1">
-                    <Text className="mb-0.5 text-sm font-bold text-text-primary">{time}</Text>
-                    {slot.description ? <Text className="text-[11px] text-text-secondary">{slot.description}</Text> : null}
+                    <Text className="mb-0.5 font-inter text-sm font-bold text-text-primary">{time}</Text>
+                    {slot.description ? <Text className="font-inter text-[11px] text-text-secondary">{slot.description}</Text> : null}
                   </View>
 
-                  {/* Status Badge */}
+                  {/* Status Badge (AVAILABLE / BOOKED / PASSED) */}
                   <View className={`items-end rounded-md px-2 py-1.5 ${isAvailable ? "bg-success/15" : "bg-border/50"}`}>
                     <Text
-                      className={`mb-0.5 text-[10px] font-bold ${
+                      className={`mb-0.5 font-inter text-[10px] font-bold ${
                         isAvailable ? "text-success" : slot.status === "BOOKED" ? "text-warning" : "text-text-secondary"
                       }`}
                     >
-                      {slot.status === "AVAILABLE" ? "TERSEDIA" : slot.status === "BOOKED" ? "DIPESAN" : slot.status}
+                      {slot.status}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -341,8 +344,8 @@ export default function TrainerProfile() {
       {isSelectedValid && selectedTime ? (
         <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between border-t border-border bg-surface p-5 pb-8">
           <View>
-            <Text className="mb-1 text-[9px] font-bold uppercase tracking-widest text-text-secondary">Sesi Dipilih</Text>
-            <Text className="mb-0.5 text-sm font-bold text-text-primary">
+            <Text className="mb-1 font-inter text-[9px] font-bold uppercase tracking-widest text-text-secondary">Selected Session</Text>
+            <Text className="mb-0.5 font-inter text-sm font-bold text-text-primary">
               {dateText} • {formatRange(selectedTime.startTime, selectedTime.endTime)}
             </Text>
           </View>
@@ -350,7 +353,7 @@ export default function TrainerProfile() {
             onPress={onNext}
             className="flex-row items-center gap-2 rounded-xl bg-primary px-6 py-3.5"
           >
-            <Text className="text-sm font-bold text-white">Lanjutkan</Text>
+            <Text className="font-inter text-sm font-bold text-white">Continue</Text>
             <Ionicons
               name="arrow-forward"
               size={16}
