@@ -18,7 +18,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["checkin", "membership"]
+  whitelist: ["checkin", "membership", "aiWorkout"]
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

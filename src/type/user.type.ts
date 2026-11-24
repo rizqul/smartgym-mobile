@@ -3,10 +3,9 @@ export interface User {
   name: string
   email: string
   profileUrl: string
-  role: string
   phoneNumber: string
-  membershipStatus: string
   membershipExpiredAt: string | null
+  role: string
   createdAt: string
   updatedAt: string
 }

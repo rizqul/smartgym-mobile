@@ -70,13 +70,13 @@ export default function ScanQR() {
 
     try {
       const res = await scanQr(data)
-
-      if (res.status === "GRANTED") {
+      console.log(res);
+      if (res.status === "ACCEPTED") {
         dispatch(setActiveCheckin(res))
         Toast.show({
           type: ALERT_TYPE.SUCCESS,
           title: "Akses Diberikan",
-          textBody: `Selamat berlatih, ${res.memberName}!`,
+          textBody: `Selamat berlatih, ${res.member.name}!`,
           autoClose: 5000
         })
         router.push("/(gym)/navigation/dashboard")

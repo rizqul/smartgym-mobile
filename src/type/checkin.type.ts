@@ -1,18 +1,17 @@
-export type CheckinStatus = "GRANTED" | "DENIED"
+import { User } from "./user.type"
+
+export type CheckinStatus = "ACCEPTED" | "DECLINED"
 
 export type CheckinMethod = "RFID" | "QR"
 
 export interface CheckinResponse {
   id: string
-  memberName: string
-  memberId: string
-  membershipExpiresAt: string
+  member: User
   method: CheckinMethod
   status: CheckinStatus
   checkInAt: string
   checkOutAt: string | null
   denialReason: string | null
-  duplicate: boolean
 }
 
 export interface MyCheckinRequest {
