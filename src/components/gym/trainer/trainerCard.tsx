@@ -29,7 +29,6 @@ const formatLabel = (value: string) =>
     .toLowerCase()
     .replace(/\b\w/g, (c) => c.toUpperCase())
 
-
 const getInitials = (name: string) =>
   name
     .trim()
@@ -76,14 +75,14 @@ export const TrainerCard = ({ data }: Props) => {
               end={{ x: 1, y: 1 }}
               style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
             >
-              <Text className="text-4xl font-extrabold text-accent">{getInitials(name)}</Text>
+              <Text className="font-inter text-4xl font-extrabold text-accent">{getInitials(name)}</Text>
             </LinearGradient>
           </View>
         )}
 
         <View className="flex-1 justify-start gap-3">
           <Text
-            className="text-xl font-extrabold leading-tight tracking-tight text-text-primary"
+            className="font-inter text-xl font-extrabold leading-tight tracking-tight text-text-primary"
             style={{ includeFontPadding: false }}
             numberOfLines={2}
           >
@@ -93,7 +92,9 @@ export const TrainerCard = ({ data }: Props) => {
           {/* Badge Specialization */}
           <View className="flex-row items-center gap-1.5 self-start rounded-full border border-primary/40 bg-primary/10 px-3 py-1">
             <View className="h-1.5 w-1.5 rounded-full bg-primary" />
-            <Text className="text-[10px] font-bold uppercase tracking-wide text-primary-hover">{formatLabel(specialization)}</Text>
+            <Text className="font-inter text-[10px] font-bold uppercase tracking-wide text-primary-hover">
+              {formatLabel(specialization)}
+            </Text>
           </View>
 
           {/* Pengalaman */}
@@ -103,13 +104,13 @@ export const TrainerCard = ({ data }: Props) => {
               size={13}
               color={MUTED}
             />
-            <Text className="text-xs text-text-body">{years} tahun pengalaman</Text>
+            <Text className="font-inter text-xs text-text-body">{years} years of experience</Text>
           </View>
 
           {/* Harga */}
           <View className="flex-row items-end gap-1">
-            <Text className="text-xl font-bold text-accent">{formatRupiah(rate)}</Text>
-            <Text className="mb-[3px] text-xs text-text-subdued">/ sesi</Text>
+            <Text className="font-inter text-xl font-bold text-accent">{formatRupiah(rate)}</Text>
+            <Text className="mb-[3px] font-inter text-xs text-text-subdued">/ session</Text>
           </View>
         </View>
       </View>
@@ -128,7 +129,7 @@ export const TrainerCard = ({ data }: Props) => {
           })
         }
       >
-        <Text className="text-sm font-bold text-background">Lihat Jadwal & Booking</Text>
+        <Text className="font-inter text-sm font-bold text-background">View Schedule & Book</Text>
         <Ionicons
           name="arrow-forward"
           size={16}
