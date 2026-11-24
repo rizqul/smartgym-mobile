@@ -13,7 +13,7 @@ import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { z } from "zod"
 
 const forgotPasswordSchema = z.object({
-  email: z.email("Masukkan alamat email yang valid")
+  email: z.email("Enter a valid email address")
 })
 
 type FormValues = z.infer<typeof forgotPasswordSchema>
@@ -37,17 +37,17 @@ export default function ForgotPassword() {
       })
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
-        title: "Kode OTP Terkirim",
-        textBody: `Silahkan periksa email ${data.email} untuk kode verifikasi.`
+        title: "OTP Code Sent",
+        textBody: `Please check ${data.email} for your verification code.`
       })
     } catch (error: any) {
       console.log("Error :" + error)
 
-      const message = error.response?.data?.message || "Gagal mengirim kode. Coba lagi."
+      const message = error.response?.data?.message || "Failed to send the code. Please try again."
 
       Toast.show({
         type: ALERT_TYPE.DANGER,
-        title: "Gagal",
+        title: "Failed",
         textBody: message,
         autoClose: 3000
       })
@@ -74,10 +74,10 @@ export default function ForgotPassword() {
 
           {/* Title and Description part */}
           <View className="flex w-[340] items-center justify-center gap-3">
-            <Text className="text-3xl font-bold text-text-body">Lupa Kata Sandi?</Text>
-            <Text className="w-full text-center text-sm leading-6 text-[#E2BFB0]">
-              Jangan khawatir! Kirim Email yang terdaftar di akun <Text className="font-bold text-[#FFB693]">SmartGym</Text> kamu untuk
-              mereset kata sandi.
+            <Text className="font-inter text-3xl font-bold text-text-body">Forgot Your Password?</Text>
+            <Text className="w-full text-center font-inter text-sm leading-6 text-[#E2BFB0]">
+              Don’t worry! Enter the email address registered to your <Text className="font-inter font-bold text-[#FFB693]">SmartGym</Text>{" "}
+              account to reset your password.
             </Text>
           </View>
         </View>
@@ -110,14 +110,14 @@ export default function ForgotPassword() {
         <View>
           <AuthButton
             onPress={handleSubmit(onSubmit)}
-            label="Kirim Tautan & Kode Verifikasi"
+            label="Send Verification Link & Code"
           />
         </View>
         <View className="flex items-center">
-          <Text className="text-sm text-[#E2BFB0]">
-            Ingat kata sandi?{" "}
+          <Text className="font-inter text-sm text-[#E2BFB0]">
+            Remember your password?{" "}
             <Link href={"/(auth)/login"}>
-              <Text className="font-semibold text-[#FFB693]">Kembali ke Halaman Masuk</Text>
+              <Text className="font-inter font-semibold text-[#FFB693]">Back to Login</Text>
             </Link>{" "}
           </Text>
         </View>

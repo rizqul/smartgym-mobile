@@ -39,19 +39,18 @@ export default function Login() {
       await refreshAuth()
     } catch (error: any) {
       console.log("=== LOGIN GAGAL ===")
+      console.log("=== LOGIN FAILED ===")
 
       if (error.request && !error.response) {
-        let errorMessage = "Terjadi kesalahan yang tidak diketahui"
-        let errorTitle = "Login Gagal"
+        let errorMessage = "An unknown error occurred"
+        let errorTitle = "Login Failed"
 
         if (error.request && !error.response) {
-          errorTitle = "Koneksi Bermasalah"
-          errorMessage = "Tidak dapat terhubung ke server. Pastikan internet Anda menyala dan server dapat diakses."
-        }
-        else if (error.response) {
-          errorMessage = error.response.data?.message || "Terjadi kesalahan pada server"
-        }
-        else {
+          errorTitle = "Connection Problem"
+          errorMessage = "Unable to connect to the server. Check your internet connection and make sure the server is available."
+        } else if (error.response) {
+          errorMessage = error.response.data?.message || "A server error occurred"
+        } else {
           errorMessage = error.message
         }
 
@@ -90,9 +89,9 @@ export default function Login() {
         </View>
         {/* Welcome Part */}
         <View className="flex items-center justify-center gap-3 font-inter">
-          <Text className="font-inter text-3xl font-bold text-text-body">Selamat Datang</Text>
+          <Text className="font-inter text-3xl font-bold text-text-body">Welcome</Text>
           <Text className="text-md w-full text-center font-inter leading-6 text-[#E2BFB0]">
-            Masuk ke akun SmartGym kamu untuk melanjutkan sesi latihan dan akses fasilitas gym pintar.
+            Sign in to your SmartGym account to continue your workout and access smart gym facilities.
           </Text>
         </View>
         {/* Input Part */}
@@ -114,7 +113,7 @@ export default function Login() {
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
-                  placeholder="Masukkan Email Anda"
+                  placeholder="Enter your email"
                   error={errors.email?.message}
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -133,12 +132,12 @@ export default function Login() {
                       color="#FF6B00"
                     />
                   }
-                  label2="Lupa Password?"
-                  label="Kata Sandi"
+                  label2="Forgot Password?"
+                  label="Password"
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
-                  placeholder="Masukkan Sandi Anda"
+                  placeholder="Enter your password"
                   error={errors.password?.message}
                   secureTextEntry={!showPassword}
                   accessory={
@@ -162,7 +161,7 @@ export default function Login() {
         <View>
           <AuthButton
             onPress={handleSubmit(onSubmit)}
-            label="Masuk Sekarang"
+            label="Sign In"
           />
         </View>
       </View>
