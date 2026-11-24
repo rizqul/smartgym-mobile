@@ -17,15 +17,15 @@ const resetPasswordSchema = z
   .object({
     password: z
       .string()
-      .min(8, "Panjang minimal 8 karakter")
-      .regex(/[A-Z]/, "Minimal ada 1 huruf kapital")
-      .regex(/[a-z]/, "Minimal ada 1 huruf kecil")
-      .regex(/[0-9]/, "Minimal ada 1 angka")
-      .regex(/[!@#$%^&*()_+]/, "Minimal memiliki 1 karakter dari !@#$%^&*()_+"),
+      .min(8, "At least 8 characters")
+      .regex(/[A-Z]/, "At least one uppercase letter")
+      .regex(/[a-z]/, "At least one lowercase letter")
+      .regex(/[0-9]/, "At least one number")
+      .regex(/[!@#$%^&*()_+]/, "At least one special character from !@#$%^&*()_+"),
     confirmPassword: z.string()
   })
   .refine((data) => data.confirmPassword === data.password, {
-    message: "Kata Sandi Tidak Sama"
+    message: "Passwords do not match"
   })
 
 type FormValues = z.infer<typeof resetPasswordSchema>
@@ -47,12 +47,12 @@ const ResetPassword = () => {
   const confirmPassword = watch("confirmPassword")
 
   const rules = [
-    { label: "Panjang minimal 8 karakter", ok: newPassword.length >= 8 },
-    { label: "Minimal ada 1 huruf kapital", ok: /[A-Z]/.test(newPassword) },
-    { label: "Minimal ada 1 huruf kecil", ok: /[a-z]/.test(newPassword) },
-    { label: "Minimal ada 1 angka", ok: /[0-9]/.test(newPassword) },
-    { label: "Minimal ada 1 karakter dari !@#$%^&*()_+", ok: /[!@#$%^&*()_+]/.test(newPassword) },
-    { label: "Kata sandi baru harus sama dengan konfirmasi kata sandi", ok: newPassword === confirmPassword }
+    { label: "At least 8 characters", ok: newPassword.length >= 8 },
+    { label: "At least one uppercase letter", ok: /[A-Z]/.test(newPassword) },
+    { label: "At least one lowercase letter", ok: /[a-z]/.test(newPassword) },
+    { label: "At least one number", ok: /[0-9]/.test(newPassword) },
+    { label: "At least one special character from !@#$%^&*()_+", ok: /[!@#$%^&*()_+]/.test(newPassword) },
+    { label: "New password must match the confirmation", ok: newPassword === confirmPassword }
   ]
 
   const onSubmit = async (data: FormValues) => {
@@ -60,23 +60,23 @@ const ResetPassword = () => {
       await resetPassword(data.password)
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
-        title: "Berhasil",
-        textBody: `Kata sandi berhasil diubah`
+        title: "Success",
+        textBody: "Your password has been changed successfully"
       })
       router.push("/(auth)/login")
     } catch (error: any) {
       if (error.response) {
-        const errorMessage = error.response.data?.message || "Terjadi kesalahan pada server"
+        const errorMessage = error.response.data?.message || "A server error occurred"
         Toast.show({
           type: ALERT_TYPE.DANGER,
-          title: "Verifikasi Gagal",
+          title: "Verification Failed",
           textBody: errorMessage
         })
       } else {
         Toast.show({
           type: ALERT_TYPE.DANGER,
-          title: "Verifikasi Gagal",
-          textBody: error.message
+          title: "Verification Failed",
+          textBody: "An unexpected error occurred"
         })
       }
     }
@@ -101,7 +101,7 @@ const ResetPassword = () => {
           {/* Title and Description part */}
           <View className="flex w-[340] items-center justify-center gap-3">
             <View className="flex w-[340] items-center justify-center gap-3">
-              <Text className="text-3xl font-bold text-text-body">Reset Password</Text>
+              <Text className="font-inter text-3xl font-bold text-text-body">Reset Password</Text>
             </View>
           </View>
         </View>
@@ -113,11 +113,11 @@ const ResetPassword = () => {
             name="password"
             render={({ field: { value, onChange, onBlur } }) => (
               <AuthTextField
-                label="Kata Sandi"
+                label="Password"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                placeholder="Masukkan Kata Sandi Baru"
+                placeholder="Enter a new password"
                 secureTextEntry={!showPassword}
                 accessory={
                   <Pressable
@@ -141,11 +141,11 @@ const ResetPassword = () => {
             name="confirmPassword"
             render={({ field: { value, onChange, onBlur } }) => (
               <AuthTextField
-                label="Konfirmasi Kata Sandi"
+                label="Confirm Password"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                placeholder="Ulangi Kata Sandi"
+                placeholder="Re-enter your password"
                 secureTextEntry={!showConfirmPassword}
                 accessory={
                   <Pressable
@@ -174,7 +174,7 @@ const ResetPassword = () => {
                   size={18}
                   color={ok ? "#FF6B00" : "#EF4444"}
                 />
-                <Text className="text-xs font-semibold text-[#A98A7D]">{label}</Text>
+                <Text className="font-inter text-xs font-semibold text-[#A98A7D]">{label}</Text>
               </View>
             ))}
           </View>
@@ -182,7 +182,7 @@ const ResetPassword = () => {
         <View>
           <AuthButton
             onPress={handleSubmit(onSubmit)}
-            label="Simpan Kata Sandi Baru"
+            label="Save New Password"
           />
         </View>
       </View>

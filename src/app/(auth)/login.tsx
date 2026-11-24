@@ -15,7 +15,7 @@ import { z } from "zod"
 
 const loginSchema = z.object({
   email: z.email("Enter a valid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters")
+  password: z.string().min(1, "Enter your password")
 })
 
 type FormValues = z.infer<typeof loginSchema>
@@ -38,29 +38,24 @@ export default function Login() {
 
       await refreshAuth()
     } catch (error: any) {
-      console.log("=== LOGIN GAGAL ===")
-      console.log("=== LOGIN FAILED ===")
+      let errorMessage = "An unknown error occurred"
+      let errorTitle = "Login Failed"
 
       if (error.request && !error.response) {
-        let errorMessage = "An unknown error occurred"
-        let errorTitle = "Login Failed"
-
-        if (error.request && !error.response) {
-          errorTitle = "Connection Problem"
-          errorMessage = "Unable to connect to the server. Check your internet connection and make sure the server is available."
-        } else if (error.response) {
-          errorMessage = error.response.data?.message || "A server error occurred"
-        } else {
-          errorMessage = error.message
-        }
-
-        Toast.show({
-          type: ALERT_TYPE.DANGER,
-          title: errorTitle,
-          textBody: errorMessage,
-          autoClose: 3000
-        })
+        errorTitle = "Connection Problem"
+        errorMessage = "Unable to connect to the server. Check your internet connection and make sure the server is available."
+      } else if (error.response) {
+        errorMessage = error.response.data?.message || "A server error occurred"
+      } else if (error.message) {
+        errorMessage = error.message
       }
+
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: errorTitle,
+        textBody: errorMessage,
+        autoClose: 3000
+      })
     }
   }
 

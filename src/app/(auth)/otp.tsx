@@ -14,7 +14,7 @@ import { OtpInput } from "react-native-otp-entry"
 import { z } from "zod"
 
 const otpSchema = z.object({
-  otp: z.string().min(6, "Panjang otp minimal 6 angka")
+  otp: z.string().min(6, "OTP must be at least 6 digits")
 })
 
 type FormValues = z.infer<typeof otpSchema>
@@ -56,15 +56,15 @@ const OtpResetPassword = () => {
       await forgotPassword(email)
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
-        title: "Kode Terkirim Ulang",
-        textBody: `Kode OTP baru telah dikirim ke ${email}.`
+        title: "Code Resent",
+        textBody: `A new OTP has been sent to ${email}.`
       })
       setSecondsLeft(RESEND_SECONDS) // Reset timer
     } catch (error: any) {
-      const message = error.response?.data?.message || "Gagal mengirim ulang kode. Coba lagi."
+      const message = error.response?.data?.message || "Failed to resend the code. Please try again."
       Toast.show({
         type: ALERT_TYPE.DANGER,
-        title: "Gagal",
+        title: "Failed",
         textBody: message,
         autoClose: 3000
       })
@@ -79,16 +79,16 @@ const OtpResetPassword = () => {
       router.push("/(auth)/reset-password")
     } catch (error: any) {
       if (error.response) {
-        const errorMessage = error.response.data?.message || "Terjadi kesalahan pada server"
+        const errorMessage = error.response.data?.message || "A server error occurred."
         Toast.show({
           type: ALERT_TYPE.DANGER,
-          title: "Verifikasi Gagal",
+          title: "Verification Failed",
           textBody: errorMessage
         })
       } else {
         Toast.show({
           type: ALERT_TYPE.DANGER,
-          title: "Verifikasi Gagal",
+          title: "Verification Failed",
           textBody: error.message
         })
       }
@@ -114,8 +114,8 @@ const OtpResetPassword = () => {
           {/* Title and Description part */}
           <View className="flex w-[340] items-center justify-center gap-3">
             <View className="flex w-[340] items-center justify-center gap-3">
-              <Text className="text-3xl font-bold text-text-body">OTP Verification</Text>
-              {email && <Text className="text-sm text-[#E2BFB0]">Dikirim ke: {email}</Text>}
+              <Text className="font-inter text-3xl font-bold text-text-body">OTP Verification</Text>
+              {email && <Text className="font-inter text-sm text-[#E2BFB0]">Sent to: {email}</Text>}
             </View>
           </View>
         </View>
@@ -128,14 +128,14 @@ const OtpResetPassword = () => {
               disabled={isResending}
               className="flex-row items-center gap-2 rounded-full bg-white/10 px-4 py-2"
               accessibilityRole="button"
-              accessibilityLabel="Kirim ulang kode"
+              accessibilityLabel="Resend code"
             >
               <MaterialIcons
                 name="refresh"
                 size={16}
                 color="#FF6B00"
               />
-              <Text className="text-xs font-semibold text-[#FFB693]">Kirim ulang kode</Text>
+              <Text className="font-inter text-xs font-semibold text-[#FFB693]">Resend code</Text>
             </Pressable>
           ) : (
             <View className="flex-row items-center gap-2 rounded-full bg-white/10 px-4 py-2">
@@ -144,9 +144,9 @@ const OtpResetPassword = () => {
                 size={16}
                 color="#FF6B00"
               />
-              <Text className="text-xs text-[#E2BFB0]">Kirim ulang kode dalam</Text>
+              <Text className="font-inter text-xs text-[#E2BFB0]">Resend code in</Text>
               <Text
-                className="text-xs font-bold text-[#FFC24B]"
+                className="font-inter text-xs font-bold text-[#FFC24B]"
                 style={{ fontVariant: ["tabular-nums"] }}
               >
                 {formatTime(secondsLeft)}
@@ -202,7 +202,7 @@ const OtpResetPassword = () => {
         <View>
           <AuthButton
             onPress={handleSubmit(onSubmit)}
-            label="Verifikasi dan Lanjutkan"
+            label="Verify and Continue"
           />
         </View>
       </View>

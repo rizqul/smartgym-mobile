@@ -29,7 +29,7 @@ export default function AIWorkout() {
       <View className="flex-row items-center justify-between border-b border-border/40 px-5 py-4">
         <View className="flex-row items-center gap-3">
           <View className="h-2 w-2 rounded-full bg-primary" />
-          <Text className="text-lg font-bold text-text-primary">AI Trainer Hub</Text>
+          <Text className="font-inter text-xl font-bold text-text-primary">AI Trainer Hub</Text>
         </View>
         <MaterialCommunityIcons
           name="robot-outline"
@@ -45,9 +45,9 @@ export default function AIWorkout() {
         {/* BANNER */}
         <View className="mb-6 flex-row items-center justify-between rounded-xl border border-border/50 bg-surface p-4">
           <View className="mr-4 flex-1">
-            <Text className="mb-1 text-sm font-bold text-text-primary">Buat Plan Baru</Text>
-            <Text className="text-[11px] text-text-secondary">
-              Susun jadwal latihan yang disesuaikan dengan target dan kondisi alat gym hari ini.
+            <Text className="mb-1 font-inter text-base font-bold text-text-primary">Create a New Plan</Text>
+            <Text className="font-inter text-xs text-text-secondary">
+              Build a workout schedule tailored to your goals and the gym equipment available today.
             </Text>
           </View>
           <TouchableOpacity
@@ -59,11 +59,11 @@ export default function AIWorkout() {
               size={16}
               color="#111317"
             />
-            <Text className="text-xs font-bold text-background">Buat Plan</Text>
+            <Text className="font-inter text-sm font-bold text-background">Create Plan</Text>
           </TouchableOpacity>
         </View>
 
-        <Text className="mb-4 text-sm font-bold text-text-primary">Plan Terakhir</Text>
+        <Text className="mb-4 font-inter text-base font-bold text-text-primary">Recent Plans</Text>
 
         {plan ? (
           <TouchableOpacity
@@ -72,19 +72,19 @@ export default function AIWorkout() {
             onPress={() => router.push("/(gym)/aIWorkout/result")}
           >
             <Text
-              className="text-base font-bold text-text-primary"
+              className="font-inter text-lg font-bold text-text-primary"
               numberOfLines={2}
             >
               {plan.title}
             </Text>
             <Text
-              className="text-xs text-text-secondary"
+              className="font-inter text-sm text-text-secondary"
               numberOfLines={2}
             >
               {plan.goal}
             </Text>
             <View className="flex-row items-center justify-end gap-1 border-t border-border pt-3">
-              <Text className="text-xs font-bold text-primary-hover">Lihat Detail</Text>
+              <Text className="font-inter text-sm font-bold text-primary-hover">View Details</Text>
               <Ionicons
                 name="arrow-forward"
                 size={12}
@@ -99,7 +99,7 @@ export default function AIWorkout() {
               size={48}
               color="#6B7280"
             />
-            <Text className="text-sm text-text-secondary">Belum ada plan. Buat plan pertama kamu!</Text>
+            <Text className="text-center font-inter text-base text-text-secondary">No plans yet. Create your first plan!</Text>
           </View>
         )}
       </ScrollView>
