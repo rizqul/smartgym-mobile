@@ -8,7 +8,8 @@
     "scheme": "smartgymmobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.anonymous.smartgymmobile"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +19,11 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.smartgymmobile"
+      "package": "com.anonymous.smartgymmobile",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "server",
@@ -30,9 +35,9 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "backgroundColor": "#FF6B00",
+          "image": "./assets/images/logo.png",
+          "imageWidth": 100
         }
       ],
       "expo-secure-store",
