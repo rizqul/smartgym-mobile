@@ -1,11 +1,21 @@
+import { FilterSelect } from "@/components/gym/profile/filterSelect"
 import { TransactionCard } from "@/components/gym/profile/transactionCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
+import {
+  DEFAULT_FILTER,
+  PERIOD_OPTIONS,
+  SORT_OPTIONS,
+  STATUS_OPTIONS,
+  TYPE_OPTIONS,
+  TransactionFilterState,
+  filterAndSortTransactions
+} from "@/data/helperTransaction/transactionFilter"
 import { fetchTransactions } from "@/store/slice/transactionSlice"
 import { AppDispatch, RootState } from "@/store/store"
 import { Ionicons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
-import React, { useEffect } from "react"
-import { ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import React, { useEffect, useMemo, useState } from "react"
+import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
 
@@ -13,30 +23,22 @@ export default function TransactionHistory() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const { result } = useSelector((state: RootState) => state.transaction)
+  const [filter, setFilter] = useState<TransactionFilterState>(DEFAULT_FILTER)
 
   useEffect(() => {
     dispatch(fetchTransactions())
   }, [])
 
-  const transaction = result?.data
+  const transactions = useMemo(() => filterAndSortTransactions([...(result?.data ?? [])], filter), [result?.data, filter])
 
-  // map by date
-  // const groupedTransactions = DUMMYTRANSACTIONS.reduce(
-  //   (acc, curr) => {
-  //     const date = new Date(curr.created_at)
-  //     const monthYear = date.toLocaleDateString("id-ID", { month: "long", year: "numeric" }).toUpperCase()
+  // Sort is not counted as a "filter"
+  const hasActiveFilter = filter.type !== "ALL" || filter.period !== "ALL" || filter.status !== "ALL"
 
-  //     if (!acc[monthYear]) {
-  //       acc[monthYear] = []
-  //     }
-  //     acc[monthYear].push(curr)
-  //     return acc
-  //   },
-  //   {} as Record<string, TransactionData[]>
-  // )
+  const update = <K extends keyof TransactionFilterState>(key: K, value: TransactionFilterState[K]) =>
+    setFilter((prev) => ({ ...prev, [key]: value }))
 
   const handleShowDetail = (id: string) => {
-    router.push({ pathname: "/(gym)/profile/detailHistory", params: { id } })
+    router.push({ pathname: "/(gym)/profile/transactionDetail", params: { id } })
   }
 
   return (
@@ -44,92 +46,97 @@ export default function TransactionHistory() {
       <StatusBar barStyle="light-content" />
 
       {/* HEADER */}
-      <HeaderNavigation label="Riwayat Transaksi" />
+      <HeaderNavigation label="Transaction History" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="px-5 pt-4 gap-3"
+        contentContainerClassName="px-5 pt-4 pb-10 gap-3"
       >
         {/* TITLE SECTION */}
         <View>
-          <Text className="mb-1 text-2xl font-bold text-text-primary">Riwayat pembayaran</Text>
-          <Text className="text-xs text-text-secondary">Booking trainer dan membership dalam satu tempat.</Text>
+          <Text className="mb-1 font-inter text-2xl font-bold text-text-primary">Payment history</Text>
+          <Text className="font-inter text-sm text-text-secondary">Trainer bookings and memberships in one place.</Text>
         </View>
 
-        {/* FILTER TABS */}
+        {/* TYPE TABS */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerClassName="gap-2"
         >
-          <TouchableOpacity className="rounded-lg bg-primary px-4 py-2">
-            <Text className="text-xs font-bold text-white">Semua</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="rounded-lg border border-border/50 bg-surface px-4 py-2">
-            <Text className="text-xs font-semibold text-text-secondary">Booking Trainer</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="rounded-lg border border-border/50 bg-surface px-4 py-2">
-            <Text className="text-xs font-semibold text-text-secondary">Membership</Text>
-          </TouchableOpacity>
-        </ScrollView>
-
-        {/* DROPDOWN FILTERS (MOCKUP) */}
-        <View className="flex-row gap-3">
-          <TouchableOpacity className="flex-1 flex-row items-center justify-between rounded-xl border border-border/50 bg-surface px-3 py-2.5">
-            <Text className="text-xs font-semibold text-text-primary">Semua periode</Text>
-            <Ionicons
-              name="chevron-down"
-              size={14}
-              color="#B8BDC7"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity className="flex-1 flex-row items-center justify-between rounded-xl border border-border/50 bg-surface px-3 py-2.5">
-            <Text className="text-xs font-semibold text-text-primary">Semua status</Text>
-            <Ionicons
-              name="chevron-down"
-              size={14}
-              color="#B8BDC7"
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* TRANSACTION LIST (BERDASARKAN HASIL GROUPING) */}
-        <View className="gap-4">
-          {/* {Object.entries(groupedTransactions).map(([monthYear, items], index) => (
-            <View
-              key={index}
-              className="mb-6 gap-3"
-            >
-              {/* Group Header */}
-          {/* <View className="flex-row items-center justify-between">
-                <Text className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{monthYear}</Text>
-                <Text className="text-[10px] text-text-secondary">{items.length} transaksi</Text>
-              </View> */}
-
-          {/* Group Items */}
-          {/* {items.map((item) => (
-                <TransactionCard
-                  key={item.id}
-                  item={item}
-                  showDetail={() => {
-                    handleShowDetail(String(item.id))
-                  }}
-                />
-              ))}
-            </View> */}
-          {/* ))}} */}
-          {transaction?.map((item) => {
+          {TYPE_OPTIONS.map((opt) => {
+            const active = filter.type === opt.value
             return (
-              <TransactionCard
-                key={item.id}
-                item={item}
-                showDetail={() => {
-                  handleShowDetail(item.orderId)
-                }}
-              />
+              <TouchableOpacity
+                key={opt.value}
+                onPress={() => update("type", opt.value)}
+                className={`rounded-lg px-4 py-2 ${active ? "bg-primary" : "border border-border/50 bg-surface"}`}
+              >
+                <Text className={`font-inter text-sm ${active ? "font-bold text-white" : "font-semibold text-text-secondary"}`}>
+                  {opt.label}
+                </Text>
+              </TouchableOpacity>
             )
           })}
+        </ScrollView>
+
+        {/* PERIOD & STATUS FILTERS */}
+        <View className="flex-row gap-3">
+          <FilterSelect
+            className="flex-1"
+            title="Filter by period"
+            value={filter.period}
+            options={PERIOD_OPTIONS}
+            onChange={(v) => update("period", v)}
+            isActive={filter.period !== "ALL"}
+          />
+          <FilterSelect
+            className="flex-1"
+            title="Filter by status"
+            value={filter.status}
+            options={STATUS_OPTIONS}
+            onChange={(v) => update("status", v)}
+            isActive={filter.status !== "ALL"}
+          />
         </View>
+
+        {/* RESULT COUNT, RESET & SORT */}
+        <View className="w-full items-center justify-between">
+          <FilterSelect
+            title="Sort by"
+            icon="swap-vertical"
+            value={filter.sort}
+            options={SORT_OPTIONS}
+            onChange={(v) => update("sort", v)}
+          />
+        </View>
+
+        {/* TRANSACTION LIST */}
+        <FlatList
+          data={transactions}
+          keyExtractor={(item) => String(item.id)}
+          scrollEnabled={false}
+          ItemSeparatorComponent={() => <View className="h-4" />}
+          renderItem={({ item }) => (
+            <TransactionCard
+              item={item}
+              showDetail={() => handleShowDetail(item.orderId)}
+            />
+          )}
+          ListEmptyComponent={
+            <View className="items-center gap-2 py-16">
+              <Ionicons
+                name="receipt-outline"
+                size={40}
+                color="#B8BDC7"
+              />
+              <Text className="font-inter text-base font-bold text-text-primary">No transactions found</Text>
+              <Text className="text-center font-inter text-sm text-text-secondary">
+                {hasActiveFilter ? "Try changing or resetting your filters." : "Your transactions will appear here."}
+              </Text>
+            </View>
+          }
+        />
       </ScrollView>
     </SafeAreaView>
   )

@@ -1,8 +1,9 @@
 import { refreshSession, setSessionExpiredHandler } from "@/service/api"
-import { LogoutAPI } from "@/service/auth.service"
+import { logoutAPI } from "@/service/auth.service"
 import { getProfile } from "@/service/user.service"
 import { User } from "@/type/user.type"
 import { clearSession, isTokenExpired, USER_DATA_KEY } from "@/utils/authHelper"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 import * as SecureStore from "expo-secure-store"
 import React, { createContext, useContext, useEffect, useState } from "react"
 
@@ -72,7 +73,7 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
       await clearSession()
       setUser(null)
       setIsLoggedIn(false)
-      console.log(error);
+      console.log(error)
     } finally {
       setIsLoading(false)
     }
@@ -80,11 +81,12 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
 
   const logout = async () => {
     try {
-      await LogoutAPI()
+      await logoutAPI()
     } catch (error) {
       console.log("Error :" + error)
     } finally {
       await clearSession()
+      AsyncStorage.clear()
       setUser(null)
       setIsLoggedIn(false)
     }

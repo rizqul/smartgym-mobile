@@ -1,166 +1,30 @@
 import { TransactionActionButton } from "@/components/gym/payment/transactionActionButton"
-import { TransactionInfoRow } from "@/components/gym/payment/transactionInfoRow"
+import { TransactionActions } from "@/components/gym/profile/transactionActions"
+import { TransactionCountdownCard } from "@/components/gym/profile/transactionCountdownCard"
+import { TransactionHero } from "@/components/gym/profile/transactionHero"
+import { TransactionInfoCard } from "@/components/gym/profile/transactionInfoCard"
+import { TransactionPaymentBreakdown } from "@/components/gym/profile/transactionPaymentBreakdown"
+import { TransactionSummaryCard } from "@/components/gym/profile/transactionSummaryCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
-import { cancelTransaction, checkTransactionStatus, getTransactionById } from "@/service/transaction.service"
-import { TransactionsResponse, TransactionStatus } from "@/type/Transaction.type"
-import { formatDateTime, formatRupiah } from "@/utils/FormaterHelper"
+import { HERO } from "@/data/helperTransaction/transactionHero"
+
+import { useTransactionDetail } from "@/hooks/useTransactionDetail"
 import { getStatusUI } from "@/utils/transactionHelper"
-import { Ionicons } from "@expo/vector-icons"
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
-import React, { useCallback, useEffect, useRef, useState } from "react"
-import { ActivityIndicator, Alert, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
-import { ALERT_TYPE, Toast } from "react-native-alert-notification"
+import { useRouter } from "expo-router"
+import React from "react"
+import { ActivityIndicator, ScrollView, StatusBar, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
-type HeroConfig = {
-  icon: React.ComponentProps<typeof Ionicons>["name"]
-  title: string
-  outer: string
-  mid: string
-  inner: string
-}
-
-const HERO: Record<TransactionStatus, HeroConfig> = {
-  SUCCESS: { icon: "checkmark", title: "Pembayaran berhasil!", outer: "bg-primary/5", mid: "bg-primary/20", inner: "bg-primary" },
-  PENDING: { icon: "time", title: "Menunggu Pembayaran", outer: "bg-secondary/5", mid: "bg-secondary/20", inner: "bg-secondary" },
-  PROCESS: { icon: "sync", title: "Pembayaran Diproses", outer: "bg-info/5", mid: "bg-info/20", inner: "bg-info" },
-  CHALLENGE: { icon: "shield-checkmark", title: "Sedang Ditinjau", outer: "bg-warning/5", mid: "bg-warning/20", inner: "bg-warning" },
-  FAILURE: { icon: "close", title: "Pembayaran Gagal", outer: "bg-danger/5", mid: "bg-danger/20", inner: "bg-danger" },
-  EXPIRED: {
-    icon: "hourglass",
-    title: "Pembayaran Kedaluwarsa",
-    outer: "bg-text-muted/5",
-    mid: "bg-text-muted/20",
-    inner: "bg-text-muted"
-  },
-  CANCELLED: { icon: "close", title: "Transaksi Dibatalkan", outer: "bg-text-muted/5", mid: "bg-text-muted/20", inner: "bg-text-muted" }
-}
-
-
-const formatCountdown = (totalSeconds: number) => {
-  const h = Math.floor(totalSeconds / 3600)
-  const m = Math.floor((totalSeconds % 3600) / 60)
-  const s = totalSeconds % 60
-  return [h, m, s].map((n) => String(n).padStart(2, "0")).join(":")
-}
-
-// ================= SCREEN =================
 export default function TransactionDetail() {
   const router = useRouter()
-  const { id } = useLocalSearchParams<{ id: string }>()
-  const [data, setData] = useState<TransactionsResponse | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [checking, setChecking] = useState(false)
-  const [cancelling, setCancelling] = useState(false)
-  const [now, setNow] = useState(() => Date.now())
-  const expiryChecked = useRef(false)
-
-  const isPending = data?.status === "PENDING"
-
-  const load = useCallback(async (): Promise<TransactionsResponse | null> => {
-    try {
-      const res = await getTransactionById(id)
-      setData(res.data)
-      setError(null)
-      return res.data
-    } catch (e: any) {
-      setError(e.response?.data?.message || "Gagal memuat transaksi.")
-      return null
-    } finally {
-      setLoading(false)
-    }
-  }, [id])
-
-  useFocusEffect(
-    useCallback(() => {
-      load()
-    }, [load])
-  )
-
-  useEffect(() => {
-    if (!isPending) return
-    setNow(Date.now())
-    const timer = setInterval(() => setNow(Date.now()), 1000)
-    return () => clearInterval(timer)
-  }, [isPending])
-
-  const remaining = data?.expiredAt ? Math.max(0, Math.floor((new Date(data.expiredAt).getTime() - now) / 1000)) : 0
-  const isTimeUp = isPending && !!data?.expiredAt && remaining === 0
-
-  useEffect(() => {
-    if (isTimeUp && !expiryChecked.current) {
-      expiryChecked.current = true
-      void handleCheckStatus(true)
-    }
-  }, [isTimeUp])
-
-  const handleCheckStatus = async (silent = false) => {
-    if (!silent) setChecking(true)
-    let message: string | null = null
-    try {
-      await checkTransactionStatus(data?.orderId!)
-    } catch (e: any) {
-      message = e.response?.data?.message || "Gagal memeriksa status. Coba lagi."
-    }
-
-    const fresh = await load()
-
-    if (!silent) {
-      setChecking(false)
-      if (fresh?.status === "SUCCESS") {
-        Toast.show({ type: ALERT_TYPE.SUCCESS, title: "Berhasil", textBody: "Pembayaran sudah diterima.", autoClose: 3000 })
-      } else if (message) {
-        Toast.show({ type: ALERT_TYPE.WARNING, title: "Status Transaksi", textBody: message, autoClose: 3000 })
-      } else if (fresh?.status === "PENDING") {
-        Toast.show({ type: ALERT_TYPE.WARNING, title: "Belum Ada Pembayaran", textBody: "Pembayaran belum diterima.", autoClose: 3000 })
-      }
-    }
-  }
-
-  const handlePay = () => {
-    if (!data?.paymentUrl) {
-      Toast.show({ type: ALERT_TYPE.DANGER, title: "Gagal", textBody: "Tautan pembayaran tidak tersedia.", autoClose: 3000 })
-      return
-    }
-    router.push({
-      pathname: "/(gym)/dashboard/paymentScreen",
-      params: {
-        paymentUrl: data.paymentUrl,
-        type: data.type === "PT_BOOKING" ? "pt-booking" : "membership"
-      }
-    })
-  }
-
-  const handleCancel = () => {
-    Alert.alert("Batalkan transaksi?", "Transaksi yang dibatalkan tidak bisa dibayar lagi.", [
-      { text: "Tidak", style: "cancel" },
-      {
-        text: "Ya, batalkan",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            setCancelling(true)
-            console.log(data?.orderId)
-            await cancelTransaction(data?.orderId!, data?.token!)
-            Toast.show({ type: ALERT_TYPE.SUCCESS, title: "Berhasil", textBody: "Transaksi dibatalkan.", autoClose: 3000 })
-            await load()
-          } catch (e: any) {
-            const message = e.response?.data?.message || "Gagal membatalkan transaksi. Coba lagi."
-            Toast.show({ type: ALERT_TYPE.DANGER, title: "Gagal", textBody: message, autoClose: 3000 })
-          } finally {
-            setCancelling(false)
-          }
-        }
-      }
-    ])
-  }
+  const { data, loading, error, checking, cancelling, isPending, remaining, isTimeUp, retry, handleCheckStatus, handlePay, handleCancel } =
+    useTransactionDetail()
 
   if (loading) {
     return (
       <SafeAreaView className="flex-1 bg-background">
         <StatusBar barStyle="light-content" />
-        <HeaderNavigation label="Detail Transaksi" />
+        <HeaderNavigation label="Transaction Details" />
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator color="#FF6B00" />
         </View>
@@ -172,16 +36,13 @@ export default function TransactionDetail() {
     return (
       <SafeAreaView className="flex-1 bg-background">
         <StatusBar barStyle="light-content" />
-        <HeaderNavigation label="Detail Transaksi" />
+        <HeaderNavigation label="Transaction Details" />
         <View className="flex-1 items-center justify-center gap-4 px-8">
-          <Text className="text-center text-sm text-text-secondary">{error ?? "Transaksi tidak ditemukan."}</Text>
+          <Text className="text-center font-inter text-sm text-text-secondary">{error ?? "Transaction not found."}</Text>
           <TransactionActionButton
-            label="Coba lagi"
+            label="Try again"
             variant="outline"
-            onPress={() => {
-              setLoading(true)
-              load()
-            }}
+            onPress={retry}
           />
         </View>
       </SafeAreaView>
@@ -191,7 +52,7 @@ export default function TransactionDetail() {
   const hero = HERO[data.status]
   const statusUI = getStatusUI(data.status)
   const isSuccess = data.status === "SUCCESS"
-  const typeLabel = data.type === "PT_BOOKING" ? "Booking Trainer" : "Membership"
+  const typeLabel = data.type === "PT_BOOKING" ? "Trainer Booking" : "Membership"
   const canContinue = isPending && !isTimeUp
   const canCheck = isPending || data.status === "PROCESS" || data.status === "CHALLENGE"
 
@@ -199,170 +60,50 @@ export default function TransactionDetail() {
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
 
-      {/* HEADER */}
-      <HeaderNavigation label="Detail Transaksi" />
+      <HeaderNavigation label="Transaction Details" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerClassName="px-5 pt-8 pb-10 gap-4 items-center"
       >
-        {/* HERO */}
-        <View className="w-full items-center justify-center">
-          <View className={`mb-2 h-32 w-32 items-center justify-center rounded-full ${hero.outer}`}>
-            <View className={`h-24 w-24 items-center justify-center rounded-full ${hero.mid}`}>
-              <View className={`h-16 w-16 items-center justify-center rounded-full border-[3px] border-surface ${hero.inner}`}>
-                <Ionicons
-                  name={hero.icon}
-                  size={32}
-                  color="#1A1D24"
-                />
-              </View>
-            </View>
-          </View>
+        <TransactionHero hero={hero} />
 
-          <Text className="text-center text-3xl font-extrabold text-white">{hero.title}</Text>
-        </View>
-
-        {/* HITUNG MUNDUR (hanya PENDING) */}
         {isPending && data.expiredAt ? (
-          <View className="w-full items-center rounded-2xl border border-secondary/30 bg-secondary/10 p-4">
-            {isTimeUp ? (
-              <>
-                <Text className="text-sm font-bold text-secondary">Waktu pembayaran habis</Text>
-                <Text className="mt-1 text-center text-[11px] text-text-secondary">Memeriksa status terbaru transaksi kamu…</Text>
-              </>
-            ) : (
-              <>
-                <Text className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">Selesaikan pembayaran dalam</Text>
-                <Text className="mt-1 text-3xl font-extrabold text-secondary">{formatCountdown(remaining)}</Text>
-                <Text className="mt-1 text-[11px] text-text-secondary">Batas waktu: {formatDateTime(data.expiredAt)}</Text>
-              </>
-            )}
-          </View>
+          <TransactionCountdownCard
+            expiredAt={data.expiredAt}
+            remaining={remaining}
+            isTimeUp={isTimeUp}
+          />
         ) : null}
 
-        {/* RINGKASAN */}
-        <View className="w-full rounded-2xl border border-border/50 bg-card p-5">
-          <Text className={`mb-3 text-[10px] font-bold uppercase tracking-widest ${statusUI.textColor}`}>
-            {typeLabel} • {statusUI.label}
-          </Text>
-          <Text className="mb-4 text-2xl font-bold text-text-primary">{data.name}</Text>
-          <Text className="text-3xl font-extrabold text-primary">{formatRupiah(data.amount)}</Text>
-        </View>
+        <TransactionSummaryCard
+          typeLabel={typeLabel}
+          statusLabel={statusUI.label}
+          statusTextColor={statusUI.textColor}
+          name={data.name}
+          amount={data.amount}
+        />
 
-        {/* INFORMASI TRANSAKSI */}
-        <View className="w-full rounded-2xl border border-border/50 bg-card p-5">
-          <Text className="mb-4 text-sm font-bold text-text-primary">Informasi transaksi</Text>
+        <TransactionInfoCard
+          data={data}
+          statusLabel={statusUI.label}
+          statusTextColor={statusUI.textColor}
+        />
 
-          <View className="gap-3">
-            <TransactionInfoRow
-              label="ID transaksi"
-              value={data.orderId}
-            />
-            <TransactionInfoRow
-              label="Tanggal transaksi"
-              value={formatDateTime(data.createdAt)}
-            />
-            {data.paidAt ? (
-              <TransactionInfoRow
-                label="Tanggal dibayar"
-                value={formatDateTime(data.paidAt)}
-              />
-            ) : null}
-            <TransactionInfoRow
-              label="Metode pembayaran"
-              value={data.paymentType ? String(data.paymentType) : "-"}
-            />
-            <TransactionInfoRow
-              label="Status"
-              value={statusUI.label}
-              valueClassName={statusUI.textColor}
-            />
-          </View>
-        </View>
+        <TransactionPaymentBreakdown amount={data.amount} />
 
-        {/* RINCIAN PEMBAYARAN */}
-        <View className="w-full rounded-2xl border border-border/50 bg-card p-5">
-          <Text className="mb-4 text-sm font-bold text-text-primary">Rincian pembayaran</Text>
-
-          <View className="gap-2">
-            <View className="flex-row items-center justify-between">
-              <Text className="text-xs text-text-secondary">Harga paket</Text>
-              <Text className="text-xs font-bold text-text-primary">{formatRupiah(data.amount)}</Text>
-            </View>
-            <View className="mt-2 flex-row items-center justify-between border-t border-border/30 pt-3">
-              <Text className="text-sm font-bold text-text-primary">Total pembayaran</Text>
-              <Text className="text-sm font-bold text-text-primary">{formatRupiah(data.amount)}</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* INFO TAMBAHAN PER STATUS */}
-        {isSuccess ? (
-          <View className="w-full rounded-2xl border border-success/20 bg-[#1A2E22] p-4">
-            <Text className="mb-1 text-sm font-bold text-success">Pembayaran tercatat</Text>
-            <Text className="text-xs leading-5 text-[#74C69D]">
-              Gunakan Digital Pass dari menu Pass. Jangan gunakan bukti transaksi sebagai QR masuk.
-            </Text>
-          </View>
-        ) : null}
-
-        {data.status === "PROCESS" || data.status === "CHALLENGE" ? (
-          <View className="w-full rounded-2xl border border-border/50 bg-surface p-4">
-            <Text className="text-xs leading-5 text-text-secondary">
-              {data.status === "PROCESS"
-                ? "Pembayaranmu sedang diproses. Tekan Cek Status untuk melihat perkembangan terbaru."
-                : "Transaksi sedang ditinjau oleh penyedia pembayaran. Tekan Cek Status untuk melihat hasilnya."}
-            </Text>
-          </View>
-        ) : null}
-
-        {/* TOMBOL AKSI */}
-        <View className="w-full gap-3">
-          {isSuccess ? (
-            <TouchableOpacity
-              className="w-full items-center justify-center rounded-xl bg-primary py-4"
-            // onPress={() => router.push("/(gym)/navigation/pass")} // TODO: arahkan ke halaman Digital Pass
-            >
-              <Text className="text-sm font-bold text-[#111317]">Lihat Digital Pass</Text>
-            </TouchableOpacity>
-          ) : null}
-
-          {canContinue ? (
-            <TransactionActionButton
-              label="Lanjutkan Pembayaran"
-              variant="secondary"
-              onPress={handlePay}
-              disabled={cancelling}
-            />
-          ) : null}
-
-          {canCheck ? (
-            <TransactionActionButton
-              label="Cek Status"
-              variant="outline"
-              onPress={() => handleCheckStatus()}
-              loading={checking}
-              disabled={cancelling}
-            />
-          ) : null}
-
-          {isPending ? (
-            <TransactionActionButton
-              label="Batalkan Transaksi"
-              variant="danger"
-              onPress={handleCancel}
-              loading={cancelling}
-              disabled={checking}
-            />
-          ) : (
-            <TransactionActionButton
-              label="Kembali ke riwayat transaksi"
-              variant="outline"
-              onPress={() => router.back()}
-            />
-          )}
-        </View>
+        <TransactionActions
+          isSuccess={isSuccess}
+          isPending={isPending}
+          canContinue={canContinue}
+          canCheck={canCheck}
+          checking={checking}
+          cancelling={cancelling}
+          onPay={handlePay}
+          onCheck={() => handleCheckStatus()}
+          onCancel={handleCancel}
+          onBack={() => router.dismissTo("/(gym)/profile/historyTransaction")}
+        />
       </ScrollView>
     </SafeAreaView>
   )

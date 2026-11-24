@@ -10,7 +10,7 @@ const REDIRECT_PATHS = {
 } as const
 
 export default function PaymentScreen() {
-  const { paymentUrl, type } = useLocalSearchParams<{ paymentUrl: string; type: keyof typeof REDIRECT_PATHS }>()
+  const { paymentUrl, type, orderId } = useLocalSearchParams<{ paymentUrl: string; type: keyof typeof REDIRECT_PATHS; orderId: string }>()
   const router = useRouter()
   const redirectPath = REDIRECT_PATHS[type ?? "membership"]
 
@@ -32,7 +32,7 @@ export default function PaymentScreen() {
             Alert.alert("Gagal", "Pembayaran tidak berhasil atau sudah kedaluwarsa.")
           }
 
-          router.dismissTo("/(gym)/navigation/profile")
+          router.dismissTo({ pathname: "/(gym)/profile/transactionDetail", params: { id: orderId } })
           return false
         }}
       />
