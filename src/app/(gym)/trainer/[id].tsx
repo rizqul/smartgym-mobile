@@ -21,6 +21,21 @@ const getSlotStatus = (slot: TrainerSlot, now: number): string => {
   return slot.status
 }
 
+const formatTime = (iso: string): string => {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return iso.substring(11, 16)
+  return d
+    .toLocaleTimeString("id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "Asia/Jakarta"
+    })
+    .replace(".", ":")
+}
+
+const formatRange = (start: string, end: string) => `${formatTime(start)} - ${formatTime(end)}`
+
 export default function TrainerProfile() {
   const { id }: { id: string } = useLocalSearchParams()
   const router = useRouter()
@@ -275,7 +290,7 @@ export default function TrainerProfile() {
           {/* Time Slots List */}
           <View className="gap-3">
             {slots.map((slot) => {
-              const time = `${slot.startTime.substring(11, 16)} - ${slot.endTime.substring(11, 16)}`
+              const time = formatRange(slot.startTime, slot.endTime)
               const isAvailable = slot.status === "AVAILABLE"
               const isSelected = selectedTime?.id === slot.id && isAvailable
 
@@ -328,7 +343,7 @@ export default function TrainerProfile() {
           <View>
             <Text className="mb-1 text-[9px] font-bold uppercase tracking-widest text-text-secondary">Sesi Dipilih</Text>
             <Text className="mb-0.5 text-sm font-bold text-text-primary">
-              {dateText} • {`${selectedTime.startTime.substring(11, 16)} - ${selectedTime.endTime.substring(11, 16)}`}
+              {dateText} • {formatRange(selectedTime.startTime, selectedTime.endTime)}
             </Text>
           </View>
           <TouchableOpacity
