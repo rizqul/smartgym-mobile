@@ -1,3 +1,4 @@
+import { formatRupiah } from "@/utils/FormaterHelper"
 import { LinearGradient } from "expo-linear-gradient"
 import React from "react"
 import { Pressable, Text, View } from "react-native"
@@ -96,7 +97,7 @@ export default function PlanCard({
         <View className="flex-row items-end justify-between">
           <View className="gap-1">
             <Text className="text-sm text-text-warm">Harga paket</Text>
-            <Text className="text-4xl font-bold text-accent">{price}</Text>
+            <Text className="text-3xl font-bold text-accent">{formatRupiah(Number(price.replace("Rp ", "")))}</Text>
           </View>
           <View className="items-end gap-1">
             <Text className="text-sm text-text-warm">Masa penambahan</Text>

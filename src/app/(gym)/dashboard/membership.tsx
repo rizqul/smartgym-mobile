@@ -24,10 +24,13 @@ const Membership = () => {
   }, [])
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <HeaderNavigation label="Berlangganan" />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="gap-5  px-6 py-4">
+    <SafeAreaView className="flex-1 bg-background font-inter">
+      <HeaderNavigation label="Membership" />
+      <ScrollView
+        className="font-inter"
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="gap-5 px-6 py-4 font-inter">
           <MembershipHeader />
 
           <MembershipPaymentInfo
@@ -45,19 +48,19 @@ const Membership = () => {
               { label: "SEABANK", tone: "danger" }
             ]}
           />
-          <View className="items-center gap-4">
+          <View className="items-center gap-4 font-inter">
             {weekly?.map((val) => {
               return (
                 <PlanCard
                   variant="popular"
                   key={val.id}
                   badge={val.type}
-                  status="Aktif"
+                  status="Active"
                   name={val.name}
                   description={val.description}
                   price={`Rp ${val.price.toString()}`}
-                  duration={`${val.duration} hari`}
-                  buttonLabel="Pilih Paket"
+                  duration={`${val.duration} days`}
+                  buttonLabel="Select Plan"
                   onPress={() =>
                     router.push({
                       pathname: "/(gym)/dashboard/membershipConfirm",
@@ -71,12 +74,12 @@ const Membership = () => {
               <PlanCard
                 key={val.id}
                 badge={val.type}
-                status="Aktif"
+                status="Active"
                 name={val.name}
                 description={val.description}
                 price={`Rp ${val.price.toString()}`}
-                duration={`${val.duration} hari`}
-                buttonLabel="Pilih Paket"
+                duration={`${val.duration} days`}
+                buttonLabel="Select Plan"
                 onPress={() =>
                   router.push({
                     pathname: "/(gym)/dashboard/membershipConfirm",
@@ -89,12 +92,12 @@ const Membership = () => {
               <PlanCard
                 key={val.id}
                 badge={val.type}
-                status="Aktif"
+                status="Active"
                 name={val.name}
                 description={val.description}
                 price={`Rp ${val.price.toString()}`}
-                duration={`${val.duration} hari`}
-                buttonLabel="Pilih Paket"
+                duration={`${val.duration} days`}
+                buttonLabel="Select Plan"
                 onPress={() =>
                   router.push({
                     pathname: "/(gym)/dashboard/membershipConfirm",

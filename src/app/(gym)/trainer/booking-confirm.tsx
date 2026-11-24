@@ -4,7 +4,7 @@ import { bookingTrainer } from "@/service/trainer.service"
 import { fetchTrainers } from "@/store/slice/trainerSlice"
 import { AppDispatch, RootState } from "@/store/store"
 import { BankId, PaymentMethodId } from "@/type/payment.type"
-import { getTimezoneLabel } from "@/utils/timeZoneHelper"
+import { formatRange } from "@/utils/FormaterHelper"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -71,7 +71,7 @@ export default function BookingConfirm() {
   const dateText = date
     ? new Date(date).toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
     : "-"
-  const timeText = startTime && endTime ? `${startTime.substring(11, 16)} - ${endTime.substring(11, 16)}` : "-"
+  const timeText = startTime && endTime ? formatRange(startTime, endTime) : "-"
   const durationText = startTime && endTime ? formatDuration(startTime, endTime) : "-"
   const priceText = trainer ? formatRupiah(trainer.rate) : "-"
 
@@ -208,9 +208,7 @@ export default function BookingConfirm() {
                 <View className="flex-1 font-inter">
                   <Text className="mb-0.5 font-inter text-[10px] font-bold uppercase tracking-wide text-text-subdued">Time & Duration</Text>
                   <Text className="font-inter text-sm font-semibold text-text-primary">{timeText}</Text>
-                  <Text className="font-inter text-[11px] text-text-secondary">
-                    {getTimezoneLabel()} • {durationText}
-                  </Text>
+                  <Text className="font-inter text-[11px] text-text-secondary">WIB (UTC+7) • {durationText}</Text>
                 </View>
               </View>
 
@@ -276,11 +274,10 @@ export default function BookingConfirm() {
                 />
               )}
             </View>
-            <View className="flex-1 font-inter">
-              <Text className="mb-1 font-inter text-xs font-bold text-text-primary">I agree to the Booking & Cancellation Policy</Text>
-              <Text className="font-inter text-[10px] leading-4 text-text-secondary">
-                Cancellations or rescheduling are free up to 4 hours before the session. The turnstile gate will grant access automatically
-                30 minutes before the scheduled session.
+            <View className="mt-0.5 flex-1 font-inter">
+              <Text className="mb-1 font-inter text-lg font-bold text-text-primary">I agree to the Booking Terms</Text>
+              <Text className="text-justify font-inter text-sm text-text-secondary">
+                Once confirmed, bookings cannot be canceled or rescheduled. Please ensure that you are available for the selected time slot.
               </Text>
             </View>
           </TouchableOpacity>

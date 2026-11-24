@@ -30,14 +30,14 @@ export default function PaymentSection({
 
   return (
     <View className="gap-6">
-      {/* Metode pembayaran */}
+      {/* Payment method */}
       <View className="gap-3">
         <View className="flex-row items-center justify-between">
-          <Text className="text-xl font-bold text-text-primary">Metode pembayaran</Text>
-          <Text className="text-xs text-text-subdued">via Midtrans</Text>
+          <Text className="font-inter text-xl font-bold text-text-primary">Payment method</Text>
+          <Text className="font-inter text-sm text-text-subdued">via Midtrans</Text>
         </View>
 
-        <Text className="text-sm text-text-secondary">Pilih metode pembayaran yang kamu inginkan.</Text>
+        <Text className="font-inter text-sm text-text-secondary">Choose your preferred payment method.</Text>
 
         <View
           className="gap-3"
@@ -65,26 +65,26 @@ export default function PaymentSection({
         </View>
       </View>
 
-      {/* Ringkasan pembayaran */}
+      {/* Payment summary */}
       <View className="gap-3">
-        <Text className="text-xl font-bold text-text-primary">Ringkasan pembayaran</Text>
+        <Text className="font-inter text-xl font-bold text-text-primary">Payment summary</Text>
 
         <View className="gap-3 rounded-2xl border border-border bg-surface p-4">
           <View className="flex-row items-center justify-between">
-            <Text className="text-sm text-text-secondary">{summary.planName}</Text>
-            <Text className="text-sm font-bold text-text-primary">{summary.price}</Text>
+            <Text className="font-inter text-[14px] text-text-secondary">{summary.planName}</Text>
+            <Text className="font-inter text-[14px] font-bold text-text-primary">{summary.price}</Text>
           </View>
 
           <View className="flex-row items-center justify-between">
-            <Text className="text-sm text-text-secondary">{label}</Text>
-            <Text className="text-sm font-bold text-text-primary">{summary.duration}</Text>
+            <Text className="font-inter text-[14px] text-text-secondary">{label}</Text>
+            <Text className="font-inter text-[14px] font-bold text-text-primary">{summary.duration}</Text>
           </View>
 
           <View className="h-px bg-border" />
 
           <View className="flex-row items-center justify-between">
-            <Text className="text-sm font-bold text-text-primary">Total pembayaran</Text>
-            <Text className="text-2xl font-bold text-primary">{summary.total}</Text>
+            <Text className="font-inter text-[14px] font-bold text-text-primary">Total payment</Text>
+            <Text className="font-inter text-2xl font-bold text-primary">{summary.total}</Text>
           </View>
         </View>
       </View>

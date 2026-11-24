@@ -35,21 +35,21 @@ const methodStyles: Record<MethodTone, { chip: string; text: string }> = {
 }
 
 export default function MembershipPaymentInfo({
-  title = "Pembayaran Aman & Otomatis",
+  title = "Secure & Automatic Payment",
   provider = "Powered by Midtrans",
   methods = DEFAULT_METHODS,
-  note = "Membership langsung aktif seketika setelah pembayaran terverifikasi otomatis tanpa upload bukti transfer."
+  note = "Your membership activates instantly after your payment is automatically verified—no transfer receipt upload required."
 }: Readonly<MembershipPaymentInfoProps>) {
   return (
     <View className="w-full overflow-hidden rounded-2xl border border-info/25">
       <LinearGradient
-        colors={["#1D3A66", "#16233A", "#1A1D24"]}
+        colors={["#16263D", "#1C2434", "#1A1D24"]}
         locations={[0, 0.55, 1]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{ padding: 20, gap: 16 }}
       >
-        {/* Glow dekoratif */}
+        {/* Decorative glow */}
         <View
           pointerEvents="none"
           className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-info/15"
@@ -65,7 +65,7 @@ export default function MembershipPaymentInfo({
                 color={ICON_COLORS.info}
               />
             </View>
-            <Text className="flex-1 text-sm font-bold text-text-primary">{title}</Text>
+            <Text className="flex-1 font-inter text-sm font-bold text-text-primary">{title}</Text>
           </View>
         </View>
 
@@ -76,7 +76,7 @@ export default function MembershipPaymentInfo({
             size={12}
             color={ICON_COLORS.secondary}
           />
-          <Text className="text-[10px] font-bold tracking-wide text-secondary">{provider}</Text>
+          <Text className="font-inter text-[10px] font-bold tracking-wide text-secondary">{provider}</Text>
         </View>
 
         {/* Payment methods */}
@@ -88,7 +88,7 @@ export default function MembershipPaymentInfo({
                 key={method.label}
                 className={`items-center justify-center rounded-lg border px-3.5 py-2 ${tone.chip}`}
               >
-                <Text className={`text-xs font-bold ${tone.text}`}>{method.label}</Text>
+                <Text className={`font-inter text-xs font-bold ${tone.text}`}>{method.label}</Text>
               </View>
             )
           })}
@@ -106,7 +106,7 @@ export default function MembershipPaymentInfo({
               color={ICON_COLORS.secondary}
             />
           </View>
-          <Text className="flex-1 text-xs leading-5 text-text-secondary">{note}</Text>
+          <Text className="flex-1 font-inter text-xs leading-5 text-text-secondary">{note}</Text>
         </View>
       </LinearGradient>
     </View>

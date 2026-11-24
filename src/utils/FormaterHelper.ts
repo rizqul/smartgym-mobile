@@ -24,3 +24,18 @@ export const formatTime = (dateString: string) => {
     minute: date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }).split(".")[1]
   }
 }
+
+const TIME_LOCALE = "en-GB"
+
+export const formatTimeSlot = (iso: string): string => {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return iso.substring(11, 16)
+  return d.toLocaleTimeString(TIME_LOCALE, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Jakarta"
+  })
+}
+
+export const formatRange = (start: string, end: string) => `${formatTimeSlot(start)} - ${formatTimeSlot(end)}`
