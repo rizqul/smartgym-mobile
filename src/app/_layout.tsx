@@ -2,18 +2,18 @@ import { AuthProvider, useAuth } from "@/context/authContext"
 import { useFonts } from "expo-font"
 import { Stack } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Provider } from "react-redux"
 import { PersistGate } from "redux-persist/integration/react"
 
+import SplashLoadingScreen from "@/components/splashScreen"
 import { persistor, store } from "@/store/store"
-import { ActivityIndicator, View } from "react-native"
 import { AlertNotificationRoot } from "react-native-alert-notification"
 import "../../global.css"
 
 void SplashScreen.preventAutoHideAsync()
 
-function RootLayoutNav() {
+function RootLayoutNav({ isMinTimeElapsed }: Readonly<{ isMinTimeElapsed: boolean }>) {
   const { isLoggedIn, isLoading } = useAuth()
   const [loaded, error] = useFonts([
     {
@@ -22,7 +22,7 @@ function RootLayoutNav() {
     }
   ])
 
-  const appIsReady = loaded && !isLoading
+  const appIsReady = loaded && !isLoading && isMinTimeElapsed
 
   useEffect(() => {
     if (appIsReady || error) {
@@ -30,7 +30,7 @@ function RootLayoutNav() {
     }
   }, [appIsReady, error])
 
-  if (!appIsReady && !error) return null
+  if (!appIsReady && !error) return <SplashLoadingScreen />
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
@@ -48,6 +48,15 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
+  const [isMinTimeElapsed, setIsMinTimeElapsed] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMinTimeElapsed(true)
+    }, 10000)
+
+    return () => clearTimeout(timer)
+  }, [])
   return (
     <AlertNotificationRoot
       theme="dark"
@@ -79,18 +88,11 @@ export default function RootLayout() {
     >
       <Provider store={store}>
         <PersistGate
-          loading={
-            <View className="flex-1 items-center justify-center bg-background">
-              <ActivityIndicator
-                size="large"
-                color="#FF6B00"
-              />
-            </View>
-          }
+          loading={<SplashLoadingScreen />}
           persistor={persistor}
         >
           <AuthProvider>
-            <RootLayoutNav />
+            <RootLayoutNav isMinTimeElapsed={isMinTimeElapsed} />
           </AuthProvider>
         </PersistGate>
       </Provider>
