@@ -9,10 +9,10 @@ import { useAuth } from "@/context/authContext"
 import { checkOut } from "@/service/scan.service"
 import { clearActiveCheckin } from "@/store/slice/checkinSlice"
 import { AppDispatch, RootState } from "@/store/store"
-import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { router } from "expo-router"
 import React from "react"
-import { Alert, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { Alert, ScrollView, StatusBar, Text, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
@@ -73,7 +73,7 @@ export default function Dashboard() {
               <View className="mt-1.5 h-[3px] w-16 rounded-full bg-primary" />
             </View>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               activeOpacity={0.8}
               className="h-12 w-12 items-center justify-center rounded-2xl border border-border bg-surface"
             >
@@ -83,7 +83,7 @@ export default function Dashboard() {
                 color="#FFFFFF"
               />
               <View className="absolute right-2.5 top-2.5 h-2.5 w-2.5 rounded-full border border-surface bg-primary" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           {/* MEMBERSHIP CARD COMPONENT */}

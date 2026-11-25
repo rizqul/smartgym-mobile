@@ -8,11 +8,11 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { useSelector } from "react-redux"
 
 const SPLIT_META: Record<SplitType, { label: string; chip: string; text: string }> = {
-  PUSH: { label: "Push", chip: "border-primary/30 bg-primary/10", text: "text-primary-hover" },
-  PULL: { label: "Pull", chip: "border-info/30 bg-info/10", text: "text-info" },
-  UPPER: { label: "Upper Body", chip: "border-success/30 bg-success/10", text: "text-success" },
-  LOWER: { label: "Lower Body", chip: "border-secondary/30 bg-secondary/10", text: "text-secondary" },
-  FULL_BODY: { label: "Full Body", chip: "border-accent/30 bg-accent/10", text: "text-accent" }
+  PUSH: { label: "Push", chip: "border-primary/25 bg-primary/5", text: "text-primary-hover" },
+  PULL: { label: "Pull", chip: "border-info/25 bg-info/5", text: "text-info" },
+  UPPER: { label: "Upper Body", chip: "border-success/25 bg-success/5", text: "text-success" },
+  LOWER: { label: "Lower Body", chip: "border-secondary/25 bg-secondary/5", text: "text-secondary" },
+  FULL_BODY: { label: "Full Body", chip: "border-accent/25 bg-accent/5", text: "text-accent" }
 }
 
 const formatRest = (sec: number) => {
@@ -23,32 +23,45 @@ const formatRest = (sec: number) => {
   return s === 0 ? `${m} min` : `${m} min ${s} sec`
 }
 
-function Stat({ label, value }: Readonly<{ label: string; value: string }>) {
+type StatVariant = "days" | "total" | "duration" | "sets" | "reps" | "rest"
+
+const STAT_STYLES: Record<StatVariant, { container: string; value: string }> = {
+  days: { container: "border-info/25 bg-info/10", value: "text-info" },
+  total: { container: "border-success/25 bg-success/10", value: "text-success" },
+  duration: { container: "border-accent/25 bg-accent/10", value: "text-accent" },
+  sets: { container: "border-info/25 bg-info/10", value: "text-info" },
+  reps: { container: "border-success/25 bg-success/10", value: "text-success" },
+  rest: { container: "border-secondary/25 bg-secondary/10", value: "text-secondary" }
+}
+
+function Stat({ label, value, variant }: Readonly<{ label: string; value: string; variant: StatVariant }>) {
+  const style = STAT_STYLES[variant]
+
   return (
-    <View className="flex-1 items-center gap-0.5 rounded-lg bg-surface py-2">
-      <Text className="text-sm font-bold text-text-primary">{value}</Text>
-      <Text className="text-[10px] text-text-subdued">{label}</Text>
+    <View className={`flex-1 items-center gap-0.5 rounded-lg border py-2 ${style.container}`}>
+      <Text className={`text-sm font-bold ${style.value}`}>{value}</Text>
+      <Text className="text-[10px] font-medium text-text-secondary">{label}</Text>
     </View>
   )
 }
 
 function ExerciseItem({ exercise, index }: Readonly<{ exercise: AiExercise; index: number }>) {
   return (
-    <View className="gap-3 rounded-2xl border border-border bg-card p-4">
+    <View className="gap-3 rounded-2xl border border-primary/20 bg-card p-4">
       <View className="flex-row items-start gap-3">
-        <View className="h-8 w-8 items-center justify-center rounded-full bg-primary/15">
+        <View className="h-8 w-8 items-center justify-center rounded-full bg-primary/25">
           <Text className="text-xs font-bold text-primary-hover">{index + 1}</Text>
         </View>
         <View className="flex-1 gap-1">
           <Text className="text-base font-bold text-text-primary">{exercise.name}</Text>
           {exercise.equipment ? (
-            <View className="flex-row items-center gap-1 self-start rounded-md bg-surface px-2 py-1">
+            <View className="flex-row items-center gap-1 self-start rounded-md border border-info/20 bg-info/10 px-2 py-1">
               <MaterialCommunityIcons
                 name="dumbbell"
                 size={11}
                 color="#B8BDC7"
               />
-              <Text className="text-[10px] font-semibold text-text-secondary">{exercise.equipment}</Text>
+              <Text className="text-[10px] font-semibold text-info">{exercise.equipment}</Text>
             </View>
           ) : null}
         </View>
@@ -58,23 +71,26 @@ function ExerciseItem({ exercise, index }: Readonly<{ exercise: AiExercise; inde
         <Stat
           label="Set"
           value={String(exercise.sets)}
+          variant="sets"
         />
         <Stat
           label="Reps"
           value={exercise.reps}
+          variant="reps"
         />
         <Stat
           label="Rest"
           value={formatRest(exercise.restTimeSec)}
+          variant="rest"
         />
       </View>
 
       {exercise.notes ? (
-        <View className="flex-row items-start gap-2 rounded-lg border border-secondary/20 bg-secondary/10 p-3">
+        <View className="flex-row items-start gap-2 rounded-lg border border-primary/30 bg-primary/10 p-3">
           <Ionicons
             name="bulb-outline"
             size={14}
-            color="#FFD166"
+            color="#FF8A33"
           />
           <Text className="flex-1 text-xs leading-5 text-text-body">{exercise.notes}</Text>
         </View>
@@ -100,7 +116,7 @@ export default function AIWorkoutDetail() {
       <StatusBar barStyle="light-content" />
 
       {/* HEADER */}
-      <View className="flex-row items-center gap-4 border-b border-border/40 px-5 py-4">
+      <View className="flex-row items-center gap-4 border-b border-primary/20 px-5 py-4">
         <TouchableOpacity
           onPress={() => router.back()}
           className="h-8 w-8 justify-center"
@@ -135,9 +151,9 @@ export default function AIWorkoutDetail() {
           contentContainerClassName="px-5 pt-5 pb-12 gap-5"
         >
           {/* RINGKASAN PLAN */}
-          <View className="gap-4 rounded-2xl border border-primary/20 bg-surface p-5">
+          <View className="gap-4 rounded-2xl border border-primary/40 bg-card p-5">
             <View className="gap-1.5">
-              <View className="flex-row items-center gap-1.5 self-start rounded-full border border-primary/40 bg-primary/10 px-3 py-1">
+              <View className="flex-row items-center gap-1.5 self-start rounded-full border border-primary/50 bg-primary/15 px-3 py-1">
                 <MaterialCommunityIcons
                   name="robot-outline"
                   size={12}
@@ -155,14 +171,17 @@ export default function AIWorkoutDetail() {
               <Stat
                 label="Days / week"
                 value={String(schedule.length)}
+                variant="days"
               />
               <Stat
                 label="Total exercises"
                 value={String(totalExercises)}
+                variant="total"
               />
               <Stat
                 label="Avg. duration"
                 value={`${avgDuration} mnt`}
+                variant="duration"
               />
             </View>
           </View>
@@ -192,9 +211,9 @@ export default function AIWorkoutDetail() {
           {/* DETAIL HARI */}
           {day ? (
             <View className="gap-4">
-              <View className="flex-row items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4">
+              <View className="flex-row items-center justify-between gap-3 rounded-2xl border border-border bg-surface p-4">
                 <View className="flex-1 gap-1">
-                  <Text className="text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Workout Focus</Text>
+                  <Text className="text-[10px] font-semibold uppercase tracking-wide text-info">Workout Focus</Text>
                   <Text className="text-base font-bold text-text-primary">{day.focus}</Text>
                 </View>
                 <View className="items-end gap-2">
