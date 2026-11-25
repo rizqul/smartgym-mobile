@@ -72,26 +72,8 @@ export default function Profile() {
 
           {/* ================= ACTIVE PLAN CARD ================= */}
           <MembershipActiveCard
-            planName="SmartGym Elite Gold"
-            billingLabel="ANNUAL"
-            memberTier="Member"
-            validUntil="Dec 18, 2025"
-            autoRenew={false}
-            benefits={[
-              {
-                icon: "meeting-room",
-                title: "24/7 Access to All Clubs",
-                description: "Ready-to-use fast-pass QR turnstile",
-                tone: "primary"
-              },
-              {
-                icon: "smart-toy",
-                title: "AI Neural Trainer & Plan",
-                description: "Daily rep and goal adjustments",
-                tone: "info"
-              }
-            ]}
-            onRenewPress={() => {}}
+            membershipExpiredAt={user?.membershipExpiredAt!}
+            onActionPress={!user?.membershipExpiredAt ? () => {} : () => router.push("/(gym)/dashboard/membership")}
           />
 
           {/* ================= HISTORY ================= */}

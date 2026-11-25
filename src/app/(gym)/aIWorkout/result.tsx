@@ -17,10 +17,10 @@ const SPLIT_META: Record<SplitType, { label: string; chip: string; text: string 
 
 const formatRest = (sec: number) => {
   if (!sec) return "-"
-  if (sec < 60) return `${sec} dtk`
+  if (sec < 60) return `${sec} sec`
   const m = Math.floor(sec / 60)
   const s = sec % 60
-  return s === 0 ? `${m} mnt` : `${m} mnt ${s} dtk`
+  return s === 0 ? `${m} min` : `${m} min ${s} sec`
 }
 
 function Stat({ label, value }: Readonly<{ label: string; value: string }>) {
@@ -60,11 +60,11 @@ function ExerciseItem({ exercise, index }: Readonly<{ exercise: AiExercise; inde
           value={String(exercise.sets)}
         />
         <Stat
-          label="Repetisi"
+          label="Reps"
           value={exercise.reps}
         />
         <Stat
-          label="Istirahat"
+          label="Rest"
           value={formatRest(exercise.restTimeSec)}
         />
       </View>
@@ -111,7 +111,7 @@ export default function AIWorkoutDetail() {
             color="white"
           />
         </TouchableOpacity>
-        <Text className="text-lg font-bold text-text-primary">Detail Plan</Text>
+        <Text className="text-lg font-bold text-text-primary">Plan Details</Text>
       </View>
 
       {!plan ? (
@@ -121,12 +121,12 @@ export default function AIWorkoutDetail() {
             size={40}
             color="#B8BDC7"
           />
-          <Text className="text-center text-sm text-text-secondary">Belum ada plan. Buat plan baru terlebih dahulu.</Text>
+          <Text className="text-center text-sm text-text-secondary">No plan yet. Create a new plan to get started.</Text>
           <TouchableOpacity
             onPress={() => router.replace("/(gym)/aIWorkout/configurator")}
             className="rounded-xl border border-primary/40 bg-primary/10 px-5 py-2.5"
           >
-            <Text className="text-xs font-bold text-primary-hover">Buat Plan</Text>
+            <Text className="text-xs font-bold text-primary-hover">Create Plan</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -143,7 +143,7 @@ export default function AIWorkoutDetail() {
                   size={12}
                   color="#FF8A33"
                 />
-                <Text className="text-[10px] font-bold uppercase tracking-wide text-primary-hover">Dibuat oleh AI</Text>
+                <Text className="text-[10px] font-bold uppercase tracking-wide text-primary-hover">AI-generated</Text>
               </View>
               <Text className="text-2xl font-bold text-text-primary">{plan.title}</Text>
               <Text className="text-sm leading-5 text-text-secondary">{plan.goal}</Text>
@@ -153,15 +153,15 @@ export default function AIWorkoutDetail() {
 
             <View className="flex-row gap-2">
               <Stat
-                label="Hari / minggu"
+                label="Days / week"
                 value={String(schedule.length)}
               />
               <Stat
-                label="Total latihan"
+                label="Total exercises"
                 value={String(totalExercises)}
               />
               <Stat
-                label="Rata-rata durasi"
+                label="Avg. duration"
                 value={`${avgDuration} mnt`}
               />
             </View>
@@ -194,7 +194,7 @@ export default function AIWorkoutDetail() {
             <View className="gap-4">
               <View className="flex-row items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4">
                 <View className="flex-1 gap-1">
-                  <Text className="text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Fokus Latihan</Text>
+                  <Text className="text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Workout Focus</Text>
                   <Text className="text-base font-bold text-text-primary">{day.focus}</Text>
                 </View>
                 <View className="items-end gap-2">
@@ -209,7 +209,7 @@ export default function AIWorkoutDetail() {
                       size={12}
                       color="#B8BDC7"
                     />
-                    <Text className="text-[11px] text-text-secondary">±{day.estimatedDurationMin} menit</Text>
+                    <Text className="text-[11px] text-text-secondary">±{day.estimatedDurationMin} min</Text>
                   </View>
                 </View>
               </View>
@@ -223,7 +223,7 @@ export default function AIWorkoutDetail() {
                   />
                 ))
               ) : (
-                <Text className="py-6 text-center text-sm text-text-secondary">Belum ada latihan di hari ini.</Text>
+                <Text className="py-6 text-center text-sm text-text-secondary">No exercises planned for this day.</Text>
               )}
             </View>
           ) : null}
