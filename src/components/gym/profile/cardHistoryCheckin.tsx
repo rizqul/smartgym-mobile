@@ -6,7 +6,7 @@ import { Text, View } from 'react-native'
 
 export default function CardHistoryCheckin({ item }: Readonly<{ item: CheckinResponse }>) {
     const time = formatTime(item.checkInAt)
-    const isDenied = item.status === "DENIED"
+    const isDenied = item.status === "DECLINED"
     // dumy
     const centralGym = " SmartGym Central Base"
 
