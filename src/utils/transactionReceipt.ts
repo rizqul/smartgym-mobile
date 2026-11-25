@@ -1,4 +1,3 @@
-// utils/transactionReceipt.ts
 type ReceiptData = {
   id?: string
   name: string
