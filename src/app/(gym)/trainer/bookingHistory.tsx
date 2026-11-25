@@ -15,8 +15,8 @@ type TabKey = "upcoming" | "done"
 type BookingStatus = "PAID" | "PENDING" | "CANCELLED"
 
 const TABS: { key: TabKey; label: string }[] = [
-  { key: "upcoming", label: "Mendatang" },
-  { key: "done", label: "Selesai" }
+  { key: "upcoming", label: "Upcoming" },
+  { key: "done", label: "Done" }
 ]
 
 const GENERATED_AVATAR = /ui-avatars|dicebear|initials|avatar\.iran|gravatar/i
@@ -74,7 +74,7 @@ function StatusBadge({ status }: Readonly<{ status?: BookingStatus }>) {
     return (
       <View className="flex-row items-center gap-1 rounded-md border border-success/30 bg-success/10 px-2 py-1">
         <View className="h-1.5 w-1.5 rounded-full bg-success" />
-        <Text className="text-[10px] font-bold text-success">Terbayar</Text>
+        <Text className="text-[10px] font-bold text-success">PAID</Text>
       </View>
     )
   }
@@ -179,7 +179,7 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: TrainerBookingRespon
           onPress={() => router.push({ pathname: "/(gym)/trainer/[id]", params: { id: trainer.id } })}
           className="flex-row items-center gap-1 rounded-xl border border-primary/40 bg-primary/10 px-3 py-2"
         >
-          <Text className="text-xs font-bold text-primary-hover">{isUpcoming ? "Lihat" : "Booking Lagi"}</Text>
+          <Text className="text-xs font-bold text-primary-hover">{isUpcoming ? "Look Trainer" : "Book Again"}</Text>
           <Ionicons
             name="arrow-forward"
             size={12}

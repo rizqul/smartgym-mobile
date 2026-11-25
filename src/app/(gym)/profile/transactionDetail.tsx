@@ -18,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function TransactionDetail() {
   const router = useRouter()
+
   const {
     data,
     loading,

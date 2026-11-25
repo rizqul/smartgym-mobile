@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/authContext"
 import { cancelTransaction, checkTransactionStatus, getTransactionById } from "@/service/transaction.service"
 import { TransactionsResponse } from "@/type/Transaction.type"
 import { getStatusUI } from "@/utils/transactionHelper"
@@ -11,6 +12,7 @@ import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 export function useTransactionDetail() {
   const router = useRouter()
   const { id } = useLocalSearchParams<{ id: string }>()
+  const { refreshUser } = useAuth()
 
   const [data, setData] = useState<TransactionsResponse | null>(null)
   const [loading, setLoading] = useState(true)
@@ -27,6 +29,7 @@ export function useTransactionDetail() {
   const load = useCallback(async (): Promise<TransactionsResponse | null> => {
     try {
       const res = await getTransactionById(id)
+      refreshUser()
       setData(res.data)
       setError(null)
       return res.data

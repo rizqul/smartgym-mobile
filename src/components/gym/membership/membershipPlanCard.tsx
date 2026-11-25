@@ -1,4 +1,5 @@
 import { formatRupiah } from "@/utils/FormaterHelper"
+import { MaterialIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import React from "react"
 import { Pressable, Text, View } from "react-native"
@@ -67,8 +68,20 @@ export default function PlanCard({
       >
         {/* Top row: badge + status */}
         <View className="flex-row items-center justify-between">
-          <View className="rounded-md bg-primary/15 px-3 py-1.5">
-            <Text className="text-xs font-bold tracking-wider text-accent">{badge}</Text>
+          <View className="flex-1 flex-row flex-wrap items-center gap-2">
+            <View className="rounded-md bg-primary/15 px-3 py-1.5">
+              <Text className="text-xs font-bold tracking-wider text-accent">{badge}</Text>
+            </View>
+            {variant === "popular" ? (
+              <View className="flex-row items-center gap-1 rounded-full border border-highlight/30 bg-highlight/15 px-2.5 py-1">
+                <MaterialIcons
+                  name="star"
+                  size={12}
+                  color="#FDE047"
+                />
+                <Text className="text-xs font-bold tracking-wider text-highlight">RECOMMENDED</Text>
+              </View>
+            ) : null}
           </View>
           {status ? <Text className="text-sm font-semibold text-emerald-300">{status}</Text> : null}
         </View>

@@ -7,6 +7,7 @@ import { fetchMemberships } from "@/store/slice/membershipSlice"
 import { AppDispatch, RootState } from "@/store/store"
 import { router } from "expo-router"
 
+import { ChatAdminWA } from "@/utils/chatAdminHelper"
 import React, { useEffect } from "react"
 import { ScrollView, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -109,7 +110,7 @@ const Membership = () => {
           </View>
         </View>
       </ScrollView>
-      <MembershipConsultCard />
+      <MembershipConsultCard onPress={ChatAdminWA} />
     </SafeAreaView>
   )
 }
