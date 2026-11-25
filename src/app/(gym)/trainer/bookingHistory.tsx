@@ -1,14 +1,18 @@
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
-import { BookingHistory } from "@/type/booking.type"
+import { fetchMyBookings } from "@/store/slice/trainerBookingSlice"
+import { AppDispatch, RootState } from "@/store/store"
+import { TrainerBookingResponse } from "@/type/trainerBooking.type"
 import { getTimezoneLabel } from "@/utils/timeZoneHelper"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
-import { useRouter } from "expo-router"
-import React, { useMemo, useState } from "react"
+import { useFocusEffect, useRouter } from "expo-router"
+import React, { useCallback, useMemo, useState } from "react"
 import { ActivityIndicator, Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useDispatch, useSelector } from "react-redux"
 
 type TabKey = "upcoming" | "done"
+type BookingStatus = "PAID" | "PENDING" | "CANCELLED"
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "upcoming", label: "Mendatang" },
@@ -41,32 +45,15 @@ const formatDuration = (start: string, end: string) => {
   return m === 0 ? `${h} jam` : `${h} jam ${m} menit`
 }
 
-/* ---------- DATA CONTOH: ganti dengan data dari service ---------- */
-const MOCK_BOOKINGS: BookingHistory[] = [
-  {
-    id: "1",
-    bookedAt: "2026-11-24T09:15:00",
-    status: "PAID",
-    trainer: { id: "t1", name: "Rio Pratama", specialization: "STRENGTH_CONDITIONING" },
-    slot: { startTime: "2026-11-28T08:00:00", endTime: "2026-11-28T09:00:00" }
-  },
-  {
-    id: "2",
-    bookedAt: "2026-11-10T14:30:00",
-    status: "PAID",
-    trainer: { id: "t2", name: "Sari Dewi", specialization: "WEIGHT_LOSS" },
-    slot: { startTime: "2026-11-12T17:00:00", endTime: "2026-11-12T18:20:00" }
-  },
-  {
-    id: "3",
-    bookedAt: "2026-10-30T10:00:00",
-    status: "CANCELLED",
-    trainer: { id: "t3", name: "Andi Saputra", specialization: "BODYBUILDING" },
-    slot: { startTime: "2026-11-02T19:00:00", endTime: "2026-11-02T20:00:00" }
-  }
-]
+// SESUAIKAN dengan nilai asli slot.status dari backend
+const getBookingStatus = (slotStatus?: string): BookingStatus => {
+  const s = (slotStatus ?? "").toUpperCase()
+  if (s.includes("CANCEL")) return "CANCELLED"
+  if (s.includes("PENDING")) return "PENDING"
+  return "PAID"
+}
 
-function StatusBadge({ status }: Readonly<{ status?: BookingHistory["status"] }>) {
+function StatusBadge({ status }: Readonly<{ status?: BookingStatus }>) {
   if (status === "CANCELLED") {
     return (
       <View className="flex-row items-center gap-1 rounded-md border border-danger/30 bg-danger/10 px-2 py-1">
@@ -94,20 +81,21 @@ function StatusBadge({ status }: Readonly<{ status?: BookingHistory["status"] }>
   return null
 }
 
-function BookingCard({ item, isUpcoming }: Readonly<{ item: BookingHistory; isUpcoming: boolean }>) {
+function BookingCard({ item, isUpcoming }: Readonly<{ item: TrainerBookingResponse; isUpcoming: boolean }>) {
   const router = useRouter()
   const [imageFailed, setImageFailed] = useState(false)
   const { trainer, slot } = item
 
+  const status = getBookingStatus(slot.status)
   const start = new Date(slot.startTime)
   const hasPhoto = !!trainer.profileUrl && !imageFailed && !GENERATED_AVATAR.test(trainer.profileUrl)
-  const cancelled = item.status === "CANCELLED"
+  const cancelled = status === "CANCELLED"
 
   const day = start.toLocaleDateString("id-ID", { day: "numeric" })
   const month = start.toLocaleDateString("id-ID", { month: "short" }).toUpperCase()
   const weekday = start.toLocaleDateString("id-ID", { weekday: "long" })
   const timeText = `${slot.startTime.substring(11, 16)} - ${slot.endTime.substring(11, 16)}`
-  const bookedText = new Date(item.bookedAt).toLocaleDateString("id-ID", {
+  const bookedText = new Date(slot.updatedAt).toLocaleDateString("id-ID", {
     day: "numeric",
     month: "long",
     year: "numeric"
@@ -129,7 +117,7 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: BookingHistory; isUp
         <View className="flex-1 gap-1.5">
           <View className="flex-row items-start justify-between gap-2">
             <Text className="text-base font-bold text-text-primary">{weekday}</Text>
-            <StatusBadge status={item.status} />
+            <StatusBadge status={status} />
           </View>
 
           <View className="flex-row items-center gap-1.5">
@@ -152,7 +140,7 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: BookingHistory; isUp
       <View className="flex-row items-center gap-3 bg-card p-4">
         {hasPhoto ? (
           <Image
-            source={{ uri: trainer.profileUrl }}
+            source={{ uri: trainer.profileUrl as string }}
             onError={() => setImageFailed(true)}
             className="h-12 w-12 rounded-xl bg-surface"
             resizeMode="cover"
@@ -182,7 +170,7 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: BookingHistory; isUp
             className="text-[11px] text-primary-hover"
             numberOfLines={1}
           >
-            {formatLabel(trainer.specialization)}
+            {formatLabel(String(trainer.specialization))}
           </Text>
         </View>
 
@@ -200,7 +188,7 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: BookingHistory; isUp
         </TouchableOpacity>
       </View>
 
-      {/* Footer: tanggal booking dibuat */}
+      {/* Footer */}
       <View className="flex-row items-center gap-1.5 px-4 py-2.5">
         <MaterialCommunityIcons
           name="history"
@@ -214,23 +202,34 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: BookingHistory; isUp
 }
 
 export default function BookingHistoryScreen() {
+  const dispatch = useDispatch<AppDispatch>()
+  const { result, isLoading, error } = useSelector((state: RootState) => state.trainerBooking)
   const [tab, setTab] = useState<TabKey>("upcoming")
-  const [loading] = useState(false) // ganti saat data diambil dari server
-  const [bookings] = useState<BookingHistory[]>(MOCK_BOOKINGS) // ganti dengan data asli
 
-  const { upcoming, done } = useMemo(() => {
+  // fetch setiap layar dibuka, jadi booking baru langsung muncul
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(fetchMyBookings({ size: 50 }))
+    }, [dispatch])
+  )
+
+  const { upcoming, done, total } = useMemo(() => {
+    const bookings = result?.data ?? []
     const now = Date.now()
-    const isUpcoming = (b: BookingHistory) => b.status !== "CANCELLED" && new Date(b.slot.endTime).getTime() > now
+    const isUpcoming = (b: TrainerBookingResponse) =>
+      getBookingStatus(b.slot.status) !== "CANCELLED" && new Date(b.slot.endTime).getTime() > now
 
     return {
+      total: bookings.length,
       // mendatang: yang paling dekat di atas
       upcoming: bookings.filter(isUpcoming).sort((a, b) => a.slot.startTime.localeCompare(b.slot.startTime)),
       // selesai & dibatalkan: yang terbaru di atas
       done: bookings.filter((b) => !isUpcoming(b)).sort((a, b) => b.slot.startTime.localeCompare(a.slot.startTime))
     }
-  }, [bookings])
+  }, [result?.data])
 
   const list = tab === "upcoming" ? upcoming : done
+  const loading = isLoading && total === 0
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -275,6 +274,18 @@ export default function BookingHistoryScreen() {
             color="#FF6B00"
             className="mt-10"
           />
+        ) : error && total === 0 ? (
+          <View className="items-center gap-3 py-14">
+            <Ionicons
+              name="alert-circle-outline"
+              size={40}
+              color="#B8BDC7"
+            />
+            <Text className="text-sm font-bold text-text-primary">Gagal memuat booking</Text>
+            <TouchableOpacity onPress={() => dispatch(fetchMyBookings({ size: 50 }))}>
+              <Text className="text-xs font-bold text-primary">Coba lagi</Text>
+            </TouchableOpacity>
+          </View>
         ) : list.length === 0 ? (
           <View className="items-center gap-3 py-14">
             <View className="h-20 w-20 items-center justify-center rounded-full border border-border bg-surface">

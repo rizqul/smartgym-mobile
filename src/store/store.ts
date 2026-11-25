@@ -1,6 +1,7 @@
 import aiWorkoutReducer from "@/store/slice/aiWorkoutSlice"
 import checkinReducer from "@/store/slice/checkinSlice"
 import membershipReducer from "@/store/slice/membershipSlice"
+import trainerBookingReducer from "@/store/slice/trainerBookingSlice"
 import trainerReducer from "@/store/slice/trainerSlice"
 import transactionReducer from "@/store/slice/transactionSlice"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   membership: membershipReducer,
   transaction: transactionReducer,
   checkin: checkinReducer,
-  aiWorkout: aiWorkoutReducer
+  aiWorkout: aiWorkoutReducer,
+  trainerBooking: trainerBookingReducer
 })
 
 const persistConfig = {
