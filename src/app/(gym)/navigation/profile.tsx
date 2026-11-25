@@ -1,5 +1,6 @@
 import MembershipActiveCard from "@/components/gym/membership/membershipActiveCard"
 import { useAuth } from "@/context/authContext"
+import { ChatAdminWA } from "@/utils/chatAdminHelper"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { useRouter } from "expo-router"
@@ -192,7 +193,10 @@ export default function Profile() {
               </TouchableOpacity>
 
               {/* Item 2 */}
-              <TouchableOpacity className="flex-row items-center p-4">
+              <TouchableOpacity
+                onPress={ChatAdminWA}
+                className="flex-row items-center p-4"
+              >
                 <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-surface">
                   <Ionicons
                     name="headset-outline"
@@ -201,8 +205,10 @@ export default function Profile() {
                   />
                 </View>
                 <View className="flex-1">
-                  <Text className="mb-1 font-inter text-sm font-semibold text-text-primary">24/7 VIP Concierge & Personal Trainer</Text>
-                  <Text className="font-inter text-[11px] text-text-secondary">Contact your branch or get program advice</Text>
+                  <Text className="mb-1 font-inter text-sm font-semibold text-text-primary">Gym Support & Admin Chat</Text>
+                  <Text className="font-inter text-[11px] text-text-secondary">
+                    Ask about programs, manage bookings, or request refunds
+                  </Text>
                 </View>
                 <Ionicons
                   name="chevron-forward"
