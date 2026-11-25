@@ -3,18 +3,17 @@ import { TransactionCard } from "@/components/gym/profile/transactionCard"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import {
   DEFAULT_FILTER,
-  PERIOD_OPTIONS,
   SORT_OPTIONS,
   STATUS_OPTIONS,
   TYPE_OPTIONS,
-  TransactionFilterState,
-  filterAndSortTransactions
+  TransactionFilterState
 } from "@/data/helperTransaction/transactionFilter"
 import { fetchTransactions } from "@/store/slice/transactionSlice"
 import { AppDispatch, RootState } from "@/store/store"
+import { TransactionStatus, TransactionType } from "@/type/Transaction.type"
 import { Ionicons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
@@ -26,13 +25,23 @@ export default function TransactionHistory() {
   const [filter, setFilter] = useState<TransactionFilterState>(DEFAULT_FILTER)
 
   useEffect(() => {
-    dispatch(fetchTransactions())
-  }, [])
+    const sortOpt = SORT_OPTIONS.find((o) => o.value === filter.sort)
 
-  const transactions = useMemo(() => filterAndSortTransactions([...(result?.data ?? [])], filter), [result?.data, filter])
+    dispatch(
+      fetchTransactions({
+        type: filter.type === "ALL" ? undefined : (filter.type as TransactionType),
+        status: filter.status === "ALL" ? undefined : (filter.status as TransactionStatus),
+        sortBy: sortOpt?.sortBy,
+        direction: sortOpt?.direction,
+        size: 50
+      })
+    )
+  }, [filter.type, filter.status, filter.sort, dispatch])
+
+  const transactions = result?.data ?? []
 
   // Sort is not counted as a "filter"
-  const hasActiveFilter = filter.type !== "ALL" || filter.period !== "ALL" || filter.status !== "ALL"
+  const hasActiveFilter = filter.type !== "ALL" || filter.status !== "ALL"
 
   const update = <K extends keyof TransactionFilterState>(key: K, value: TransactionFilterState[K]) =>
     setFilter((prev) => ({ ...prev, [key]: value }))
@@ -84,25 +93,14 @@ export default function TransactionHistory() {
         <View className="flex-row gap-3">
           <FilterSelect
             className="flex-1"
-            title="Filter by period"
-            value={filter.period}
-            options={PERIOD_OPTIONS}
-            onChange={(v) => update("period", v)}
-            isActive={filter.period !== "ALL"}
-          />
-          <FilterSelect
-            className="flex-1"
             title="Filter by status"
             value={filter.status}
             options={STATUS_OPTIONS}
             onChange={(v) => update("status", v)}
             isActive={filter.status !== "ALL"}
           />
-        </View>
-
-        {/* RESULT COUNT, RESET & SORT */}
-        <View className="w-full items-center justify-between">
           <FilterSelect
+            className="flex-1"
             title="Sort by"
             icon="swap-vertical"
             value={filter.sort}
@@ -110,6 +108,7 @@ export default function TransactionHistory() {
             onChange={(v) => update("sort", v)}
           />
         </View>
+        <Text className="font-inter text-xs text-text-secondary">{transactions.length} found</Text>
 
         {/* TRANSACTION LIST */}
         <FlatList

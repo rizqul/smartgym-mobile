@@ -10,9 +10,10 @@ import { HERO } from "@/data/helperTransaction/transactionHero"
 
 import { useTransactionDetail } from "@/hooks/useTransactionDetail"
 import { getStatusUI } from "@/utils/transactionHelper"
+import { Ionicons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import React from "react"
-import { ActivityIndicator, ScrollView, StatusBar, Text, View } from "react-native"
+import { ActivityIndicator, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function TransactionDetail() {
@@ -34,6 +35,13 @@ export default function TransactionDetail() {
     handleDownload
   } = useTransactionDetail()
 
+  const handleBackToHistory = () => {
+    if (router.canDismiss()) {
+      router.dismissAll()
+    }
+    router.replace("/(gym)/profile/historyTransaction")
+  }
+
   if (loading) {
     return (
       <SafeAreaView className="flex-1 bg-background">
@@ -50,7 +58,19 @@ export default function TransactionDetail() {
     return (
       <SafeAreaView className="flex-1 bg-background">
         <StatusBar barStyle="light-content" />
-        <HeaderNavigation label="Transaction Details" />
+        <View className="w-full flex-row items-center gap-4 border-b border-border/40 px-3 py-3">
+          <TouchableOpacity
+            onPress={handleBackToHistory}
+            className="h-10 w-10 items-center justify-center rounded-xl border border-border/50 bg-surface"
+          >
+            <Ionicons
+              name="chevron-back"
+              size={20}
+              color="white"
+            />
+          </TouchableOpacity>
+          <Text className="text-xl font-bold text-text-primary">Transaction Details</Text>
+        </View>
         <View className="flex-1 items-center justify-center gap-4 px-8">
           <Text className="text-center font-inter text-sm text-text-secondary">{error ?? "Transaction not found."}</Text>
           <TransactionActionButton
@@ -118,7 +138,7 @@ export default function TransactionDetail() {
           downloading={downloading}
           onCancel={handleCancel}
           onDownload={handleDownload}
-          onBack={() => router.dismissTo("/(gym)/profile/historyTransaction")}
+          onBack={handleBackToHistory}
         />
       </ScrollView>
     </SafeAreaView>

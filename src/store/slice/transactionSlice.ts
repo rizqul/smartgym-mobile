@@ -1,5 +1,5 @@
-import { getAllTransactions } from "@/service/transaction.service"
-import { PaginationTransactionResponse, TransactionStatus, TransactionType } from "@/type/Transaction.type"
+import { getAllTransactions, GetTransactionsParams } from "@/service/transaction.service"
+import { PaginationTransactionResponse } from "@/type/Transaction.type"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
 interface TransactionState {
@@ -14,15 +14,9 @@ const initialState: TransactionState = {
   error: null
 }
 
-export type FetchTransactionsParams = {
-  type?: TransactionType
-  status?: TransactionStatus
-  size?: number
-}
-
 export const fetchTransactions = createAsyncThunk(
   "transaction/fetchTransactions",
-  async (params: FetchTransactionsParams | undefined, { rejectWithValue }) => {
+  async (params: GetTransactionsParams | undefined, { rejectWithValue }) => {
     try {
       return await getAllTransactions(params)
     } catch (error: any) {

@@ -10,6 +10,7 @@ import { LinearGradient } from "expo-linear-gradient"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import React, { useEffect, useState } from "react"
 import { Image, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
 
@@ -91,8 +92,25 @@ export default function BookingConfirm() {
         pathname: "/(gym)/dashboard/paymentScreen",
         params: { paymentUrl: redirectUrl, type: "pt-booking", orderId: orderId }
       })
-    } catch (err: any) {
-      console.log(err.response?.status, err.response?.data)
+    } catch (error: any) {
+      let errorMessage = "An unknown error occurred"
+      let errorTitle = "Payment Failed"
+
+      if (error.request && !error.response) {
+        errorTitle = "Connection Problem"
+        errorMessage = "Unable to connect to the server. Check your internet connection and make sure the server is available."
+      } else if (error.response) {
+        errorMessage = error.response.data?.message || "A server error occurred"
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: errorTitle,
+        textBody: errorMessage,
+        autoClose: 3000
+      })
     } finally {
       setSubmitting(false)
     }

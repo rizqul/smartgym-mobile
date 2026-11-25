@@ -36,7 +36,7 @@ export default function Dashboard() {
         style: "destructive",
         onPress: async () => {
           try {
-            await checkOut();
+            await checkOut()
             dispatch(clearActiveCheckin())
             Toast.show({
               type: ALERT_TYPE.SUCCESS,
@@ -90,8 +90,11 @@ export default function Dashboard() {
           <MembershipCard />
 
           {/* CHECKIN CARD COMPONENT */}
-          {(activeCheckin) && (
-            <CheckinCard activeCheckin={activeCheckin} handleCheckout={handleCheckout} />
+          {activeCheckin && (
+            <CheckinCard
+              activeCheckin={activeCheckin}
+              handleCheckout={handleCheckout}
+            />
           )}
 
           {/* ACTION BUTTONS */}
@@ -120,7 +123,7 @@ export default function Dashboard() {
             />
             <ActionButton
               label="Schedule"
-              onPress={() => router.push("/(gym)/navigation/trainer")}
+              onPress={() => router.push("/(gym)/trainer/bookingHistory")}
               icon={
                 <MaterialCommunityIcons
                   name="calendar-check-outline"
@@ -146,4 +149,3 @@ export default function Dashboard() {
     </SafeAreaView>
   )
 }
-

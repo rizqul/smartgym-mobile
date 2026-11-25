@@ -92,7 +92,6 @@ export default function Profile() {
             ]}
             onRenewPress={() => {}}
           />
-          {/*  */}
 
           {/* ================= HISTORY ================= */}
           <View className="">
@@ -239,7 +238,9 @@ export default function Profile() {
           onPress={() => setShowAlert(false)}
         >
           <Pressable className="flex h-[150] w-[300] items-center justify-center gap-8 rounded-xl border border-border bg-card p-5">
-            <Text className="mb-1 text-center font-inter text-xl font-bold text-text-primary">Are you sure you want to log out?</Text>
+            <Text className="mb-1 text-center font-inter text-xl font-bold leading-8 tracking-widest text-text-primary">
+              Are you sure you want to log out?
+            </Text>
             <View className="flex-row gap-3">
               <TouchableOpacity
                 className="flex-1 items-center rounded-xl border border-border bg-surface py-3"

@@ -4,6 +4,8 @@ import api from "./api"
 export type GetTransactionsParams = {
   type?: TransactionType
   status?: TransactionStatus
+  sortBy?: "createdAt" | "amount"
+  direction?: "asc" | "desc"
   size?: number
 }
 
@@ -12,6 +14,8 @@ export const getAllTransactions = async (params?: GetTransactionsParams) => {
     params: {
       type: params?.type,
       status: params?.status,
+      sortBy: params?.sortBy,
+      direction: params?.direction,
       size: params?.size
     }
   })
