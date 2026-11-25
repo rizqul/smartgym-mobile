@@ -39,3 +39,25 @@ export const formatTimeSlot = (iso: string): string => {
 }
 
 export const formatRange = (start: string, end: string) => `${formatTimeSlot(start)} - ${formatTimeSlot(end)}`
+
+const toTitleCase = (str: string) =>
+  str
+    .trim()
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+
+export const isTrainerBooking = (typeLabel: string) => typeLabel.toUpperCase() === "TRAINER BOOKING"
+
+export const parseTransactionName = (name: string, typeLabel: string) => {
+  if (!isTrainerBooking(typeLabel)) {
+    return { displayName: name, sessionTime: "" }
+  }
+
+  const [rawName, rawSlot] = name.split("[")
+  const slot = rawSlot?.replace("]", "")
+
+  return {
+    displayName: "Coach " + toTitleCase(rawName),
+    sessionTime: slot ? formatRange(slot.substring(0, 20), slot.substring(23, 43)) : ""
+  }
+}
