@@ -1,3 +1,4 @@
+import { isTrainerBooking, parseTransactionName } from "./FormaterHelper"
 type ReceiptData = {
   id?: string
   name: string
@@ -20,7 +21,7 @@ const formatRupiah = (n: number) =>
 
 const formatDate = (d?: string | Date) => {
   if (!d) return "-"
-  return new Date(d).toLocaleString("id-ID", {
+  return new Date(d).toLocaleString("en-US", {
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -35,11 +36,13 @@ const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   PROCESS: { bg: "#E8F1FF", text: "#2563EB" },
   CHALLENGE: { bg: "#E8F1FF", text: "#2563EB" }
 }
-const DEFAULT_STATUS = { bg: "#FEE9E9", text: "#DC2626" } // gagal/batal/expired
+const DEFAULT_STATUS = { bg: "#FEE9E9", text: "#DC2626" } // failed / cancelled / expired
 
 export function buildReceiptHtml(data: ReceiptData) {
   const color = STATUS_COLORS[data.status] ?? DEFAULT_STATUS
   const paymentMethod = data.paymentMethod?.replace(/_/g, " ")
+  const { displayName, sessionTime } = parseTransactionName(data.name, data.typeLabel)
+  const trainerBooking = isTrainerBooking(data.typeLabel)
 
   const row = (label: string, value: string) => `
     <tr>
@@ -118,11 +121,11 @@ export function buildReceiptHtml(data: ReceiptData) {
     <div class="card">
       <div class="header">
         <div class="brand">SMARTGYM</div>
-        <h1>Bukti Transaksi</h1>
+        <h1>Transaction Receipt</h1>
       </div>
 
       <div class="amount-block">
-        <div class="caption">Total Pembayaran</div>
+        <div class="caption">Total Payment</div>
         <div class="amount">${formatRupiah(data.amount)}</div>
         <span class="badge">${escapeHtml(data.statusLabel)}</span>
       </div>
@@ -130,20 +133,21 @@ export function buildReceiptHtml(data: ReceiptData) {
       <div class="divider"></div>
 
       <div class="section">
-        <div class="section-title">Detail Transaksi</div>
+        <div class="section-title">Transaction Details</div>
         <table>
-          ${data.id ? row("ID Transaksi", data.id) : ""}
-          ${row("Tanggal", formatDate(data.createdAt))}
-          ${row("Jenis", data.typeLabel)}
-          ${row("Item", data.name)}
-          ${paymentMethod ? row("Metode Bayar", paymentMethod) : ""}
+          ${data.id ? row("Transaction ID", data.id) : ""}
+          ${row("Date", formatDate(data.createdAt))}
+          ${row("Type", data.typeLabel)}
+          ${row("Item", displayName)}
+          ${trainerBooking ? row("Training Session", sessionTime ? `${sessionTime} WIB` : "-") : ""}
+          ${paymentMethod ? row("Payment Method", paymentMethod) : ""}
         </table>
       </div>
 
       <div class="divider"></div>
 
       <div class="section">
-        <div class="section-title">Rincian Pembayaran</div>
+        <div class="section-title">Payment Summary</div>
         <table>
           ${row("Subtotal", formatRupiah(data.amount))}
           <tr class="total-row">
@@ -154,8 +158,8 @@ export function buildReceiptHtml(data: ReceiptData) {
       </div>
 
       <div class="footer">
-        Terima kasih telah bertransaksi di SMARTGYM.<br />
-        Dokumen ini dibuat otomatis dan sah sebagai bukti pembayaran.
+        Thank you for your transaction at SMARTGYM.<br />
+        This document is generated automatically and is a valid proof of payment.
       </div>
     </div>
   </body>

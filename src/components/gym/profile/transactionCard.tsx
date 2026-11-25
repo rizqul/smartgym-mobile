@@ -1,5 +1,5 @@
 import { TransactionsResponse } from "@/type/Transaction.type"
-import { formatDate, formatRupiah } from "@/utils/FormaterHelper"
+import { formatDate, formatRupiah, parseTransactionName } from "@/utils/FormaterHelper"
 import { getStatusUI } from "@/utils/transactionHelper"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -10,6 +10,7 @@ export const TransactionCard = ({ item, showDetail }: { item: TransactionsRespon
 
   const iconName = item.type === "PT_BOOKING" ? "dumbbell" : "card-account-details-outline"
   const typeLabel = item.type === "PT_BOOKING" ? "Trainer Booking" : "Membership"
+  const { displayName, sessionTime } = parseTransactionName(item.name, typeLabel)
 
   return (
     <View className="rounded-2xl border border-border/50 bg-card px-5 py-4">
@@ -30,7 +31,7 @@ export const TransactionCard = ({ item, showDetail }: { item: TransactionsRespon
 
       {/* Body Card */}
       <View className="mb-3">
-        <Text className="mb-1 font-inter text-sm font-bold text-text-primary">{item.name}</Text>
+        <Text className="mb-1 font-inter text-sm font-bold text-text-primary">{displayName}</Text>
         {isPending && item.expiredAt ? (
           <Text className="mb-1 font-inter text-xs text-text-secondary">Pay before {formatDate(item.expiredAt)}</Text>
         ) : null}
