@@ -15,8 +15,8 @@ type TabKey = "upcoming" | "done"
 type BookingStatus = "PAID" | "PENDING" | "CANCELLED"
 
 const TABS: { key: TabKey; label: string }[] = [
-  { key: "upcoming", label: "Mendatang" },
-  { key: "done", label: "Selesai" }
+  { key: "upcoming", label: "Upcoming" },
+  { key: "done", label: "Done" }
 ]
 
 const GENERATED_AVATAR = /ui-avatars|dicebear|initials|avatar\.iran|gravatar/i
