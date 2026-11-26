@@ -48,7 +48,8 @@ const trainerSlice = createSlice({
       })
       .addCase(fetchTrainers.rejected, (state, action) => {
         state.isLoading = false
-        state.error = action.error.message!
+        const payload = action.payload as { message?: string } | string | undefined
+        state.error = (typeof payload === "string" ? payload : payload?.message) ?? action.error.message ?? "Failed to fetch trainers"
       })
   }
 })

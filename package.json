@@ -83,9 +83,28 @@
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(.pnpm|react-native|@react-native|@react-native-community|expo|@expo|@expo-google-fonts|react-navigation|@react-navigation|@sentry/react-native|native-base|standard-navigation|@reduxjs|immer|react-redux))",
+      "node_modules/react-native-reanimated/plugin/",
+      "node_modules/@react-native/babel-preset/"
+    ],
     "collectCoverageFrom": [
+      "src/app/(gym)/navigation/dashboard.tsx",
+      "src/app/(gym)/dashboard/membership.tsx",
+      "src/app/(gym)/dashboard/membershipConfirm.tsx",
+      "src/app/(gym)/dashboard/paymentScreen.tsx",
+      "src/components/gym/membership/membershipPlanCard.tsx",
+      "src/components/gym/membership/membershhipPlanConfirmation.tsx",
+      "src/components/gym/payment/bankList.tsx",
+      "src/components/gym/payment/methodOption.tsx",
+      "src/components/gym/payment/paymentSection.tsx",
       "src/context/authContext.tsx",
+      "src/service/membership.service.ts",
+      "src/service/trainer.service.ts",
       "src/service/auth.service.ts",
+      "src/store/slice/membershipSlice.ts",
+      "src/store/slice/trainerSlice.ts",
+      "src/store/slice/trainerBookingSlice.ts",
       "src/utils/authHelper.ts",
       "!**/*.d.ts"
     ],
