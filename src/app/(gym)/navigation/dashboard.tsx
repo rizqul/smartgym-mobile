@@ -7,12 +7,13 @@ import { TrainerCard } from "@/components/gym/dashboard/trainerCard"
 import { WeeklyActivityCard } from "@/components/gym/dashboard/weeklyActivityCard"
 import { BlurRefreshScrollView } from "@/components/gym/templates/blurRefreshScrollView"
 import { useAuth } from "@/context/authContext"
-import { checkOut, getActiveCheckin } from "@/service/scan.service"
+import { checkOut, getActiveCheckin, getSummaryCheckin } from "@/service/scan.service"
 import { clearActiveCheckin, setActiveCheckin } from "@/store/slice/checkinSlice"
 import { AppDispatch, RootState } from "@/store/store"
+import { SummaryCheckin } from "@/type/checkin.type"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { router } from "expo-router"
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Alert, StatusBar, Text, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -28,12 +29,37 @@ export default function Dashboard() {
   const { user, refreshUser } = useAuth()
   const firstName = user?.name.split(" ")[0]
 
+  const [summary, setSummary] = useState<SummaryCheckin | null>(null)
+  const [summaryLoading, setSummaryLoading] = useState(true)
+
+  const loadSummary = useCallback(async () => {
+    try {
+      setSummaryLoading(true)
+      const data = await getSummaryCheckin()
+      setSummary(data)
+    } catch (e) {
+      console.log("Errpr load Summary");
+      console.log(e);
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Gagal",
+        textBody: "Coba lagi."
+      })
+    } finally {
+      setSummaryLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    void loadSummary()
+  }, [loadSummary])
+
   const onRefresh = useCallback(async () => {
-    // await new Promise((resolve) => setTimeout(resolve, 1500))
     await refreshUser()
     const activeCheckin = await getActiveCheckin()
     dispatch(setActiveCheckin(activeCheckin))
-  }, [])
+    await loadSummary()
+  }, [dispatch, refreshUser, loadSummary])
 
   const handleCheckout = () => {
     Alert.alert("Konfirmasi", "Akhiri sesi latihan?", [
@@ -148,10 +174,10 @@ export default function Dashboard() {
           <TrainerCard onViewTrainer={() => router.push("/(gym)/navigation/trainer")} />
 
           {/* FITNESS PROGRESS */}
-          <FitnessProgressCard />
+          <FitnessProgressCard summary={summary} targetHours={50} />
 
           {/* WEEKLY ACTIVITY */}
-          <WeeklyActivityCard />
+          <WeeklyActivityCard summary={summary} />
         </View>
       </BlurRefreshScrollView>
     </SafeAreaView>
