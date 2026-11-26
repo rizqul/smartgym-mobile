@@ -1,6 +1,7 @@
+import AppModal, { AppModalVariant } from "@/components/gym/templates/appModal"
 import * as ExpoLinking from "expo-linking"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { Alert } from "react-native"
+import { useRef, useState } from "react"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { WebView } from "react-native-webview"
 
@@ -9,10 +10,53 @@ const REDIRECT_PATHS = {
   "pt-booking": "/midtrans/pt-booking"
 } as const
 
+type PaymentResult = {
+  variant: AppModalVariant
+  title: string
+  message: string
+}
+
+const getResult = (status: unknown, type: keyof typeof REDIRECT_PATHS): PaymentResult => {
+  const isBooking = type === "pt-booking"
+
+  if (status === "settlement" || status === "capture") {
+    return {
+      variant: "success",
+      title: "Payment Successful",
+      message: isBooking
+        ? "Your payment has been received. Your trainer session is being confirmed."
+        : "Your payment has been received. Your membership will be active shortly."
+    }
+  }
+
+  if (status === "pending") {
+    return {
+      variant: "warning",
+      title: "Waiting for Payment",
+      message: "Please complete your payment before it expires. You can check the status from your transaction details."
+    }
+  }
+
+  return {
+    variant: "danger",
+    title: "Payment Failed",
+    message: "Your payment was unsuccessful or has expired. Please try again."
+  }
+}
+
 export default function PaymentScreen() {
   const { paymentUrl, type, orderId } = useLocalSearchParams<{ paymentUrl: string; type: keyof typeof REDIRECT_PATHS; orderId: string }>()
   const router = useRouter()
-  const redirectPath = REDIRECT_PATHS[type ?? "membership"]
+  const paymentType = type ?? "membership"
+  const redirectPath = REDIRECT_PATHS[paymentType]
+
+  const [result, setResult] = useState<PaymentResult | null>(null)
+  const handled = useRef(false)
+
+  const handleContinue = () => {
+    setResult(null)
+    router.dismissTo({ pathname: "/(gym)/profile/transactionDetail", params: { id: orderId } })
+  }
 
   return (
     <SafeAreaView className="flex-1">
@@ -21,20 +65,25 @@ export default function PaymentScreen() {
         onShouldStartLoadWithRequest={(req) => {
           if (!req.url.includes(redirectPath)) return true
 
-          const { queryParams } = ExpoLinking.parse(req.url)
-          const status = queryParams?.transaction_status
-
-          if (status === "settlement" || status === "capture") {
-            Alert.alert("Berhasil", "Pembayaran berhasil, membership kamu segera aktif.")
-          } else if (status === "pending") {
-            Alert.alert("Menunggu pembayaran", "Selesaikan pembayaran kamu dulu.")
-          } else {
-            Alert.alert("Gagal", "Pembayaran tidak berhasil atau sudah kedaluwarsa.")
+          if (!handled.current) {
+            handled.current = true
+            const { queryParams } = ExpoLinking.parse(req.url)
+            setResult(getResult(queryParams?.transaction_status, paymentType))
           }
 
-          router.dismissTo({ pathname: "/(gym)/profile/transactionDetail", params: { id: orderId } })
           return false
         }}
+      />
+
+      <AppModal
+        visible={result !== null}
+        onClose={handleContinue}
+        dismissOnBackdrop={false}
+        variant={result?.variant}
+        title={result?.title ?? ""}
+        message={result?.message}
+        primaryLabel="View Transaction"
+        onPrimary={handleContinue}
       />
     </SafeAreaView>
   )

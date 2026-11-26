@@ -6,7 +6,6 @@ import { buildReceiptHtml } from "@/utils/transactionReceipt"
 import * as Print from "expo-print"
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Alert } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 
 export function useTransactionDetail() {
@@ -22,6 +21,7 @@ export function useTransactionDetail() {
   const [now, setNow] = useState(() => Date.now())
   const expiryChecked = useRef(false)
   const [downloading, setDownloading] = useState(false)
+  const [showCancel, setShowCancel] = useState(false)
 
   const isPending = data?.status === "PENDING"
 
@@ -104,33 +104,28 @@ export function useTransactionDetail() {
       pathname: "/(gym)/dashboard/paymentScreen",
       params: {
         paymentUrl: data.paymentUrl,
-        type: data.type === "PT_BOOKING" ? "pt-booking" : "membership"
+        type: data.type === "PT_BOOKING" ? "pt-booking" : "membership",
+        id: data.orderId
       }
     })
   }
 
   // ---------- CANCEL ----------
-  const handleCancel = () => {
-    Alert.alert("Cancel transaction?", "A cancelled transaction can no longer be paid.", [
-      { text: "No", style: "cancel" },
-      {
-        text: "Yes, cancel",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            setCancelling(true)
-            await cancelTransaction(data?.orderId!, data?.token!)
-            Toast.show({ type: ALERT_TYPE.SUCCESS, title: "Success", textBody: "Transaction cancelled.", autoClose: 3000 })
-            await load()
-          } catch (e: any) {
-            const message = e.response?.data?.message || "Failed to cancel transaction. Please try again."
-            Toast.show({ type: ALERT_TYPE.DANGER, title: "Failed", textBody: message, autoClose: 3000 })
-          } finally {
-            setCancelling(false)
-          }
-        }
-      }
-    ])
+  const handleCancel = () => setShowCancel(true)
+
+  const confirmCancel = async () => {
+    setShowCancel(false)
+    try {
+      setCancelling(true)
+      await cancelTransaction(data?.orderId!, data?.token!)
+      Toast.show({ type: ALERT_TYPE.SUCCESS, title: "Success", textBody: "Transaction cancelled.", autoClose: 3000 })
+      await load()
+    } catch (e: any) {
+      const message = e.response?.data?.message || "Failed to cancel transaction. Please try again."
+      Toast.show({ type: ALERT_TYPE.DANGER, title: "Failed", textBody: message, autoClose: 3000 })
+    } finally {
+      setCancelling(false)
+    }
   }
 
   const handleDownload = async () => {
@@ -170,6 +165,9 @@ export function useTransactionDetail() {
     handleCheckStatus,
     handlePay,
     handleCancel,
+    showCancel,
+    setShowCancel,
+    confirmCancel,
     downloading,
     handleDownload
   }

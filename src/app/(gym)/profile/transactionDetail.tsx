@@ -5,6 +5,7 @@ import { TransactionHero } from "@/components/gym/profile/transactionHero"
 import { TransactionInfoCard } from "@/components/gym/profile/transactionInfoCard"
 import { TransactionPaymentBreakdown } from "@/components/gym/profile/transactionPaymentBreakdown"
 import { TransactionSummaryCard } from "@/components/gym/profile/transactionSummaryCard"
+import AppModal from "@/components/gym/templates/appModal"
 import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { HERO } from "@/data/helperTransaction/transactionHero"
 
@@ -33,14 +34,14 @@ export default function TransactionDetail() {
     handlePay,
     handleCancel,
     downloading,
-    handleDownload
+    handleDownload,
+    showCancel,
+    setShowCancel,
+    confirmCancel
   } = useTransactionDetail()
 
   const handleBackToHistory = () => {
-    if (router.canDismiss()) {
-      router.dismissAll()
-    }
-    router.replace("/(gym)/profile/historyTransaction")
+    router.dismissTo("/(gym)/profile/historyTransaction")
   }
 
   if (loading) {
@@ -140,6 +141,17 @@ export default function TransactionDetail() {
           onCancel={handleCancel}
           onDownload={handleDownload}
           onBack={handleBackToHistory}
+        />
+        <AppModal
+          visible={showCancel}
+          onClose={() => setShowCancel(false)}
+          variant="warning"
+          title="Cancel this transaction?"
+          message="A cancelled transaction can no longer be paid."
+          secondaryLabel="No"
+          primaryLabel="Yes, Cancel"
+          primaryTone="danger"
+          onPrimary={confirmCancel}
         />
       </ScrollView>
     </SafeAreaView>
