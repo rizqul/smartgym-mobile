@@ -72,14 +72,14 @@ export const MembershipCard = () => {
             {/* Card Body */}
             <View className="flex-row items-center">
                 <View className="flex-1">
-                    <Text className="mb-1 text-[11px] font-semibold tracking-[0.5px] text-text-muted">Bergabung sejak</Text>
+                    <Text className="mb-1 text-[11px] font-semibold tracking-[0.5px] text-text-muted">Joined since</Text>
                     <Text className="text-lg font-bold tracking-[1px] text-text-primary">{joinMemberText}</Text>
                 </View>
 
                 <View className="mx-4 h-10 w-px bg-primary/40" />
 
                 <View className="flex-1 items-end">
-                    <Text className="mb-1 text-[11px] font-semibold tracking-[0.5px] text-text-muted">Hingga</Text>
+                    <Text className="mb-1 text-[11px] font-semibold tracking-[0.5px] text-text-muted">Until</Text>
                     <Text className="text-lg font-bold text-text-primary">{expiredText}</Text>
                 </View>
             </View>

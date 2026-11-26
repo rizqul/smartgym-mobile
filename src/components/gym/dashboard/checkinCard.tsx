@@ -14,9 +14,9 @@ export default function CheckinCard({ activeCheckin, handleCheckout }: Readonly<
                     <MaterialCommunityIcons name="door-open" size={20} color="#22C55E" />
                 </View>
                 <View>
-                    <Text className="text-text-primary text-sm font-bold mb-0.5">Sedang Latihan</Text>
+                    <Text className="text-text-primary text-sm font-bold mb-0.5">Currently Practicing!</Text>
                     <Text className="text-[#74C69D] text-xs">
-                        Masuk sejak {new Date(activeCheckin.checkInAt).toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit' })} WIB
+                        Check-in From {new Date(activeCheckin.checkInAt).toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit' })} WIB
                     </Text>
                 </View>
             </View>

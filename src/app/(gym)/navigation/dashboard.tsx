@@ -7,12 +7,13 @@ import { TrainerCard } from "@/components/gym/dashboard/trainerCard"
 import { WeeklyActivityCard } from "@/components/gym/dashboard/weeklyActivityCard"
 import { BlurRefreshScrollView } from "@/components/gym/templates/blurRefreshScrollView"
 import { useAuth } from "@/context/authContext"
-import { checkOut } from "@/service/scan.service"
-import { clearActiveCheckin } from "@/store/slice/checkinSlice"
+import { checkOut, getActiveCheckin, getSummaryCheckin } from "@/service/scan.service"
+import { clearActiveCheckin, setActiveCheckin } from "@/store/slice/checkinSlice"
 import { AppDispatch, RootState } from "@/store/store"
+import { SummaryCheckin } from "@/type/checkin.type"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { router } from "expo-router"
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Alert, StatusBar, Text, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -25,12 +26,57 @@ const COLOR_HIGHLIGHT = "#FFD166"
 export default function Dashboard() {
   const dispatch = useDispatch<AppDispatch>()
   const activeCheckin = useSelector((state: RootState) => state.checkin.activeCheckin)
-  const { user } = useAuth()
+  const { user, refreshUser } = useAuth()
   const firstName = user?.name.split(" ")[0]
 
-  const onRefresh = useCallback(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+  const [summary, setSummary] = useState<SummaryCheckin | null>(null)
+
+  const loadSummary = useCallback(async () => {
+    try {
+      const data = await getSummaryCheckin()
+      setSummary(data)
+    } catch (e) {
+      console.log("Errpr load Summary");
+      console.log(e);
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Failed",
+        textBody: "Try again"
+      })
+    }
   }, [])
+
+  const loadCheckin = useCallback(async () => {
+    try {
+      const active = await getActiveCheckin()
+
+      if (active) {
+        dispatch(setActiveCheckin(active))
+      } else {
+        dispatch(clearActiveCheckin())
+      }
+    } catch (e: any) {
+      const status = e?.response?.status
+
+      if (status === 400) {
+        dispatch(clearActiveCheckin())
+        return
+      }
+
+      console.log("[loadCheckin] error:", e)
+      dispatch(clearActiveCheckin())
+    }
+  }, [dispatch])
+
+  useEffect(() => {
+    void loadSummary()
+    void loadCheckin()
+  }, [loadSummary, loadCheckin])
+
+  const onRefresh = useCallback(async () => {
+    await refreshUser()
+    await Promise.all([loadCheckin(), loadSummary()])
+  }, [refreshUser, loadCheckin, loadSummary])
 
   const handleCheckout = () => {
     Alert.alert("Konfirmasi", "Akhiri sesi latihan?", [
@@ -44,21 +90,22 @@ export default function Dashboard() {
             dispatch(clearActiveCheckin())
             Toast.show({
               type: ALERT_TYPE.SUCCESS,
-              title: "Berhasil",
-              textBody: "Sesi latihan selesai."
+              title: "Successful",
+              textBody: "Training session complete"
             })
           } catch (error) {
             console.log(error)
             Toast.show({
               type: ALERT_TYPE.DANGER,
-              title: "Gagal",
-              textBody: "Coba lagi."
+              title: "Failed",
+              textBody: "Try again"
             })
           }
         }
       }
     ])
   }
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -104,7 +151,7 @@ export default function Dashboard() {
           {/* ACTION BUTTONS */}
           <View className="flex-row gap-3">
             <ActionButton
-              label="Scan Masuk"
+              label="Check-in Scan"
               onPress={() => router.push("/(gym)/dashboard/scanQR")}
               icon={
                 <MaterialCommunityIcons
@@ -115,7 +162,7 @@ export default function Dashboard() {
               }
             />
             <ActionButton
-              label="Berlangganan"
+              label="Membership"
               onPress={() => router.push("/(gym)/dashboard/membership")}
               icon={
                 <MaterialIcons
@@ -144,10 +191,10 @@ export default function Dashboard() {
           <TrainerCard onViewTrainer={() => router.push("/(gym)/navigation/trainer")} />
 
           {/* FITNESS PROGRESS */}
-          <FitnessProgressCard />
+          <FitnessProgressCard summary={summary} targetHours={50} />
 
           {/* WEEKLY ACTIVITY */}
-          <WeeklyActivityCard />
+          <WeeklyActivityCard summary={summary} />
         </View>
       </BlurRefreshScrollView>
     </SafeAreaView>

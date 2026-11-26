@@ -31,3 +31,13 @@ export interface MyCheckinResponse {
     nextUrl: number | null
   }
 }
+
+export interface SummaryCheckin {
+  totalGymMinutes: number
+  totalGymHours: number
+  currentStreak: number
+  longestStreak: number
+  totalVisits: number
+  lastCheckInAt: string
+  checkedInToday: boolean
+}
