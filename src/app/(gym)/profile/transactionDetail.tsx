@@ -40,8 +40,9 @@ export default function TransactionDetail() {
     confirmCancel
   } = useTransactionDetail()
 
-  const handleBackToHistory = () => {
-    router.dismissTo("/(gym)/profile/historyTransaction")
+  const handleBack = () => {
+    if (router.canGoBack()) router.back()
+    else router.replace("/(gym)/navigation/dashboard")
   }
 
   if (loading) {
@@ -62,7 +63,7 @@ export default function TransactionDetail() {
         <StatusBar barStyle="light-content" />
         <View className="w-full flex-row items-center gap-4 border-b border-border/40 px-3 py-3">
           <TouchableOpacity
-            onPress={handleBackToHistory}
+            onPress={handleBack}
             className="h-10 w-10 items-center justify-center rounded-xl border border-border/50 bg-surface"
           >
             <Ionicons
@@ -96,7 +97,19 @@ export default function TransactionDetail() {
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
 
-      <HeaderNavigation label="Transaction Details" />
+      <View className="w-full flex-row items-center gap-4 border-b border-border/40 px-3 py-3">
+        <TouchableOpacity
+          onPress={handleBack}
+          className="h-10 w-10 items-center justify-center rounded-xl border border-border/50 bg-surface"
+        >
+          <Ionicons
+            name="chevron-back"
+            size={20}
+            color="white"
+          />
+        </TouchableOpacity>
+        <Text className="text-xl font-bold text-text-primary">Transaction Details</Text>
+      </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -140,7 +153,7 @@ export default function TransactionDetail() {
           downloading={downloading}
           onCancel={handleCancel}
           onDownload={handleDownload}
-          onBack={handleBackToHistory}
+          onBack={handleBack}
         />
         <AppModal
           visible={showCancel}

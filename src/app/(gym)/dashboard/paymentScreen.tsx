@@ -55,7 +55,11 @@ export default function PaymentScreen() {
 
   const handleContinue = () => {
     setResult(null)
-    router.dismissTo({ pathname: "/(gym)/profile/transactionDetail", params: { id: orderId } })
+    router.dismissTo("/(gym)/navigation/dashboard")
+    router.push({
+      pathname: "/(gym)/profile/transactionDetail",
+      params: { id: orderId }
+    })
   }
 
   return (
