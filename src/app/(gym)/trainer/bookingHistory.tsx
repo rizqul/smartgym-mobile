@@ -2,7 +2,6 @@ import HeaderNavigation from "@/components/gym/templates/headerNavigation"
 import { fetchMyBookings } from "@/store/slice/trainerBookingSlice"
 import { AppDispatch, RootState } from "@/store/store"
 import { TrainerBookingResponse } from "@/type/trainerBooking.type"
-import { getTimezoneLabel } from "@/utils/timeZoneHelper"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { useFocusEffect, useRouter } from "expo-router"
@@ -127,7 +126,7 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: TrainerBookingRespon
               color="#FFB693"
             />
             <Text className="font-inter text-sm font-semibold text-accent">{timeText}</Text>
-            <Text className="font-inter text-[11px] text-text-subdued">{getTimezoneLabel()}</Text>
+            <Text className="font-inter text-[11px] text-text-subdued">WIB</Text>
           </View>
 
           <Text className="font-inter text-[11px] text-text-secondary">Duration {formatDuration(slot.startTime, slot.endTime)}</Text>
