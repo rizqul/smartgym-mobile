@@ -27,7 +27,7 @@ You can start developing by editing the files inside the **src/app** directory. 
 
 ## Tests
 
-Run the auth unit and screen behavior tests with `npm test`. `npm run test:coverage` enforces 80% minimum coverage for the auth context, service, and session helpers; screen flows are behavior-tested as well.
+Run all auth, dashboard, membership, and trainer booking tests with `npm test`. `npm run test:coverage` enforces 80% aggregate coverage across configured auth, dashboard/membership, trainer service/state, and payment sources.
 Use `npm run test:watch` while developing. Keep tests next to their feature layer under `__tests__` and assert observable behavior so the same structure can be reused for future features.
 
 ## Get a fresh project
