@@ -88,9 +88,9 @@ export default function BookingConfirm() {
       const paymentType = paymentId !== "" ? paymentId : bankId
       const data = await bookingTrainer(slotId, paymentType)
       const { redirectUrl, orderId } = data
-      router.push({
+      router.replace({
         pathname: "/(gym)/dashboard/paymentScreen",
-        params: { paymentUrl: redirectUrl, type: "pt-booking", orderId: orderId }
+        params: { paymentUrl: redirectUrl, type: "pt-booking", orderId }
       })
     } catch (error: any) {
       let errorMessage = "An unknown error occurred"

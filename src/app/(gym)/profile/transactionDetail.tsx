@@ -40,8 +40,9 @@ export default function TransactionDetail() {
     confirmCancel
   } = useTransactionDetail()
 
-  const handleBackToHistory = () => {
-    router.dismissTo("/(gym)/profile/historyTransaction")
+  const handleBack = () => {
+    if (router.canGoBack()) router.back()
+    else router.replace("/(gym)/navigation/dashboard")
   }
 
   if (loading) {
@@ -62,7 +63,7 @@ export default function TransactionDetail() {
         <StatusBar barStyle="light-content" />
         <View className="w-full flex-row items-center gap-4 border-b border-border/40 px-3 py-3">
           <TouchableOpacity
-            onPress={handleBackToHistory}
+            onPress={handleBack}
             className="h-10 w-10 items-center justify-center rounded-xl border border-border/50 bg-surface"
           >
             <Ionicons
@@ -98,7 +99,7 @@ export default function TransactionDetail() {
 
       <View className="w-full flex-row items-center gap-4 border-b border-border/40 px-3 py-3">
         <TouchableOpacity
-          onPress={handleBackToHistory}
+          onPress={handleBack}
           className="h-10 w-10 items-center justify-center rounded-xl border border-border/50 bg-surface"
         >
           <Ionicons
@@ -152,7 +153,7 @@ export default function TransactionDetail() {
           downloading={downloading}
           onCancel={handleCancel}
           onDownload={handleDownload}
-          onBack={handleBackToHistory}
+          onBack={handleBack}
         />
         <AppModal
           visible={showCancel}

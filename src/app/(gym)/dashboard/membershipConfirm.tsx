@@ -36,9 +36,9 @@ const MembershipConfirm = () => {
       const paymentType = paymentId !== "" ? paymentId : bankId
       const data = await buyMembership(id, paymentType)
       const { redirectUrl, orderId } = data
-      router.push({
+      router.replace({
         pathname: "/(gym)/dashboard/paymentScreen",
-        params: { paymentUrl: redirectUrl, type: "membership", orderId: orderId }
+        params: { paymentUrl: redirectUrl, type: "membership", orderId }
       })
     } catch (error: any) {
       let errorMessage = "An unknown error occurred"
