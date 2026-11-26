@@ -134,7 +134,7 @@ export default function Dashboard() {
           {/* ACTION BUTTONS */}
           <View className="flex-row gap-3">
             <ActionButton
-              label="Scan Masuk"
+              label="Check-in Scan"
               onPress={() => router.push("/(gym)/dashboard/scanQR")}
               icon={
                 <MaterialCommunityIcons
@@ -145,7 +145,7 @@ export default function Dashboard() {
               }
             />
             <ActionButton
-              label="Berlangganan"
+              label="Membership"
               onPress={() => router.push("/(gym)/dashboard/membership")}
               icon={
                 <MaterialIcons

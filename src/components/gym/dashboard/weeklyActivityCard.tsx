@@ -100,11 +100,11 @@ export const WeeklyActivityCard = ({ summary }: WeeklyActivityCardProps) => {
                         color={COLOR_HIGHLIGHT}
                     />
                     <Text className="text-[11px] text-text-subdued">
-                        Streak: <Text className="font-semibold text-text-primary">{streak} hari</Text>
+                        Streak: <Text className="font-semibold text-text-primary">{streak} days</Text>
                     </Text>
                 </View>
                 <Text className="text-[11px] text-text-subdued">
-                    Total visit: <Text className="font-semibold text-text-primary">{totalVisits}x</Text>
+                    Total visits: <Text className="font-semibold text-text-primary">{totalVisits}x</Text>
                 </Text>
             </View>
         </View>

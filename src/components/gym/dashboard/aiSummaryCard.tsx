@@ -29,7 +29,7 @@ export const AiSummaryCard = () => {
             <Text className="text-sm font-bold text-text-primary">AI Workout Summary</Text>
           </View>
           <Text className="text-[11px] leading-4 text-text-secondary">
-            Ringkasan plan latihan AI terbaru dari endpoint <Text className="font-semibold text-primary-hover">/member/ai/generate</Text>.
+            Summary of the latest AI training plan from endpoint <Text className="font-semibold text-primary-hover">/member/ai/generate</Text>.
           </Text>
         </View>
         <TouchableOpacity
@@ -80,7 +80,7 @@ export const AiSummaryCard = () => {
               className="flex-1 flex-row items-center justify-center gap-2 rounded-xl bg-primary py-3"
             >
               <Ionicons name="sparkles" size={16} color="#111317" />
-              <Text className="text-xs font-bold text-background">Lihat Ringkasan Plan</Text>
+              <Text className="text-xs font-bold text-background">View Plan Summary</Text>
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.85}
@@ -94,9 +94,9 @@ export const AiSummaryCard = () => {
       ) : (
         <View className="items-center gap-3 rounded-2xl border border-dashed border-border/70 bg-card/60 px-4 py-5">
           <MaterialCommunityIcons name="clipboard-text-clock-outline" size={34} color="#FF8A33" />
-          <Text className="text-center text-sm font-semibold text-text-primary">Belum ada ringkasan AI</Text>
+          <Text className="text-center text-sm font-semibold text-text-primary">No Ai summary yet</Text>
           <Text className="text-center text-[11px] leading-4 text-text-secondary">
-            Generate workout plan dari AI untuk menampilkan ringkasan target, jadwal, dan fokus latihan di dashboard.
+            Generate workout plans from AI to display a summary of your goals, schedule, and training focus on the dashboard.
           </Text>
           <TouchableOpacity
             activeOpacity={0.85}
@@ -104,7 +104,7 @@ export const AiSummaryCard = () => {
             className="mt-1 flex-row items-center gap-2 rounded-xl bg-primary px-4 py-2.5"
           >
             <Ionicons name="sparkles" size={14} color="#111317" />
-            <Text className="text-xs font-bold text-background">Buat AI Workout Summary</Text>
+            <Text className="text-xs font-bold text-background">Create an AI Workout Summary</Text>
           </TouchableOpacity>
         </View>
       )}
