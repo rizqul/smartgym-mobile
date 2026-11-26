@@ -1,4 +1,4 @@
-import { CheckinResponse, MyCheckinRequest, MyCheckinResponse } from "@/type/checkin.type"
+import { CheckinResponse, MyCheckinRequest, MyCheckinResponse, SummaryCheckin } from "@/type/checkin.type"
 import api from "./api"
 
 export const scanQr = async (code: string): Promise<CheckinResponse> => {
@@ -32,5 +32,25 @@ export const getMyCheckin = async ({ page, size, status }: MyCheckinRequest): Pr
   } catch (err: any) {
     console.log(err.response?.data)
     throw err
+  }
+}
+
+export const getActiveCheckin = async (): Promise<CheckinResponse> => {
+  try {
+    const res = await api.get("/member/attendance/status")
+    return res.data.data
+  } catch (error: any) {
+    console.log(error.response?.data)
+    throw error
+  }
+}
+
+export const getSummaryCheckin = async (): Promise<SummaryCheckin> => {
+  try {
+    const res = await api.post("/member/attendance/summary")
+    return res.data.data
+  } catch (error: any) {
+    console.log(error.response?.data)
+    throw error
   }
 }

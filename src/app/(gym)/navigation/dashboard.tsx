@@ -7,8 +7,8 @@ import { TrainerCard } from "@/components/gym/dashboard/trainerCard"
 import { WeeklyActivityCard } from "@/components/gym/dashboard/weeklyActivityCard"
 import { BlurRefreshScrollView } from "@/components/gym/templates/blurRefreshScrollView"
 import { useAuth } from "@/context/authContext"
-import { checkOut } from "@/service/scan.service"
-import { clearActiveCheckin } from "@/store/slice/checkinSlice"
+import { checkOut, getActiveCheckin } from "@/service/scan.service"
+import { clearActiveCheckin, setActiveCheckin } from "@/store/slice/checkinSlice"
 import { AppDispatch, RootState } from "@/store/store"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { router } from "expo-router"
@@ -25,11 +25,14 @@ const COLOR_HIGHLIGHT = "#FFD166"
 export default function Dashboard() {
   const dispatch = useDispatch<AppDispatch>()
   const activeCheckin = useSelector((state: RootState) => state.checkin.activeCheckin)
-  const { user } = useAuth()
+  const { user, refreshUser } = useAuth()
   const firstName = user?.name.split(" ")[0]
 
   const onRefresh = useCallback(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    // await new Promise((resolve) => setTimeout(resolve, 1500))
+    await refreshUser()
+    const activeCheckin = await getActiveCheckin()
+    dispatch(setActiveCheckin(activeCheckin))
   }, [])
 
   const handleCheckout = () => {
@@ -59,6 +62,7 @@ export default function Dashboard() {
       }
     ])
   }
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
