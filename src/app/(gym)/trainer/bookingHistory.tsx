@@ -221,9 +221,7 @@ export default function BookingHistoryScreen() {
 
     return {
       total: bookings.length,
-      // mendatang: yang paling dekat di atas
       upcoming: bookings.filter(isUpcoming).sort((a, b) => a.slot.startTime.localeCompare(b.slot.startTime)),
-      // selesai & dibatalkan: yang terbaru di atas
       done: bookings.filter((b) => !isUpcoming(b)).sort((a, b) => b.slot.startTime.localeCompare(a.slot.startTime))
     }
   }, [result?.data])

@@ -40,7 +40,7 @@ export const formatTimeSlot = (iso: string): string => {
 
 export const formatRange = (start: string, end: string) => `${formatTimeSlot(start)} - ${formatTimeSlot(end)}`
 
-const toTitleCase = (str: string) =>
+export const toTitleCase = (str: string) =>
   str
     .trim()
     .toLowerCase()

@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "@/store/store"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import React, { useEffect, useState } from "react"
-import { ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
 
@@ -23,7 +23,7 @@ const SPECIALIZATION_OPTIONS = [
 
 export default function TrainerScreen() {
   const dispatch = useDispatch<AppDispatch>()
-  const { result } = useSelector((state: RootState) => state.trainer)
+  const { result, isLoading } = useSelector((state: RootState) => state.trainer)
   const [search, setSearch] = useState<string>("")
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search)
   const [selectedSpec, setSelectedSpec] = useState<string>("ALL")
@@ -45,6 +45,8 @@ export default function TrainerScreen() {
   }, [search])
 
   const trainers = result ?? []
+  const total = trainers.length
+  const loading = isLoading && total === 0
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -148,15 +150,12 @@ export default function TrainerScreen() {
 
           {/* ================= TRAINER LIST ================= */}
           <View className="gap-5">
-            {trainers.length === 0 ? (
-              <View className="items-center gap-2 py-10">
-                <Ionicons
-                  name="search-outline"
-                  size={32}
-                  color="#B8BDC7"
-                />
-                <Text className="font-inter text-sm text-text-secondary">No trainers found</Text>
-              </View>
+            {loading ? (
+              <ActivityIndicator
+                size="large"
+                color="#FF6B00"
+                className="mt-10"
+              />
             ) : (
               trainers.map((trainer) => (
                 <TrainerCard
