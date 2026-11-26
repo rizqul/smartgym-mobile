@@ -80,7 +80,7 @@ export default function TrainerProfile() {
 
   const dateText = new Date(selectedDate).toLocaleDateString(DATE_LOCALE, {
     day: "numeric",
-    month: "long",
+    month: "short",
     year: "numeric"
   })
 
@@ -183,14 +183,7 @@ export default function TrainerProfile() {
                 />
                 <Text className="font-inter text-xs font-semibold text-primary-hover">{data?.specialization}</Text>
               </View>
-
-              <Text className="font-inter text-sm leading-5 text-text-secondary">
-                Specialist in hypertrophy programs, biomechanics form correction, and functional strength building without the risk of
-                injury.
-              </Text>
-
               <View className="h-px bg-border" />
-
               {/* Stats */}
               <View className="flex-row">
                 <View className="flex-1 flex-row items-center gap-3">
@@ -234,7 +227,7 @@ export default function TrainerProfile() {
               <Text className="mb-1 font-inter text-xl font-bold text-text-primary">Available Schedule</Text>
               <Text className="font-inter text-sm text-text-secondary">Pick a date for your training session</Text>
             </View>
-            <Text className="font-inter text-sm font-bold tracking-widest text-primary">{month}</Text>
+            <Text className="font-inter text-[10px] font-bold tracking-widest text-primary">{month}</Text>
           </View>
 
           {/* Date Picker */}
