@@ -175,7 +175,7 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: TrainerBookingRespon
 
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => router.push({ pathname: "/(gym)/trainer/[id]", params: { id: trainer.id } })}
+          onPress={() => router.push({ pathname: "/(gym)/trainer/trainerDetail", params: { id: trainer.id } })}
           className="flex-row items-center gap-1 rounded-xl border border-primary/40 bg-primary/10 px-3 py-2"
         >
           <Text className="font-inter text-xs font-bold text-primary-hover">{isUpcoming ? "View Trainer" : "Book Again"}</Text>

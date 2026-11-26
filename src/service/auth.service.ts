@@ -28,7 +28,6 @@ export async function resetPassword(password: string) {
 
 export async function otpVerification(code: string) {
   const response = await api.post("/auth/reset-verify", { code })
-  console.log(response)
   return response
 }
 

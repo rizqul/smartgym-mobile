@@ -62,7 +62,6 @@ export default function AppModal({
         className="flex-1 items-center justify-center bg-black/70 px-6"
         onPress={dismissOnBackdrop ? onClose : undefined}
       >
-        {/* Pressable kosong supaya sentuhan di dalam kartu tidak menutup modal */}
         <Pressable className="w-full max-w-[340px] items-center gap-5 rounded-2xl border border-border bg-card p-6">
           {style ? (
             <View className={`h-20 w-20 items-center justify-center rounded-full ${style.ring}`}>

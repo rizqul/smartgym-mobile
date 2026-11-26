@@ -5,6 +5,7 @@ import { FitnessProgressCard } from "@/components/gym/dashboard/fitnessProgressC
 import { MembershipCard } from "@/components/gym/dashboard/membershipCard"
 import { TrainerCard } from "@/components/gym/dashboard/trainerCard"
 import { WeeklyActivityCard } from "@/components/gym/dashboard/weeklyActivityCard"
+import AppModal from "@/components/gym/templates/appModal"
 import { BlurRefreshScrollView } from "@/components/gym/templates/blurRefreshScrollView"
 import { useAuth } from "@/context/authContext"
 import { checkOut, getActiveCheckin, getSummaryCheckin } from "@/service/scan.service"
@@ -14,7 +15,7 @@ import { SummaryCheckin } from "@/type/checkin.type"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { router } from "expo-router"
 import React, { useCallback, useEffect, useState } from "react"
-import { Alert, StatusBar, Text, View } from "react-native"
+import { StatusBar, Text, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
@@ -30,14 +31,14 @@ export default function Dashboard() {
   const firstName = user?.name.split(" ")[0]
 
   const [summary, setSummary] = useState<SummaryCheckin | null>(null)
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
 
   const loadSummary = useCallback(async () => {
     try {
       const data = await getSummaryCheckin()
       setSummary(data)
     } catch (e) {
-      console.log("Errpr load Summary");
-      console.log(e);
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: "Failed",
@@ -63,7 +64,6 @@ export default function Dashboard() {
         return
       }
 
-      console.log("[loadCheckin] error:", e)
       dispatch(clearActiveCheckin())
     }
   }, [dispatch])
@@ -78,32 +78,28 @@ export default function Dashboard() {
     await Promise.all([loadCheckin(), loadSummary()])
   }, [refreshUser, loadCheckin, loadSummary])
 
-  const handleCheckout = () => {
-    Alert.alert("Konfirmasi", "Akhiri sesi latihan?", [
-      { text: "Batal", style: "cancel" },
-      {
-        text: "Checkout",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await checkOut()
-            dispatch(clearActiveCheckin())
-            Toast.show({
-              type: ALERT_TYPE.SUCCESS,
-              title: "Successful",
-              textBody: "Training session complete"
-            })
-          } catch (error) {
-            console.log(error)
-            Toast.show({
-              type: ALERT_TYPE.DANGER,
-              title: "Failed",
-              textBody: "Try again"
-            })
-          }
-        }
-      }
-    ])
+  const handleCheckout = () => setShowCancelModal(true)
+
+  const confirmCheckout = async () => {
+    setCancelling(true)
+    setShowCancelModal(false)
+    try {
+      await checkOut()
+      dispatch(clearActiveCheckin())
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: "Successful",
+        textBody: "Training session complete"
+      })
+    } catch (error) {
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Failed",
+        textBody: "Try again"
+      })
+    } finally {
+      setCancelling(false)
+    }
   }
 
   return (
@@ -191,12 +187,26 @@ export default function Dashboard() {
           <TrainerCard onViewTrainer={() => router.push("/(gym)/navigation/trainer")} />
 
           {/* FITNESS PROGRESS */}
-          <FitnessProgressCard summary={summary} targetHours={50} />
+          <FitnessProgressCard
+            summary={summary}
+            targetHours={50}
+          />
 
           {/* WEEKLY ACTIVITY */}
           <WeeklyActivityCard summary={summary} />
         </View>
       </BlurRefreshScrollView>
+      <AppModal
+        visible={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        variant="warning"
+        title="Are you sure want to checkout?"
+        message="Your current gym session will end once you check out."
+        secondaryLabel="No"
+        primaryLabel="Yes, Checkout"
+        primaryTone="danger"
+        onPrimary={confirmCheckout}
+      />
     </SafeAreaView>
   )
 }

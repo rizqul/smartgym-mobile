@@ -1,4 +1,3 @@
-// service/api.ts
 import { clearSession, extractAndSaveTokens } from "@/utils/authHelper"
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios"
 import * as SecureStore from "expo-secure-store"
@@ -13,20 +12,17 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(async (config) => {
-  try {
-    const accessToken = await SecureStore.getItemAsync("access-token")
-    const refreshToken = await SecureStore.getItemAsync("refresh-token")
+  const accessToken = await SecureStore.getItemAsync("access-token")
+  const refreshToken = await SecureStore.getItemAsync("refresh-token")
 
-    let cookieString = ""
-    if (accessToken) cookieString += `access-token=${accessToken}; `
-    if (refreshToken) cookieString += `refresh-token=${refreshToken}; `
+  let cookieString = ""
+  if (accessToken) cookieString += `access-token=${accessToken}; `
+  if (refreshToken) cookieString += `refresh-token=${refreshToken}; `
 
-    if (cookieString) {
-      config.headers.Cookie = cookieString.trim()
-    }
-  } catch (error) {
-    console.error("Gagal mengambil token:", error)
+  if (cookieString) {
+    config.headers.Cookie = cookieString.trim()
   }
+
   return config
 })
 
@@ -55,7 +51,6 @@ const doRefresh = async () => {
       headers: { Cookie: `refresh-token=${refreshToken}` }
     })
   } catch (e: any) {
-    console.log("[AUTH] refresh ditolak:", e?.response?.status, JSON.stringify(e?.response?.data))
     throw e
   }
 
@@ -87,8 +82,6 @@ api.interceptors.response.use(
     if (!isTokenError(error) || !original || original._retry || url.includes("auth/")) {
       return Promise.reject(error)
     }
-
-    console.log("[AUTH] 401 pada", url, "→ mencoba refresh")
 
     original._retry = true
 

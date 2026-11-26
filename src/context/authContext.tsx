@@ -73,7 +73,6 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
       await clearSession()
       setUser(null)
       setIsLoggedIn(false)
-      console.log(error)
     } finally {
       setIsLoading(false)
     }
@@ -82,8 +81,6 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
   const logout = async () => {
     try {
       await logoutAPI()
-    } catch (error) {
-      console.log("Error :" + error)
     } finally {
       await clearSession()
       AsyncStorage.clear()

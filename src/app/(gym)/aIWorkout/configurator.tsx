@@ -5,7 +5,7 @@ import { AiWorkoutRequest } from "@/type/ai.type"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import React, { useState } from "react"
-import { ActivityIndicator, ScrollView, StatusBar, Switch, Text, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch } from "react-redux"
@@ -104,7 +104,6 @@ export default function AIConfigurator() {
       dispatch(setCurrentPlan(plan))
       router.replace("/(gym)/aIWorkout/result")
     } catch (error: any) {
-      console.error(error.response?.status, error.response?.data ?? error)
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: "Gagal membuat plan",
@@ -224,48 +223,6 @@ export default function AIConfigurator() {
           {config.focusAnatomy.length === 0 ? (
             <Text className="mt-3 font-inter text-[11px] text-danger">Select at least one muscle group.</Text>
           ) : null}
-        </View>
-
-        {/* 6. EQUIPMENT PREFERENCES */}
-        <View className="mb-6 rounded-2xl border border-border/50 bg-card p-4">
-          <View className="mb-4 flex-row items-center gap-2">
-            <MaterialCommunityIcons
-              name="wifi"
-              size={16}
-              color="#FF6B00"
-            />
-            <Text className="font-inter text-xs font-bold text-text-primary">6. CLUB TELEMETRY SYNC</Text>
-          </View>
-
-          <View className="gap-4">
-            <View className="flex-row items-center justify-between">
-              <View className="mr-4 flex-1">
-                <Text className="mb-0.5 font-inter text-xs font-bold text-text-primary">Prioritize Available Machines</Text>
-                <Text className="font-inter text-[10px] text-text-secondary">
-                  Prioritize equipment that is currently available in your gym
-                </Text>
-              </View>
-              <Switch
-                value={config.prioritizeMachines}
-                onValueChange={(val) => setConfig({ ...config, prioritizeMachines: val })}
-                trackColor={{ false: "#2D333B", true: "#FF6B00" }}
-                thumbColor="#FFFFFF"
-              />
-            </View>
-
-            <View className="flex-row items-center justify-between">
-              <View className="mr-4 flex-1">
-                <Text className="mb-0.5 font-inter text-xs font-bold text-text-primary">Avoid Maintenance Equipment</Text>
-                <Text className="font-inter text-[10px] text-text-secondary">Avoid equipment that is currently under maintenance</Text>
-              </View>
-              <Switch
-                value={config.avoidMaintenance}
-                onValueChange={(val) => setConfig({ ...config, avoidMaintenance: val })}
-                trackColor={{ false: "#2D333B", true: "#FF6B00" }}
-                thumbColor="#FFFFFF"
-              />
-            </View>
-          </View>
         </View>
 
         {/* GENERATE BUTTON */}

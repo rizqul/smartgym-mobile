@@ -6,7 +6,6 @@ export const scanQr = async (code: string): Promise<CheckinResponse> => {
     const res = await api.post("/member/attendance/check-in", { token: code })
     return res.data.data
   } catch (err: any) {
-    console.log(err.response?.data)
     throw err
   }
 }
@@ -15,7 +14,6 @@ export const checkOut = async (): Promise<CheckinResponse> => {
     const res = await api.post("/member/attendance/check-out")
     return res.data.data
   } catch (err: any) {
-    console.log(err.response?.data)
     throw err
   }
 }
@@ -30,7 +28,6 @@ export const getMyCheckin = async ({ page, size, status }: MyCheckinRequest): Pr
     })
     return res.data
   } catch (err: any) {
-    console.log(err.response?.data)
     throw err
   }
 }
@@ -40,7 +37,6 @@ export const getActiveCheckin = async (): Promise<CheckinResponse> => {
     const res = await api.get("/member/attendance/status")
     return res.data.data
   } catch (error: any) {
-    console.log(error.response?.data)
     throw error
   }
 }
@@ -50,7 +46,6 @@ export const getSummaryCheckin = async (): Promise<SummaryCheckin> => {
     const res = await api.get("/member/attendance/summary")
     return res.data.data
   } catch (error: any) {
-    console.log(error.response?.data)
     throw error
   }
 }

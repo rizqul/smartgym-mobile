@@ -56,7 +56,11 @@ export default function TrainerProfile() {
       const response = await getTrainerSlot(id, selectedDate)
       if (!ignore) setTimeSlots(response.data)
     } catch (error) {
-      console.log("Error : ", error)
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Failed",
+        textBody: "Failed to retrieve trainer schedule"
+      })
       if (!ignore) setTimeSlots([])
     } finally {
       if (!ignore) setLoading(false)
@@ -108,7 +112,7 @@ export default function TrainerProfile() {
       return
     }
     router.push({
-      pathname: "/trainer/booking-confirm",
+      pathname: "/trainer/bookingConfirm",
       params: {
         trainerId: id,
         slotId: String(selectedTime.id),

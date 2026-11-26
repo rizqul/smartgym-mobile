@@ -41,8 +41,6 @@ export default function ForgotPassword() {
         textBody: `Please check ${data.email} for your verification code.`
       })
     } catch (error: any) {
-      console.log("Error :" + error)
-
       const message = error.response?.data?.message || "Failed to send the code. Please try again."
 
       Toast.show({

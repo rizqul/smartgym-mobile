@@ -40,7 +40,7 @@ export function AuthTextField({
         </View>
         {label2 && (
           <View>
-            <Link href={"/(auth)/forgot-password"}>
+            <Link href={"/(auth)/forgotPassword"}>
               <Text className="mb-2 font-inter text-sm font-semibold text-primary">{label2}</Text>
             </Link>
           </View>

@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import React, { useCallback, useEffect, useState } from "react"
 import { ActivityIndicator, FlatList, StatusBar, Text, View } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function HistoryCheckIn() {
@@ -39,7 +40,11 @@ export default function HistoryCheckIn() {
       setHasMore(res.paginate.nextUrl !== null)
       setPage(res.paginate.currentPage)
     } catch (error) {
-      console.error("Gagal mengambil riwayat check-in:", error)
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Failed",
+        textBody: "Failed to retrieve check-in history"
+      })
     } finally {
       setIsLoading(false)
       setIsRefreshing(false)
@@ -63,7 +68,6 @@ export default function HistoryCheckIn() {
     }
   }, [isLoadingMore, hasMore, isLoading, page])
 
-
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
@@ -86,7 +90,11 @@ export default function HistoryCheckIn() {
               </Text>
             </View>
             <View className="h-12 w-12 items-center justify-center rounded-full bg-primary/20">
-              <MaterialCommunityIcons name="calendar-check" size={24} color="#FF6B00" />
+              <MaterialCommunityIcons
+                name="calendar-check"
+                size={24}
+                color="#FF6B00"
+              />
             </View>
           </View>
         }
@@ -95,13 +103,21 @@ export default function HistoryCheckIn() {
 
         ListEmptyComponent={
           isLoading ? (
-            <View className="py-20 items-center justify-center">
-              <ActivityIndicator size="large" color="#FF6B00" />
+            <View className="items-center justify-center py-20">
+              <ActivityIndicator
+                size="large"
+                color="#FF6B00"
+              />
               <Text className="mt-4 text-sm text-text-secondary">Memuat riwayat...</Text>
             </View>
           ) : (
-            <View className="py-20 items-center justify-center opacity-50">
-              <MaterialCommunityIcons name="calendar-blank-outline" size={48} color="#B8BDC7" className="mb-4" />
+            <View className="items-center justify-center py-20 opacity-50">
+              <MaterialCommunityIcons
+                name="calendar-blank-outline"
+                size={48}
+                color="#B8BDC7"
+                className="mb-4"
+              />
               <Text className="text-sm text-text-secondary">Belum ada riwayat kunjungan.</Text>
             </View>
           )
@@ -112,12 +128,16 @@ export default function HistoryCheckIn() {
         refreshing={isRefreshing}
         ListFooterComponent={
           isLoadingMore ? (
-            <View className="py-4 items-center">
-              <ActivityIndicator size="small" color="#FF6B00" />
+            <View className="items-center py-4">
+              <ActivityIndicator
+                size="small"
+                color="#FF6B00"
+              />
             </View>
-          ) : <></>
+          ) : (
+            <></>
+          )
         }
-
       />
     </SafeAreaView>
   )

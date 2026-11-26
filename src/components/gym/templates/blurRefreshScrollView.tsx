@@ -1,6 +1,7 @@
 import { useScreenBlur } from "@/context/screenBlurContext"
 import React, { useCallback, useEffect, useState } from "react"
 import { RefreshControl, ScrollView, ScrollViewProps } from "react-native"
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 
 type Props = ScrollViewProps & {
   onRefresh: () => Promise<unknown>
@@ -20,7 +21,11 @@ export function BlurRefreshScrollView({ onRefresh, children, ...scrollProps }: R
     try {
       await onRefresh()
     } catch (error) {
-      console.log("Refresh error:", error)
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Failed",
+        textBody: "Failed to refresh data"
+      })
     } finally {
       setRefreshing(false)
     }

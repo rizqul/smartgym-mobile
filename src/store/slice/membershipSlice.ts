@@ -18,7 +18,7 @@ export const fetchMemberships = createAsyncThunk("membership/fetchMemberships", 
   try {
     return await getAllMemberships()
   } catch (error) {
-    console.log("Error : ", error)
+    throw error
   }
 })
 

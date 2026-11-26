@@ -124,8 +124,8 @@ export const TrainerCard = ({ data }: Props) => {
         className="flex-row items-center justify-center gap-2 rounded-xl bg-primary py-3.5"
         onPress={() =>
           router.push({
-            pathname: "/(gym)/trainer/[id]",
-            params: { id }
+            pathname: "/(gym)/trainer/trainerDetail",
+            params: { id: id }
           })
         }
       >

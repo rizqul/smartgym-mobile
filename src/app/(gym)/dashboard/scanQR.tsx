@@ -23,17 +23,16 @@ export default function ScanQR() {
   if (!permission) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background">
-        <Text className="text-text-primary">Memuat kamera...</Text>
+        <Text className="font-inter text-text-primary">Loading camera...</Text>
       </SafeAreaView>
     )
   }
 
   const handleMountError = (error: any) => {
-    console.error("Camera Mount Error:", error)
     Toast.show({
       type: ALERT_TYPE.DANGER,
-      title: "Kamera Tidak Tersedia",
-      textBody: "Pastikan tidak ada aplikasi lain yang menggunakan kamera dan coba lagi."
+      title: "Camera Unavailable",
+      textBody: "Make sure no other app is using the camera, then try again."
     })
   }
 
@@ -48,15 +47,15 @@ export default function ScanQR() {
             color="#B8BDC7"
             className="mb-4"
           />
-          <Text className="mb-2 text-center text-lg font-bold text-text-primary">Akses Kamera Dibutuhkan</Text>
-          <Text className="mb-6 text-center text-sm text-text-secondary">
-            Aplikasi membutuhkan akses kamera untuk memindai QR code di pintu masuk gym.
+          <Text className="mb-2 text-center font-inter text-lg font-bold text-text-primary">Camera Access Required</Text>
+          <Text className="mb-6 text-center font-inter text-sm text-text-secondary">
+            The app needs camera access to scan the QR code at the gym entrance.
           </Text>
           <TouchableOpacity
             onPress={requestPermission}
             className="rounded-xl bg-primary px-6 py-3"
           >
-            <Text className="font-bold text-white">Izinkan Akses Kamera</Text>
+            <Text className="font-inter font-bold text-white">Allow Camera Access</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -70,32 +69,29 @@ export default function ScanQR() {
 
     try {
       const res = await scanQr(data)
-      console.log(res);
       if (res.status === "ACCEPTED") {
         dispatch(setActiveCheckin(res))
         Toast.show({
           type: ALERT_TYPE.SUCCESS,
-          title: "Akses Diberikan",
-          textBody: `Selamat berlatih, ${res.member.name}!`,
+          title: "Access Granted",
+          textBody: `Enjoy your workout, ${res.member.name}!`,
           autoClose: 5000
         })
         router.push("/(gym)/navigation/dashboard")
       } else {
         Toast.show({
           type: ALERT_TYPE.DANGER,
-          title: "Akses Ditolak",
-          textBody: res.denialReason || "Membership Anda tidak aktif atau telah kedaluwarsa.",
+          title: "Access Denied",
+          textBody: res.denialReason || "Your membership is inactive or has expired.",
           autoClose: 5000
         })
       }
     } catch (error: any) {
-      console.log("Error Scan QR:", error.response?.data || error.message)
-
-      const errorMessage = error.response?.data?.message || "Gagal terhubung ke server. Periksa koneksi internet Anda."
+      const errorMessage = error.response?.data?.message || "Could not connect to the server. Check your internet connection."
 
       Toast.show({
         type: ALERT_TYPE.DANGER,
-        title: "Koneksi Gagal",
+        title: "Connection Failed",
         textBody: errorMessage,
         autoClose: 4000
       })
@@ -119,10 +115,10 @@ export default function ScanQR() {
         contentContainerClassName="px-5 pt-6 pb-10 items-center"
       >
         {/* TEXT SECTION */}
-        <Text className="mb-2 text-[10px] font-bold uppercase tracking-widest text-primary">Check-In SmartGym</Text>
-        <Text className="mb-2 text-center text-2xl font-bold text-text-primary">Siap untuk latihan?</Text>
-        <Text className="mb-8 px-4 text-center text-sm text-text-secondary">
-          Pindai QR code di pintu masuk gym untuk memulai sesi latihanmu.
+        <Text className="mb-2 font-inter text-[10px] font-bold uppercase tracking-widest text-primary">SmartGym Check-In</Text>
+        <Text className="mb-2 text-center font-inter text-2xl font-bold text-text-primary">Ready to work out?</Text>
+        <Text className="mb-8 px-4 text-center font-inter text-sm text-text-secondary">
+          Scan the QR code at the gym entrance to start your workout.
         </Text>
 
         {/* SCANNER AREA (CAMERA VIEW) */}
@@ -161,7 +157,7 @@ export default function ScanQR() {
               <View className="mt-2 h-1 w-48 bg-primary shadow-sm shadow-primary" />
             </View>
 
-            <Text className="absolute bottom-20 mt-6 text-xs text-white">Posisikan QR di dalam bingkai</Text>
+            <Text className="absolute bottom-20 mt-6 font-inter text-xs text-white">Position the QR code inside the frame</Text>
           </View>
 
           {/* Floating Button */}
@@ -171,7 +167,7 @@ export default function ScanQR() {
               size={16}
               color="white"
             />
-            <Text className="text-xs font-semibold text-white">Pindai otomatis</Text>
+            <Text className="font-inter text-xs font-semibold text-white">Auto scan</Text>
           </TouchableOpacity>
         </View>
 
@@ -190,7 +186,7 @@ export default function ScanQR() {
                 color={flashOn ? "#FF6B00" : "white"}
               />
             </View>
-            <Text className={`text-xs font-medium ${flashOn ? "text-primary" : "text-text-primary"}`}>Senter</Text>
+            <Text className={`font-inter text-xs font-medium ${flashOn ? "text-primary" : "text-text-primary"}`}>Flashlight</Text>
           </TouchableOpacity>
         </View>
 
@@ -202,9 +198,9 @@ export default function ScanQR() {
             color="#FF6B00"
           />
           <View className="flex-1">
-            <Text className="mb-1 text-xs font-bold text-text-primary">QR code tidak terbaca?</Text>
-            <Text className="text-[11px] leading-4 text-text-secondary">
-              Pastikan pencahayaan cukup dan kamera menghadap lurus ke QR code.
+            <Text className="mb-1 font-inter text-xs font-bold text-text-primary">Can't scan the QR code?</Text>
+            <Text className="font-inter text-[11px] leading-4 text-text-secondary">
+              Make sure there is enough light and point the camera straight at the QR code.
             </Text>
           </View>
         </View>
