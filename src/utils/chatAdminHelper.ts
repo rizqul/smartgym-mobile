@@ -1,7 +1,7 @@
 import { Linking } from "react-native"
 
 export const ChatAdminWA = async () => {
-  const phone = "6285801051358"
+  const phone = "6282174839178"
   const message = "Halo Admin, saya ingin bertanya tentang layanan Anda."
 
   const appUrl = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`
