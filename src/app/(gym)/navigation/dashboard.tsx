@@ -5,15 +5,15 @@ import { FitnessProgressCard } from "@/components/gym/dashboard/fitnessProgressC
 import { MembershipCard } from "@/components/gym/dashboard/membershipCard"
 import { TrainerCard } from "@/components/gym/dashboard/trainerCard"
 import { WeeklyActivityCard } from "@/components/gym/dashboard/weeklyActivityCard"
+import { BlurRefreshScrollView } from "@/components/gym/templates/blurRefreshScrollView"
 import { useAuth } from "@/context/authContext"
 import { checkOut } from "@/service/scan.service"
 import { clearActiveCheckin } from "@/store/slice/checkinSlice"
 import { AppDispatch, RootState } from "@/store/store"
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
-import { BlurTargetView, BlurView } from "expo-blur"
 import { router } from "expo-router"
-import React, { useCallback, useRef, useState } from "react"
-import { Alert, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native"
+import React, { useCallback } from "react"
+import { Alert, StatusBar, Text, View } from "react-native"
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
@@ -27,16 +27,9 @@ export default function Dashboard() {
   const activeCheckin = useSelector((state: RootState) => state.checkin.activeCheckin)
   const { user } = useAuth()
   const firstName = user?.name.split(" ")[0]
-  const [refreshing, setRefreshing] = useState(false)
-  const blurTargetRef = useRef<React.ComponentRef<typeof BlurTargetView>>(null)
 
   const onRefresh = useCallback(async () => {
-    setRefreshing(true)
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-    } finally {
-      setRefreshing(false)
-    }
+    await new Promise((resolve) => setTimeout(resolve, 1500))
   }, [])
 
   const handleCheckout = () => {
@@ -69,35 +62,22 @@ export default function Dashboard() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
-      <BlurTargetView
-        ref={blurTargetRef}
-        style={{ flex: 1 }}
-      >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={["#FF6B00"]}
-            />
-          }
-        >
-          <View className="flex gap-4 px-5 pb-10 pt-3">
-            {/* HEADER SECTION */}
-            <View className="flex-row items-start justify-between">
-              <View>
-                <Text className="text-lg font-extrabold text-primary">
-                  SMART <Text className="text-text-primary">GYM</Text>
-                </Text>
-                <Text className="mt-1 text-[28px] font-bold text-text-primary">
-                  Hello, {firstName} <Text>👋</Text>
-                </Text>
-                <Text className="mt-0.5 text-sm text-text-subdued">Keep pushing your limits!</Text>
-                <View className="mt-1.5 h-[3px] w-16 rounded-full bg-primary" />
-              </View>
+      <BlurRefreshScrollView onRefresh={onRefresh}>
+        <View className="flex gap-4 px-5 pb-10 pt-3">
+          {/* HEADER SECTION */}
+          <View className="flex-row items-start justify-between">
+            <View>
+              <Text className="text-lg font-extrabold text-primary">
+                SMART <Text className="text-text-primary">GYM</Text>
+              </Text>
+              <Text className="mt-1 text-[28px] font-bold text-text-primary">
+                Hello, {firstName} <Text>👋</Text>
+              </Text>
+              <Text className="mt-0.5 text-sm text-text-subdued">Keep pushing your limits!</Text>
+              <View className="mt-1.5 h-[3px] w-16 rounded-full bg-primary" />
+            </View>
 
-              {/* <TouchableOpacity
+            {/* <TouchableOpacity
                   activeOpacity={0.8}
                   className="h-12 w-12 items-center justify-center rounded-2xl border border-border bg-surface"
                 >
@@ -108,77 +88,68 @@ export default function Dashboard() {
                   />
                   <View className="absolute right-2.5 top-2.5 h-2.5 w-2.5 rounded-full border border-surface bg-primary" />
                 </TouchableOpacity> */}
-            </View>
-
-            {/* MEMBERSHIP CARD COMPONENT */}
-            <MembershipCard />
-
-            {/* CHECKIN CARD COMPONENT */}
-            {activeCheckin && (
-              <CheckinCard
-                activeCheckin={activeCheckin}
-                handleCheckout={handleCheckout}
-              />
-            )}
-
-            {/* ACTION BUTTONS */}
-            <View className="flex-row gap-3">
-              <ActionButton
-                label="Scan Masuk"
-                onPress={() => router.push("/(gym)/dashboard/scanQR")}
-                icon={
-                  <MaterialCommunityIcons
-                    name="qrcode-scan"
-                    size={26}
-                    color={COLOR_PRIMARY}
-                  />
-                }
-              />
-              <ActionButton
-                label="Berlangganan"
-                onPress={() => router.push("/(gym)/dashboard/membership")}
-                icon={
-                  <MaterialIcons
-                    name="card-membership"
-                    size={26}
-                    color={COLOR_INFO}
-                  />
-                }
-              />
-              <ActionButton
-                label="Schedule"
-                onPress={() => router.push("/(gym)/trainer/bookingHistory")}
-                icon={
-                  <MaterialCommunityIcons
-                    name="calendar-check-outline"
-                    size={26}
-                    color={COLOR_HIGHLIGHT}
-                  />
-                }
-              />
-            </View>
-            {/* AI SUMMERY */}
-            <AiSummaryCard />
-
-            {/* TRAINER SECTION */}
-            <TrainerCard onViewTrainer={() => router.push("/(gym)/navigation/trainer")} />
-
-            {/* FITNESS PROGRESS */}
-            <FitnessProgressCard />
-
-            {/* WEEKLY ACTIVITY */}
-            <WeeklyActivityCard />
           </View>
-        </ScrollView>
-      </BlurTargetView>
-      {refreshing && (
-        <BlurView
-          blurTarget={blurTargetRef}
-          intensity={95}
-          tint="dark"
-          style={StyleSheet.absoluteFill}
-        />
-      )}
+
+          {/* MEMBERSHIP CARD COMPONENT */}
+          <MembershipCard />
+
+          {/* CHECKIN CARD COMPONENT */}
+          {activeCheckin && (
+            <CheckinCard
+              activeCheckin={activeCheckin}
+              handleCheckout={handleCheckout}
+            />
+          )}
+
+          {/* ACTION BUTTONS */}
+          <View className="flex-row gap-3">
+            <ActionButton
+              label="Scan Masuk"
+              onPress={() => router.push("/(gym)/dashboard/scanQR")}
+              icon={
+                <MaterialCommunityIcons
+                  name="qrcode-scan"
+                  size={26}
+                  color={COLOR_PRIMARY}
+                />
+              }
+            />
+            <ActionButton
+              label="Berlangganan"
+              onPress={() => router.push("/(gym)/dashboard/membership")}
+              icon={
+                <MaterialIcons
+                  name="card-membership"
+                  size={26}
+                  color={COLOR_INFO}
+                />
+              }
+            />
+            <ActionButton
+              label="Schedule"
+              onPress={() => router.push("/(gym)/trainer/bookingHistory")}
+              icon={
+                <MaterialCommunityIcons
+                  name="calendar-check-outline"
+                  size={26}
+                  color={COLOR_HIGHLIGHT}
+                />
+              }
+            />
+          </View>
+          {/* AI SUMMERY */}
+          <AiSummaryCard />
+
+          {/* TRAINER SECTION */}
+          <TrainerCard onViewTrainer={() => router.push("/(gym)/navigation/trainer")} />
+
+          {/* FITNESS PROGRESS */}
+          <FitnessProgressCard />
+
+          {/* WEEKLY ACTIVITY */}
+          <WeeklyActivityCard />
+        </View>
+      </BlurRefreshScrollView>
     </SafeAreaView>
   )
 }

@@ -1,3 +1,4 @@
+import { ScreenBlurProvider } from "@/context/screenBlurContext"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import { Tabs } from "expo-router"
 import React from "react"
@@ -25,85 +26,87 @@ const TabLabel = ({ focused, color, title }: { focused: boolean; color: string; 
 
 export default function GymLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: "#1C1F26",
-          borderTopWidth: 0,
-          height: 80,
-          paddingBottom: 12,
-          paddingTop: 12,
-          elevation: 0,
-          shadowOpacity: 0
-        },
-        tabBarActiveTintColor: "#F97316",
-        tabBarInactiveTintColor: "#D6B8A6"
-      }}
-    >
-      {/* 1. TAB HOME */}
-      <Tabs.Screen
-        name="dashboard"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ focused, color }) => (
-            <Ionicons
-              name={focused ? "home" : "home-outline"}
-              size={24}
-              color={color as string}
-            />
-          ),
-          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Home" })
+    <ScreenBlurProvider>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: {
+            backgroundColor: "#1C1F26",
+            borderTopWidth: 0,
+            height: 80,
+            paddingBottom: 12,
+            paddingTop: 12,
+            elevation: 0,
+            shadowOpacity: 0
+          },
+          tabBarActiveTintColor: "#F97316",
+          tabBarInactiveTintColor: "#D6B8A6"
         }}
-      />
+      >
+        {/* 1. TAB HOME */}
+        <Tabs.Screen
+          name="dashboard"
+          options={{
+            title: "Home",
+            tabBarIcon: ({ focused, color }) => (
+              <Ionicons
+                name={focused ? "home" : "home-outline"}
+                size={24}
+                color={color as string}
+              />
+            ),
+            tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Home" })
+          }}
+        />
 
-      {/* 2. TAB TRAINER */}
-      <Tabs.Screen
-        name="trainer"
-        options={{
-          title: "Trainer",
-          tabBarIcon: ({ focused, color }) => (
-            <MaterialCommunityIcons
-              name={focused ? "account-star" : "account-star-outline"}
-              size={24}
-              color={color as string}
-            />
-          ),
-          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Trainer" })
-        }}
-      />
+        {/* 2. TAB TRAINER */}
+        <Tabs.Screen
+          name="trainer"
+          options={{
+            title: "Trainer",
+            tabBarIcon: ({ focused, color }) => (
+              <MaterialCommunityIcons
+                name={focused ? "account-star" : "account-star-outline"}
+                size={24}
+                color={color as string}
+              />
+            ),
+            tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Trainer" })
+          }}
+        />
 
-      {/* 3. TAB AI COACH (Pengganti AI) */}
-      <Tabs.Screen
-        name="aIWorkout"
-        options={{
-          title: "AI Workout",
-          tabBarIcon: ({ focused, color }) => (
-            <MaterialCommunityIcons
-              name={focused ? "arm-flex" : "arm-flex-outline"}
-              size={24}
-              color={color as string}
-            />
-          ),
-          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "AI Workout" })
-        }}
-      />
+        {/* 3. TAB AI COACH (Pengganti AI) */}
+        <Tabs.Screen
+          name="aIWorkout"
+          options={{
+            title: "AI Workout",
+            tabBarIcon: ({ focused, color }) => (
+              <MaterialCommunityIcons
+                name={focused ? "arm-flex" : "arm-flex-outline"}
+                size={24}
+                color={color as string}
+              />
+            ),
+            tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "AI Workout" })
+          }}
+        />
 
-      {/* 4. TAB PROFILE */}
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ focused, color }) => (
-            <Ionicons
-              name={focused ? "person" : "person-outline"}
-              size={24}
-              color={color as string}
-            />
-          ),
-          tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Profile" })
-        }}
-      />
-    </Tabs>
+        {/* 4. TAB PROFILE */}
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: "Profile",
+            tabBarIcon: ({ focused, color }) => (
+              <Ionicons
+                name={focused ? "person" : "person-outline"}
+                size={24}
+                color={color as string}
+              />
+            ),
+            tabBarLabel: ({ focused, color }) => TabLabel({ focused: focused, color: color as string, title: "Profile" })
+          }}
+        />
+      </Tabs>
+    </ScreenBlurProvider>
   )
 }
