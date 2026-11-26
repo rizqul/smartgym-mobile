@@ -41,8 +41,8 @@ const formatDuration = (start: string, end: string) => {
   if (!Number.isFinite(minutes) || minutes <= 0) return "-"
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
-  if (h === 0) return `${m} menit`
-  return m === 0 ? `${h} jam` : `${h} jam ${m} menit`
+  if (h === 0) return `${m} min`
+  return m === 0 ? `${h} hr` : `${h} hr ${m} min`
 }
 
 // SESUAIKAN dengan nilai asli slot.status dari backend
@@ -58,7 +58,7 @@ function StatusBadge({ status }: Readonly<{ status?: BookingStatus }>) {
     return (
       <View className="flex-row items-center gap-1 rounded-md border border-danger/30 bg-danger/10 px-2 py-1">
         <View className="h-1.5 w-1.5 rounded-full bg-danger" />
-        <Text className="text-[10px] font-bold text-danger">Dibatalkan</Text>
+        <Text className="font-inter text-[10px] font-bold text-danger">Cancelled</Text>
       </View>
     )
   }
@@ -66,7 +66,7 @@ function StatusBadge({ status }: Readonly<{ status?: BookingStatus }>) {
     return (
       <View className="flex-row items-center gap-1 rounded-md border border-secondary/30 bg-secondary/10 px-2 py-1">
         <View className="h-1.5 w-1.5 rounded-full bg-secondary" />
-        <Text className="text-[10px] font-bold text-secondary">Belum Dibayar</Text>
+        <Text className="font-inter text-[10px] font-bold text-secondary">Unpaid</Text>
       </View>
     )
   }
@@ -74,7 +74,7 @@ function StatusBadge({ status }: Readonly<{ status?: BookingStatus }>) {
     return (
       <View className="flex-row items-center gap-1 rounded-md border border-success/30 bg-success/10 px-2 py-1">
         <View className="h-1.5 w-1.5 rounded-full bg-success" />
-        <Text className="text-[10px] font-bold text-success">PAID</Text>
+        <Text className="font-inter text-[10px] font-bold text-success">PAID</Text>
       </View>
     )
   }
@@ -91,11 +91,11 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: TrainerBookingRespon
   const hasPhoto = !!trainer.profileUrl && !imageFailed && !GENERATED_AVATAR.test(trainer.profileUrl)
   const cancelled = status === "CANCELLED"
 
-  const day = start.toLocaleDateString("id-ID", { day: "numeric" })
-  const month = start.toLocaleDateString("id-ID", { month: "short" }).toUpperCase()
-  const weekday = start.toLocaleDateString("id-ID", { weekday: "long" })
+  const day = start.toLocaleDateString("en-US", { day: "numeric" })
+  const month = start.toLocaleDateString("en-US", { month: "short" }).toUpperCase()
+  const weekday = start.toLocaleDateString("en-US", { weekday: "long" })
   const timeText = `${slot.startTime.substring(11, 16)} - ${slot.endTime.substring(11, 16)}`
-  const bookedText = new Date(slot.updatedAt).toLocaleDateString("id-ID", {
+  const bookedText = new Date(slot.updatedAt).toLocaleDateString("en-US", {
     day: "numeric",
     month: "long",
     year: "numeric"
@@ -110,13 +110,13 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: TrainerBookingRespon
             isUpcoming && !cancelled ? "border-primary/40 bg-primary/10" : "border-border bg-card"
           }`}
         >
-          <Text className={`text-2xl font-bold ${isUpcoming && !cancelled ? "text-primary" : "text-text-body"}`}>{day}</Text>
-          <Text className="text-[10px] font-bold tracking-wide text-text-subdued">{month}</Text>
+          <Text className={`font-inter text-2xl font-bold ${isUpcoming && !cancelled ? "text-primary" : "text-text-body"}`}>{day}</Text>
+          <Text className="font-inter text-[10px] font-bold tracking-wide text-text-subdued">{month}</Text>
         </View>
 
         <View className="flex-1 gap-1.5">
           <View className="flex-row items-start justify-between gap-2">
-            <Text className="text-base font-bold text-text-primary">{weekday}</Text>
+            <Text className="font-inter text-base font-bold text-text-primary">{weekday}</Text>
             <StatusBadge status={status} />
           </View>
 
@@ -126,11 +126,11 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: TrainerBookingRespon
               size={14}
               color="#FFB693"
             />
-            <Text className="text-sm font-semibold text-accent">{timeText}</Text>
-            <Text className="text-[11px] text-text-subdued">{getTimezoneLabel()}</Text>
+            <Text className="font-inter text-sm font-semibold text-accent">{timeText}</Text>
+            <Text className="font-inter text-[11px] text-text-subdued">{getTimezoneLabel()}</Text>
           </View>
 
-          <Text className="text-[11px] text-text-secondary">Durasi {formatDuration(slot.startTime, slot.endTime)}</Text>
+          <Text className="font-inter text-[11px] text-text-secondary">Duration {formatDuration(slot.startTime, slot.endTime)}</Text>
         </View>
       </View>
 
@@ -153,21 +153,21 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: TrainerBookingRespon
               end={{ x: 1, y: 1 }}
               style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
             >
-              <Text className="text-base font-extrabold text-accent">{getInitials(trainer.name)}</Text>
+              <Text className="font-inter text-base font-extrabold text-accent">{getInitials(trainer.name)}</Text>
             </LinearGradient>
           </View>
         )}
 
         <View className="flex-1 gap-1">
-          <Text className="text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Coach</Text>
+          <Text className="font-inter text-[10px] font-semibold uppercase tracking-wide text-text-subdued">Coach</Text>
           <Text
-            className="text-sm font-bold text-text-primary"
+            className="font-inter text-sm font-bold text-text-primary"
             numberOfLines={1}
           >
             {trainer.name}
           </Text>
           <Text
-            className="text-[11px] text-primary-hover"
+            className="font-inter text-[11px] text-primary-hover"
             numberOfLines={1}
           >
             {formatLabel(String(trainer.specialization))}
@@ -179,7 +179,7 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: TrainerBookingRespon
           onPress={() => router.push({ pathname: "/(gym)/trainer/[id]", params: { id: trainer.id } })}
           className="flex-row items-center gap-1 rounded-xl border border-primary/40 bg-primary/10 px-3 py-2"
         >
-          <Text className="text-xs font-bold text-primary-hover">{isUpcoming ? "Look Trainer" : "Book Again"}</Text>
+          <Text className="font-inter text-xs font-bold text-primary-hover">{isUpcoming ? "View Trainer" : "Book Again"}</Text>
           <Ionicons
             name="arrow-forward"
             size={12}
@@ -195,7 +195,7 @@ function BookingCard({ item, isUpcoming }: Readonly<{ item: TrainerBookingRespon
           size={13}
           color="#6B7280"
         />
-        <Text className="text-[11px] text-text-muted">Dipesan pada {bookedText}</Text>
+        <Text className="font-inter text-[11px] text-text-muted">Booked on {bookedText}</Text>
       </View>
     </View>
   )
@@ -235,7 +235,7 @@ export default function BookingHistoryScreen() {
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar barStyle="light-content" />
 
-      <HeaderNavigation label="Riwayat Booking" />
+      <HeaderNavigation label="Booking History" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -257,9 +257,11 @@ export default function BookingHistoryScreen() {
                     active ? "border-primary/40 bg-primary/15" : "border-transparent"
                   }`}
                 >
-                  <Text className={`text-xs ${active ? "font-bold text-primary" : "font-semibold text-text-secondary"}`}>{t.label}</Text>
+                  <Text className={`font-inter text-xs ${active ? "font-bold text-primary" : "font-semibold text-text-secondary"}`}>
+                    {t.label}
+                  </Text>
                   <View className={`min-w-5 items-center rounded-full px-1.5 py-0.5 ${active ? "bg-primary" : "bg-card"}`}>
-                    <Text className={`text-[10px] font-bold ${active ? "text-background" : "text-text-subdued"}`}>{count}</Text>
+                    <Text className={`font-inter text-[10px] font-bold ${active ? "text-background" : "text-text-subdued"}`}>{count}</Text>
                   </View>
                 </TouchableOpacity>
               )
@@ -281,9 +283,9 @@ export default function BookingHistoryScreen() {
               size={40}
               color="#B8BDC7"
             />
-            <Text className="text-sm font-bold text-text-primary">Gagal memuat booking</Text>
+            <Text className="font-inter text-sm font-bold text-text-primary">Failed to load bookings</Text>
             <TouchableOpacity onPress={() => dispatch(fetchMyBookings({ size: 50 }))}>
-              <Text className="text-xs font-bold text-primary">Coba lagi</Text>
+              <Text className="font-inter text-xs font-bold text-primary">Try again</Text>
             </TouchableOpacity>
           </View>
         ) : list.length === 0 ? (
@@ -295,13 +297,13 @@ export default function BookingHistoryScreen() {
                 color="#6B7280"
               />
             </View>
-            <Text className="text-sm font-bold text-text-primary">
-              {tab === "upcoming" ? "Belum ada sesi mendatang" : "Belum ada riwayat sesi"}
+            <Text className="font-inter text-sm font-bold text-text-primary">
+              {tab === "upcoming" ? "No upcoming sessions" : "No session history"}
             </Text>
-            <Text className="px-8 text-center text-xs leading-5 text-text-secondary">
+            <Text className="px-8 text-center font-inter text-xs leading-5 text-text-secondary">
               {tab === "upcoming"
-                ? "Booking sesi bersama trainer dan jadwalmu akan muncul di sini."
-                : "Sesi yang sudah selesai atau dibatalkan akan tampil di sini."}
+                ? "Book a session with a trainer and your schedule will appear here."
+                : "Completed or cancelled sessions will appear here."}
             </Text>
           </View>
         ) : (
