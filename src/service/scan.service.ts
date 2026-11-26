@@ -47,7 +47,7 @@ export const getActiveCheckin = async (): Promise<CheckinResponse> => {
 
 export const getSummaryCheckin = async (): Promise<SummaryCheckin> => {
   try {
-    const res = await api.post("/member/attendance/summary")
+    const res = await api.get("/member/attendance/summary")
     return res.data.data
   } catch (error: any) {
     console.log(error.response?.data)

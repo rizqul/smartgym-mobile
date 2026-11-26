@@ -46,16 +46,37 @@ export default function Dashboard() {
     }
   }, [])
 
+  const loadCheckin = useCallback(async () => {
+    try {
+      const active = await getActiveCheckin()
+
+      if (active) {
+        dispatch(setActiveCheckin(active))
+      } else {
+        dispatch(clearActiveCheckin())
+      }
+    } catch (e: any) {
+      const status = e?.response?.status
+
+      if (status === 400) {
+        dispatch(clearActiveCheckin())
+        return
+      }
+
+      console.log("[loadCheckin] error:", e)
+      dispatch(clearActiveCheckin())
+    }
+  }, [dispatch])
+
   useEffect(() => {
     void loadSummary()
-  }, [loadSummary])
+    void loadCheckin()
+  }, [loadSummary, loadCheckin])
 
   const onRefresh = useCallback(async () => {
     await refreshUser()
-    const activeCheckin = await getActiveCheckin()
-    dispatch(setActiveCheckin(activeCheckin))
-    await loadSummary()
-  }, [dispatch, refreshUser, loadSummary])
+    await Promise.all([loadCheckin(), loadSummary()])
+  }, [refreshUser, loadCheckin, loadSummary])
 
   const handleCheckout = () => {
     Alert.alert("Konfirmasi", "Akhiri sesi latihan?", [
