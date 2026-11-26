@@ -14,15 +14,16 @@ import { TransactionStatus, TransactionType } from "@/type/Transaction.type"
 import { Ionicons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import React, { useEffect, useState } from "react"
-import { FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, FlatList, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
 
 export default function TransactionHistory() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const { result } = useSelector((state: RootState) => state.transaction)
+  const { result, isLoading } = useSelector((state: RootState) => state.transaction)
   const [filter, setFilter] = useState<TransactionFilterState>(DEFAULT_FILTER)
+  const loading = isLoading && !result
 
   useEffect(() => {
     const sortOpt = SORT_OPTIONS.find((o) => o.value === filter.sort)
@@ -40,7 +41,6 @@ export default function TransactionHistory() {
 
   const transactions = result?.data ?? []
 
-  // Sort is not counted as a "filter"
   const hasActiveFilter = filter.type !== "ALL" || filter.status !== "ALL"
 
   const update = <K extends keyof TransactionFilterState>(key: K, value: TransactionFilterState[K]) =>
@@ -111,31 +111,39 @@ export default function TransactionHistory() {
         <Text className="font-inter text-xs text-text-secondary">{transactions.length} found</Text>
 
         {/* TRANSACTION LIST */}
-        <FlatList
-          data={transactions}
-          keyExtractor={(item) => String(item.id)}
-          scrollEnabled={false}
-          ItemSeparatorComponent={() => <View className="h-4" />}
-          renderItem={({ item }) => (
-            <TransactionCard
-              item={item}
-              showDetail={() => handleShowDetail(item.orderId)}
-            />
-          )}
-          ListEmptyComponent={
-            <View className="items-center gap-2 py-16">
-              <Ionicons
-                name="receipt-outline"
-                size={40}
-                color="#B8BDC7"
+        {loading ? (
+          <ActivityIndicator
+            size="large"
+            color="#FF6B00"
+            className="mt-10"
+          />
+        ) : (
+          <FlatList
+            data={transactions}
+            keyExtractor={(item) => String(item.id)}
+            scrollEnabled={false}
+            ItemSeparatorComponent={() => <View className="h-4" />}
+            renderItem={({ item }) => (
+              <TransactionCard
+                item={item}
+                showDetail={() => handleShowDetail(item.orderId)}
               />
-              <Text className="font-inter text-base font-bold text-text-primary">No transactions found</Text>
-              <Text className="text-center font-inter text-sm text-text-secondary">
-                {hasActiveFilter ? "Try changing or resetting your filters." : "Your transactions will appear here."}
-              </Text>
-            </View>
-          }
-        />
+            )}
+            ListEmptyComponent={
+              <View className="items-center gap-2 py-16">
+                <Ionicons
+                  name="receipt-outline"
+                  size={40}
+                  color="#B8BDC7"
+                />
+                <Text className="font-inter text-base font-bold text-text-primary">No transactions found</Text>
+                <Text className="text-center font-inter text-sm text-text-secondary">
+                  {hasActiveFilter ? "Try changing or resetting your filters." : "Your transactions will appear here."}
+                </Text>
+              </View>
+            }
+          />
+        )}
       </ScrollView>
     </SafeAreaView>
   )

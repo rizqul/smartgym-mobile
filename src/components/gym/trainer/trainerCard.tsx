@@ -1,4 +1,4 @@
-import { formatRupiah } from "@/utils/FormaterHelper"
+import { formatRupiah, toTitleCase } from "@/utils/FormaterHelper"
 import { Ionicons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { router } from "expo-router"
@@ -86,7 +86,7 @@ export const TrainerCard = ({ data }: Props) => {
             style={{ includeFontPadding: false }}
             numberOfLines={2}
           >
-            {name}
+            {toTitleCase(name)}
           </Text>
 
           {/* Badge Specialization */}

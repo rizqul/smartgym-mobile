@@ -9,16 +9,17 @@ import { router } from "expo-router"
 
 import { ChatAdminWA } from "@/utils/chatAdminHelper"
 import React, { useEffect } from "react"
-import { ScrollView, View } from "react-native"
+import { ActivityIndicator, ScrollView, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useDispatch, useSelector } from "react-redux"
 
 const Membership = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { result } = useSelector((state: RootState) => state.membership)
+  const { result, isLoading } = useSelector((state: RootState) => state.membership)
   const weekly = result?.WEEKLY
   const monthly = result?.MONTHLY
   const yearly = result?.YEARLY
+  const loading = isLoading && !result
 
   useEffect(() => {
     void dispatch(fetchMemberships())
@@ -49,11 +50,37 @@ const Membership = () => {
               { label: "SEABANK", tone: "danger" }
             ]}
           />
-          <View className="items-center gap-4 font-inter">
-            {weekly?.map((val) => {
-              return (
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color="#FF6B00"
+              className="mt-10"
+            />
+          ) : (
+            <View className="items-center gap-4 font-inter">
+              {weekly?.map((val) => {
+                return (
+                  <PlanCard
+                    variant="popular"
+                    key={val.id}
+                    badge={val.type}
+                    status="Active"
+                    name={val.name}
+                    description={val.description}
+                    price={`Rp ${val.price.toString()}`}
+                    duration={`${val.duration} days`}
+                    buttonLabel="Select Plan"
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(gym)/dashboard/membershipConfirm",
+                        params: { id: val.id }
+                      })
+                    }
+                  />
+                )
+              })}
+              {monthly?.map((val) => (
                 <PlanCard
-                  variant="popular"
                   key={val.id}
                   badge={val.type}
                   status="Active"
@@ -69,45 +96,27 @@ const Membership = () => {
                     })
                   }
                 />
-              )
-            })}
-            {monthly?.map((val) => (
-              <PlanCard
-                key={val.id}
-                badge={val.type}
-                status="Active"
-                name={val.name}
-                description={val.description}
-                price={`Rp ${val.price.toString()}`}
-                duration={`${val.duration} days`}
-                buttonLabel="Select Plan"
-                onPress={() =>
-                  router.push({
-                    pathname: "/(gym)/dashboard/membershipConfirm",
-                    params: { id: val.id }
-                  })
-                }
-              />
-            ))}
-            {yearly?.map((val) => (
-              <PlanCard
-                key={val.id}
-                badge={val.type}
-                status="Active"
-                name={val.name}
-                description={val.description}
-                price={`Rp ${val.price.toString()}`}
-                duration={`${val.duration} days`}
-                buttonLabel="Select Plan"
-                onPress={() =>
-                  router.push({
-                    pathname: "/(gym)/dashboard/membershipConfirm",
-                    params: { id: val.id }
-                  })
-                }
-              />
-            ))}
-          </View>
+              ))}
+              {yearly?.map((val) => (
+                <PlanCard
+                  key={val.id}
+                  badge={val.type}
+                  status="Active"
+                  name={val.name}
+                  description={val.description}
+                  price={`Rp ${val.price.toString()}`}
+                  duration={`${val.duration} days`}
+                  buttonLabel="Select Plan"
+                  onPress={() =>
+                    router.push({
+                      pathname: "/(gym)/dashboard/membershipConfirm",
+                      params: { id: val.id }
+                    })
+                  }
+                />
+              ))}
+            </View>
+          )}
         </View>
       </ScrollView>
       <MembershipConsultCard onPress={ChatAdminWA} />
