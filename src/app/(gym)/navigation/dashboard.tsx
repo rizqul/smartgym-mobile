@@ -30,11 +30,9 @@ export default function Dashboard() {
   const firstName = user?.name.split(" ")[0]
 
   const [summary, setSummary] = useState<SummaryCheckin | null>(null)
-  const [summaryLoading, setSummaryLoading] = useState(true)
 
   const loadSummary = useCallback(async () => {
     try {
-      setSummaryLoading(true)
       const data = await getSummaryCheckin()
       setSummary(data)
     } catch (e) {
@@ -42,11 +40,9 @@ export default function Dashboard() {
       console.log(e);
       Toast.show({
         type: ALERT_TYPE.DANGER,
-        title: "Gagal",
-        textBody: "Coba lagi."
+        title: "Failed",
+        textBody: "Try again"
       })
-    } finally {
-      setSummaryLoading(false)
     }
   }, [])
 
@@ -73,15 +69,15 @@ export default function Dashboard() {
             dispatch(clearActiveCheckin())
             Toast.show({
               type: ALERT_TYPE.SUCCESS,
-              title: "Berhasil",
-              textBody: "Sesi latihan selesai."
+              title: "Successful",
+              textBody: "Training session complete"
             })
           } catch (error) {
             console.log(error)
             Toast.show({
               type: ALERT_TYPE.DANGER,
-              title: "Gagal",
-              textBody: "Coba lagi."
+              title: "Failed",
+              textBody: "Try again"
             })
           }
         }
