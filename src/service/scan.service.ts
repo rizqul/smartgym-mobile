@@ -32,7 +32,7 @@ export const getMyCheckin = async ({ page, size, status }: MyCheckinRequest): Pr
   }
 }
 
-export const getActiveCheckin = async (): Promise<CheckinResponse | null> => {
+export const getActiveCheckin = async (): Promise<CheckinResponse> => {
   try {
     const res = await api.get("/member/attendance/status")
     return res.data.data

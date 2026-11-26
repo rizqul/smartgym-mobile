@@ -105,7 +105,7 @@ export function useTransactionDetail() {
       params: {
         paymentUrl: data.paymentUrl,
         type: data.type === "PT_BOOKING" ? "pt-booking" : "membership",
-        orderId: data.orderId
+        id: data.orderId
       }
     })
   }
