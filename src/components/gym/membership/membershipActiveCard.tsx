@@ -50,7 +50,7 @@ const BENEFITS: MembershipBenefit[] = [
   {
     icon: "qr-code-scanner",
     title: "QR Check-in & Gym Time Tracking",
-    description: "Scan at the lobby, track your visits and see how many people are in the gym today",
+    description: "Scan at the lobby and track your visits",
     tone: "primary"
   }
 ]

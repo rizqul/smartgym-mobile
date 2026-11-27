@@ -295,7 +295,7 @@ export default function BookingConfirm() {
             <View className="mt-0.5 flex-1 font-inter">
               <Text className="mb-1 font-inter text-lg font-bold text-text-primary">I agree to the Booking Terms</Text>
               <Text className="text-justify font-inter text-sm text-text-secondary">
-                Once confirmed, bookings cannot be canceled or rescheduled. Please ensure that you are available for the selected time slot.
+                Please double-check your selected time slot before confirming.
               </Text>
             </View>
           </TouchableOpacity>
