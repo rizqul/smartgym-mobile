@@ -22,7 +22,6 @@ export const clearSession = async () => {
   await SecureStore.deleteItemAsync(USER_DATA_KEY)
 }
 
-// Hanya berlaku kalau access token berupa JWT
 export const isTokenExpired = (token: string, bufferSeconds = 30) => {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]))
