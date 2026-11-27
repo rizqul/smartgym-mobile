@@ -22,13 +22,13 @@ function RootLayoutNav({ isMinTimeElapsed }: Readonly<{ isMinTimeElapsed: boolea
     }
   ])
 
-  const appIsReady = loaded && !isLoading && isMinTimeElapsed
-
   useEffect(() => {
-    if (appIsReady || error) {
+    if (loaded || error) {
       void SplashScreen.hideAsync()
     }
-  }, [appIsReady, error])
+  }, [loaded, error])
+
+  const appIsReady = (loaded || error) && !isLoading && isMinTimeElapsed
 
   if (!appIsReady && !error) return <SplashLoadingScreen />
 
@@ -53,7 +53,7 @@ export default function RootLayout() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMinTimeElapsed(true)
-    }, 10000)
+    }, 5000)
 
     return () => clearTimeout(timer)
   }, [])
